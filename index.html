@@ -6,7 +6,9 @@
 <title>Monitoring Distribusi</title>
 <style>
 :root{--bg:#0B0B0D;--card:#17171B;--tile:#222228;--line:#26262C;--tx:#F5F5F5;--mut:#A1A1AA;--or:#F97316;--red:#F87171}
-*{box-sizing:border-box}
+*{box-sizing:border-box;scrollbar-width:none;-ms-overflow-style:none}
+*::-webkit-scrollbar{display:none;width:0;height:0}
+html,body{overflow:hidden}
 body{margin:0;background:#000;color:var(--tx);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 button,input,select{font:inherit;color:inherit}
 #app{max-width:480px;height:100dvh;margin:0 auto;background:var(--bg);display:flex;flex-direction:column}
