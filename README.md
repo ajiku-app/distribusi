@@ -15,6 +15,9 @@ Aplikasi web statis tanpa build. Bisa dipasang di HP lewat "Tambahkan ke layar u
     git push -u origin main
 
 ## Catatan
-- Data dan akun disimpan di browser perangkat (localStorage). Gunakan menu foto profil > Ekspor data untuk cadangan.
+- Data dan akun disimpan di browser perangkat (localStorage). Tidak ada cadangan otomatis; jika data browser dihapus, data hilang.
 - Login hanya untuk perangkat ini; belum ada server.
 - Paket Vercel Hobby hanya untuk pemakaian pribadi nonkomersial.
+
+## Lisensi
+MIT License. Hak cipta (c) 2026 Septa Aji. Lihat berkas LICENSE.
