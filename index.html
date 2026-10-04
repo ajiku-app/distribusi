@@ -7,16 +7,19 @@
 <style>
 :root{--bg:#06070B;--card:#0F1118;--tile:#171A25;--line:#1C2030;--tx:#F4F6FB;--mut:#8D93A6;--ac:#3E5BFF;--acs:#8FA2FF;--red:#F87171}
 *{box-sizing:border-box}
+html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%}
 body{margin:0;background:#000;color:var(--tx);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 button,input,select{font:inherit;color:inherit}
 #app{max-width:480px;height:100dvh;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
 .hd{padding:calc(env(safe-area-inset-top) + 16px) 20px 12px}
 .hd .top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
 .av{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--ac);padding:2px;background:none;cursor:pointer;flex:none}
+.shr{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid var(--ac);background:none;color:var(--tx);font-weight:600;font-size:14px;cursor:pointer}
+.shr svg{color:var(--acs)}
 .pill{font-size:12px;color:var(--mut);background:var(--card);border:1px solid var(--line);border-radius:20px;padding:8px 14px;white-space:nowrap}
 .eb{font-size:14px;font-weight:400;color:var(--mut)}
 h1{margin:2px 0 0;font-size:30px;line-height:1.12;font-weight:600;letter-spacing:-.02em}
-.main{flex:1;overflow-y:auto;padding:0 20px 16px;display:flex;flex-direction:column;gap:14px}
+.main{flex:1;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding:0 20px 16px;display:flex;flex-direction:column;gap:14px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px}
 .lbl{font-size:13px;color:var(--mut)}
 .num{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-weight:600}
@@ -29,9 +32,8 @@ h1{margin:2px 0 0;font-size:30px;line-height:1.12;font-weight:600;letter-spacing
 .main .chips{padding:0}
 .chip{min-height:44px;padding:0 18px;border-radius:22px;border:1px solid var(--line);background:var(--card);white-space:nowrap;cursor:pointer;color:var(--mut)}
 .chip.on{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600}
-.rail{flex:none;display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 20px;margin:0 -20px -10px;padding:0 20px 20px;scrollbar-width:none}
-.rail::-webkit-scrollbar{display:none}
-.hc{flex:0 0 82%;scroll-snap-align:start;border-radius:26px;padding:20px;display:flex;flex-direction:column;background:linear-gradient(165deg,#12152A,#0C0E17);border:1px solid #232846}
+.stack{display:flex;flex-direction:column;gap:14px;flex:none}
+.hc{flex:none;width:100%;border-radius:26px;padding:20px;display:flex;flex-direction:column;background:linear-gradient(165deg,#12152A,#0C0E17);border:1px solid #232846}
 .hc.blue{background:linear-gradient(150deg,#4A66FF 0%,#2438C9 55%,#16208A 100%);border:0;color:#fff;box-shadow:0 14px 34px -14px #3E5BFF99}
 .hc .t{font-size:13px;opacity:.8}
 .hc.blue .row .lbl{color:#ffffffbb}
@@ -91,6 +93,8 @@ h1{margin:2px 0 0;font-size:30px;line-height:1.12;font-weight:600;letter-spacing
 .f{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .f label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mut)}
 .f input,.f select,.sr input,.sr select{min-height:44px;border-radius:14px;border:1px solid var(--line);background:var(--card);padding:0 12px;width:100%}
+.f input[type=date],.f input[type=time]{-webkit-appearance:none;appearance:none;display:block;width:100%;min-width:0;text-align:left}
+.f input::-webkit-date-and-time-value{text-align:left;min-height:1.2em}
 .sr{display:grid;grid-template-columns:1fr 70px 1fr;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
 .sr .x{grid-column:1/-1}
 .cp{font-size:13px;color:var(--mut);margin:12px 0}
@@ -100,8 +104,9 @@ h1{margin:2px 0 0;font-size:30px;line-height:1.12;font-weight:600;letter-spacing
 .pw{position:relative}.pw input{padding-right:100px}
 .pw button{position:absolute;right:6px;top:5px;min-width:80px;height:44px;background:none;border:0;color:var(--acs);font-weight:600;cursor:pointer}
 #err{min-height:20px;color:var(--red);font-size:13px;margin:10px 0 6px}
+.main,.login,.sh,.chips{scrollbar-width:none;-ms-overflow-style:none}
+.main::-webkit-scrollbar,.login::-webkit-scrollbar,.sh::-webkit-scrollbar,.chips::-webkit-scrollbar{display:none;width:0;height:0}
 :focus-visible{outline:2px solid var(--acs);outline-offset:2px}
-@media(prefers-reduced-motion:no-preference){.rail{scroll-behavior:smooth}}
 </style></head><body>
 <div id="app"></div><div id="sheet"></div><input type="file" id="imp" accept=".json" hidden>
 <script>
@@ -121,7 +126,7 @@ const sisa=x=>x.s+x.i-x.o,units=x=>x.sh.reduce((a,r)=>a+r[2],0),arm=x=>x.p+x.e+x
 const val=(x,k)=>k==='sisa'?sisa(x):k==='unit'?units(x):x[k];
 const pc=(a,b)=>b?' ('+(a>=b?'+':'−')+Math.abs((a-b)/b*100).toFixed(1).replace('.',',')+'%)':'';
 const dl=(a,b)=>(a>=b?'▲ +':'▼ −')+fmt(Math.abs(a-b))+pc(a,b);
-const IC={home:'<path d="M3 11l9-8 9 8v10H3z"/>',ship:'<path d="M1 6h14v11H1zM15 10h4l4 3v4h-8"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/>',hist:'<path d="M4 20V10M12 20V4M20 20v-7"/>',ana:'<path d="M3 17l6-6 4 4 8-9M15 6h6v6"/>',pab:'<path d="M3 21h18M5 21V8l5 3V8l5 3V4h4v17"/>',glb:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',ar:'<path d="M5 12h14M13 6l6 6-6 6"/>'};
+const IC={home:'<path d="M3 11l9-8 9 8v10H3z"/>',ship:'<path d="M1 6h14v11H1zM15 10h4l4 3v4h-8"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/>',hist:'<path d="M4 20V10M12 20V4M20 20v-7"/>',ana:'<path d="M3 17l6-6 4 4 8-9M15 6h6v6"/>',pab:'<path d="M3 21h18M5 21V8l5 3V8l5 3V4h4v17"/>',glb:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',ar:'<path d="M5 12h14M13 6l6 6-6 6"/>',sh:'<path d="M12 15V3M7 8l5-5 5 5M5 13v7h14v-7"/>'};
 const svg=(p,s=22)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${p}</svg>`;
 const chips=(a,cur,act)=>`<div class="chips">${a.map(([v,t])=>`<button class="chip ${v==cur?'on':''}" data-a="${act}" data-v="${v}">${esc(t)}</button>`).join('')}</div>`;
 const dateChips=()=>chips(S.days.map((x,i)=>[i,dm(x.d)]),S.date,'date');
@@ -134,8 +139,8 @@ function home(D){const key=i=>D.d+'-'+i,dn=D.sh.filter((_,i)=>S.done[key(i)]).le
 const ag={};D.sh.forEach(r=>ag[r[1]]=(ag[r[1]]||0)+r[2]);const top=Object.keys(ag).sort((a,b)=>ag[b]-ag[a]).slice(0,3);
 const tot=D.s+D.i,sp=tot>0?Math.max(0,Math.min(100,Math.round(sisa(D)/tot*100))):0;
 const tile=(ic,v,t)=>`<div class="tile"><span class="ic">${svg(IC[ic],18)}</span><div><div class="num" style="font-size:24px">${v}</div><div class="lbl">${t}</div></div></div>`;
-return dateChips()+`<div class="sec"><b>Hari ini</b><span class="lbl">Geser untuk lihat lainnya</span></div>
-<div class="rail"><div class="hc blue"><div class="t">Sisa stok setelah Delivery Order</div><div class="num big">${fmt(sisa(D))}</div>
+return dateChips()+`<div class="sec"><b>Hari ini</b></div>
+<div class="stack"><div class="hc blue"><div class="t">Sisa stok setelah Delivery Order</div><div class="num big">${fmt(sisa(D))}</div>
 <div class="row"><span class="lbl">Stok Today (07:00)</span><span class="num">${fmt(D.s)}</span></div><div class="row"><span class="lbl">+ IT Produksi</span><span class="num">${fmt(D.i)}</span></div><div class="row"><span class="lbl">− Delivery Order</span><span class="num">${fmt(D.o)}</span></div>
 <div class="pg"><span>Stok tersisa</span><span class="num">${sp}%</span></div><div class="tr"><i style="width:${sp}%"></i></div></div>
 <div class="hc"><div class="t" style="color:var(--mut)">Pengiriman Aktif</div><div class="num big">${dn}<span class="lbl" style="font-size:18px"> / ${D.sh.length}</span></div><div class="lbl">rute sudah terkirim</div>
@@ -180,7 +185,7 @@ function draw(){const A=$('#app');
 if(!S.in){A.innerHTML=S.auth==='welcome'?welcome():authForm(S.auth);return}
 const y=($('.main')||{}).scrollTop||0,D=S.days[S.date],t=ttl[S.tab],sub=esc(S.tab==='ship'?dm(D.d)+'/'+D.d.slice(2,4)+' · '+D.sh.length+' rute':S.tab==='home'&&S.user?'Selamat datang, '+S.user:t[0]);
 const body=S.tab==='home'?home(D):S.tab==='ship'?ship(D):S.tab==='hist'?hist():ana();
-A.innerHTML=`<div class="hd"><div class="top"><button class="av" data-a="menu" aria-label="Menu data"><img src="foto.jpg" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 25%"></button><span class="pill">Update ${dm(D.d)}, ${esc(D.u||'-')}</span></div><div class="eb">${sub}</div><h1>${t[1]}</h1></div><div class="main">${body}</div>
+A.innerHTML=`<div class="hd"><div class="top"><button class="av" data-a="menu" aria-label="Menu data"><img src="foto.jpg" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 25%"></button><button class="shr" data-a="sharepdf">${svg(IC.sh,18)}Bagikan PDF</button></div><div class="eb">${sub}</div><h1>${t[1]}</h1></div><div class="main">${body}</div>
 <div class="dock"><nav class="tabs">${[['home','Beranda'],['ship','Pengiriman'],['hist','Riwayat'],['ana','Analisa']].map(([k,n])=>`<button class="tab ${S.tab==k?'on':''}" data-a="tab" data-v="${k}">${svg(IC[k],20)}${n}</button>`).join('')}</nav>${S.tab==='home'||S.tab==='ship'?'<button class="fab" data-a="form" aria-label="Tambah data harian">+</button>':''}</div>`;
 $('.main').scrollTop=y}
 
@@ -196,11 +201,60 @@ function menu(){sheet(`<h2>Data &amp; akun</h2><p class="cp">${S.user?'Masuk seb
 const A={tab:v=>S.tab=v,date:v=>S.date=+v,region:v=>S.region=v,metric:v=>S.metric=v,done:v=>{S.done[v]=!S.done[v];save()},enter:()=>{localStorage.dm_in=1;localStorage.removeItem('dm_user');S.user='';S.in=true},auth:v=>S.auth=v,eye:(v,t)=>{const i=t.parentNode.querySelector('input');i.type=i.type==='password'?'text':'password';t.textContent=i.type==='password'?'Lihat':'Sembunyi'},logout:()=>{localStorage.removeItem('dm_in');localStorage.removeItem('dm_user');S.in=false;S.user='';S.auth='welcome';closeS()},close:closeS,form,menu,save:saveF,
 addrow:()=>$('#rows').insertAdjacentHTML('beforeend',rowH([])),
 export:()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S.days,null,1)],{type:'application/json'}));a.download='distribusi-'+new Date().toISOString().slice(0,10)+'.json';a.click()},
-import:()=>$('#imp').click(),
+import:()=>$('#imp').click(),sharepdf:()=>sharePdf(),
 reset:()=>{if(confirm('Semua data diganti dengan data contoh. Lanjutkan?')){S.days=SEED;S.done={};S.date=2;save();closeS()}}};
-document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a;if(!A[a])return;A[a](t.dataset.v,t);if(!['addrow','form','menu','export','import','eye'].includes(a))draw()});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a;if(!A[a])return;A[a](t.dataset.v,t);if(!['addrow','form','menu','export','import','eye','sharepdf'].includes(a))draw()});
 $('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet')closeS()});
 $('#imp').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const a=JSON.parse(r.result);if(!Array.isArray(a)||!a.every(x=>x&&typeof x.d==='string'&&Array.isArray(x.sh)))throw 0;S.days=a.map(x=>({d:x.d.slice(0,10),u:String(x.u||''),p:+x.p||0,e:+x.e||0,x:+x.x||0,s:+x.s||0,i:+x.i||0,o:+x.o||0,sh:x.sh.map(r=>[String(r[0]),String(r[1]),+r[2]||0,REG.includes(r[3])?r[3]:L])})).sort((a,b)=>a.d<b.d?-1:1);S.date=S.days.length-1;save();closeS();draw()}catch(_){alert('File tidak valid. Gunakan file hasil ekspor aplikasi ini.')}};r.readAsText(f);e.target.value=''});
+/* ---- PDF laporan harian (tanpa library, ASCII/Helvetica) ---- */
+const PW=842,PH=595,FW={' ':278,',':278,'.':278,'/':278,':':278,';':278,'+':584,'-':333};
+const tw=(t,z)=>String(t).split('').reduce((a,c)=>a+(/\d/.test(c)?556:FW[c]||650),0)*z/1000;
+const pa=t=>String(t).replace(/[\u2212\u2013\u2014]/g,'-').replace(/[^\x20-\x7E]/g,'?').replace(/([\\()])/g,'\\$1');
+const nf=n=>(+n||0).toLocaleString('en-US');
+function pdfPages(D){
+const out=[],dt=dm(D.d)+'/'+D.d.slice(2,4),ink='0.1 0.1 0.12',gr='0.55 0.55 0.6',rd='0.8 0.15 0.15',ln='0.82 0.83 0.86';
+let c;
+const T=(x,y,t,z,o={})=>{const w=o.al==='r'?tw(t,z):o.al==='c'?tw(t,z)/2:0;c.push(`BT /${o.f||'F1'} ${z} Tf ${o.c||ink} rg ${(x-w).toFixed(2)} ${(PH-y).toFixed(2)} Td (${pa(t)}) Tj ET`)};
+const Ln=(x1,y,x2,w=.6,col=ln)=>c.push(`${col} RG ${w} w ${x1} ${PH-y} m ${x2} ${PH-y} l S`);
+const sh=D.sh,cap=16,chunks=[];for(let i=0;i<Math.max(sh.length,1);i+=cap)chunks.push(sh.slice(i,i+cap));
+const tot=sh.reduce((a,r)=>a+r[2],0),sis=sisa(D);
+chunks.forEach((ch,pi)=>{c=[];const last=pi===chunks.length-1;
+T(40,58,dt,24,{f:'F2'});if(chunks.length>1)T(PW-40,58,'Hal. '+(pi+1)+'/'+chunks.length,10,{al:'r',c:gr});
+Ln(40,72,PW-40,1,ink);
+if(pi===0){const X=40,V=290,row=(y,l,v,o={})=>{T(X,y,l,12,o.lf?{f:o.lf}:{});T(V,y,v,12,{al:'r',f:o.f||'F1',c:o.c});if(o.sg)T(V+10,y,o.sg,12,{c:gr})};
+row(112,'Armada Pabrik',nf(D.p));row(138,'Armada Ekspedisi',nf(D.e));row(164,'Armada Eksport',nf(D.x));
+Ln(X,174,V+22);row(194,'',nf(arm(D)),{f:'F2',sg:'+'});
+row(246,'Stok Today (07:00)',nf(D.s));row(272,'IT Produksi',nf(D.i));
+Ln(X,282,V+22);row(302,'',nf(D.s+D.i),{f:'F2',sg:'+'});
+row(354,'Delivery Order',nf(D.o),{c:rd});
+Ln(X,364,V+22);row(384,'',nf(sis),{f:'F2',sg:'-'})}
+const NX=375,EX=395,KX=630,QX=785,hy=112;
+T(NX,hy,'NO',11,{f:'F2',al:'c'});T(EX,hy,'EKSPEDISI',11,{f:'F2'});T(KX,hy,'KOTA',11,{f:'F2'});T(QX,hy,'QTY',11,{f:'F2',al:'c'});Ln(350,hy+9,PW-40,1,ink);
+let y=hy+32;
+if(!sh.length)T(EX,y,'Tidak ada pengiriman pada tanggal ini.',11,{c:gr});
+ch.forEach((r,i)=>{const no=pi*cap+i+1,nm=String(r[0]).toUpperCase(),nmx=nm.length>34?nm.slice(0,33)+'.':nm;
+T(NX,y,String(no),10.5,{al:'c'});T(EX,y,nmx,10.5);T(KX,y,String(r[1]).toUpperCase().slice(0,22),10.5);T(QX,y,String(r[2]),10.5,{al:'c'});Ln(350,y+7,PW-40,.4);y+=23});
+if(last){Ln(350,y-12,PW-40,1,ink);T(KX,y+6,'TOTAL',11,{f:'F2'});T(QX,y+6,String(tot),11,{f:'F2',al:'c'})}
+T(PW-40,PH-34,'Update : '+dt+' ; '+(D.u||'-'),9,{f:'F3',al:'r',c:gr});
+out.push(c.join('\n'))});
+return out}
+function makePdf(D){const pg=pdfPages(D),o=[];
+o[1]='<</Type/Catalog/Pages 2 0 R>>';
+o[2]='<</Type/Pages/Kids['+pg.map((_,i)=>(5+i*2)+' 0 R').join(' ')+']/Count '+pg.length+'>>';
+o[3]='<</Type/Font/Subtype/Type1/BaseFont/Helvetica/Encoding/WinAnsiEncoding>>';
+o[4]='<</Type/Font/Subtype/Type1/BaseFont/Helvetica-Bold/Encoding/WinAnsiEncoding>>';
+o[5+pg.length*2]='<</Type/Font/Subtype/Type1/BaseFont/Helvetica-Oblique/Encoding/WinAnsiEncoding>>';
+const F3=5+pg.length*2;
+pg.forEach((st,i)=>{o[5+i*2]='<</Type/Page/Parent 2 0 R/MediaBox[0 0 '+PW+' '+PH+']/Resources<</Font<</F1 3 0 R/F2 4 0 R/F3 '+F3+' 0 R>>>>/Contents '+(6+i*2)+' 0 R>>';
+o[6+i*2]='<</Length '+st.length+'>>\nstream\n'+st+'\nendstream'});
+let b='%PDF-1.4\n',off=[];
+for(let i=1;i<o.length;i++){off[i]=b.length;b+=i+' 0 obj\n'+o[i]+'\nendobj\n'}
+const x=b.length;b+='xref\n0 '+o.length+'\n0000000000 65535 f \n'+off.slice(1).map(v=>String(v).padStart(10,'0')+' 00000 n \n').join('')+'trailer\n<</Size '+o.length+'/Root 1 0 R>>\nstartxref\n'+x+'\n%%EOF';
+return new Blob([b],{type:'application/pdf'})}
+async function sharePdf(){const D=S.days[S.date];if(!D)return;
+const blob=makePdf(D),nm='distribusi-'+D.d+'.pdf',file=new File([blob],nm,{type:'application/pdf'});
+if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:'Distribusi '+dm(D.d)+'/'+D.d.slice(2,4)});return}catch(e){if(e&&e.name==='AbortError')return}}
+const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=nm;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
 const enc=new TextEncoder();
 async function hp(pw,salt){if(!(window.crypto&&crypto.subtle))return btoa(salt+pw);const k=await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveBits']),b=await crypto.subtle.deriveBits({name:'PBKDF2',salt:enc.encode(salt),iterations:120000,hash:'SHA-256'},k,256);return btoa(String.fromCharCode(...new Uint8Array(b)))}
 const okIn=n=>{localStorage.dm_in=1;localStorage.dm_user=n;S.user=n;S.in=true;draw()};
