@@ -1,78 +1,107 @@
 <!doctype html>
 <html lang="id"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0B0B0D">
+<meta name="theme-color" content="#06070B">
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
 <title>Monitoring Distribusi</title>
 <style>
-:root{--bg:#0B0B0D;--card:#17171B;--tile:#222228;--line:#26262C;--tx:#F5F5F5;--mut:#A1A1AA;--or:#F97316;--red:#F87171}
-*{box-sizing:border-box;scrollbar-width:none;-ms-overflow-style:none}
-*::-webkit-scrollbar{display:none;width:0;height:0}
-html,body{overflow:hidden}
+:root{--bg:#06070B;--card:#0F1118;--tile:#171A25;--line:#1C2030;--tx:#F4F6FB;--mut:#8D93A6;--ac:#3E5BFF;--acs:#8FA2FF;--red:#F87171}
+*{box-sizing:border-box}
 body{margin:0;background:#000;color:var(--tx);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 button,input,select{font:inherit;color:inherit}
-#app{max-width:480px;height:100dvh;margin:0 auto;background:var(--bg);display:flex;flex-direction:column}
-.hd{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top) + 16px) 20px 10px}
-.hd .l{display:flex;align-items:center;gap:12px;min-width:0}
-.av{width:48px;height:48px;border-radius:50%;object-fit:cover;object-position:50% 25%;border:2px solid var(--or);padding:0;background:none;cursor:pointer}
-.eb{font-size:13px;font-weight:500;color:var(--or)}
-h1{margin:2px 0 0;font-size:24px;font-weight:600}
-.main{flex:1;overflow-y:auto;padding:0 20px 16px;display:flex;flex-direction:column;gap:12px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+#app{max-width:480px;height:100dvh;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+.hd{padding:calc(env(safe-area-inset-top) + 16px) 20px 12px}
+.hd .top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+.av{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--ac);padding:2px;background:none;cursor:pointer;flex:none}
+.pill{font-size:12px;color:var(--mut);background:var(--card);border:1px solid var(--line);border-radius:20px;padding:8px 14px;white-space:nowrap}
+.eb{font-size:14px;font-weight:400;color:var(--mut)}
+h1{margin:2px 0 0;font-size:30px;line-height:1.12;font-weight:600;letter-spacing:-.02em}
+.main{flex:1;overflow-y:auto;padding:0 20px 16px;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px}
 .lbl{font-size:13px;color:var(--mut)}
 .num{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-weight:600}
-.big{font-size:38px;margin:4px 0 8px}
+.big{font-size:40px;margin:6px 0 10px;letter-spacing:-.03em}
 .row{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0}
-.chips{display:flex;gap:8px;overflow-x:auto;flex-shrink:0;padding:0 20px 12px}
+.sec{display:flex;justify-content:space-between;align-items:center;margin-top:4px}
+.sec b{font-size:18px;font-weight:600}
+.chips{display:flex;gap:8px;overflow-x:auto;flex-shrink:0;padding:0 20px 12px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
 .main .chips{padding:0}
-.chip{min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33333A;background:var(--card);white-space:nowrap;cursor:pointer}
-.chip.on{background:var(--or);border-color:var(--or);color:#0B0B0D;font-weight:600}
-.tiles{display:flex;gap:8px;margin-top:12px}
-.tile{flex:1;background:var(--tile);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px}
-.ic{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--or);color:var(--or);display:flex;align-items:center;justify-content:center}
-.tabs{display:flex;background:#121215;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
-.tab{flex:1;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:500;background:none;border:0;color:var(--mut);cursor:pointer}
-.tab.on{color:var(--or);font-weight:600}
+.chip{min-height:44px;padding:0 18px;border-radius:22px;border:1px solid var(--line);background:var(--card);white-space:nowrap;cursor:pointer;color:var(--mut)}
+.chip.on{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600}
+.rail{flex:none;display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 20px;margin:0 -20px -10px;padding:0 20px 20px;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.hc{flex:0 0 82%;scroll-snap-align:start;border-radius:26px;padding:20px;display:flex;flex-direction:column;background:linear-gradient(165deg,#12152A,#0C0E17);border:1px solid #232846}
+.hc.blue{background:linear-gradient(150deg,#4A66FF 0%,#2438C9 55%,#16208A 100%);border:0;color:#fff;box-shadow:0 14px 34px -14px #3E5BFF99}
+.hc .t{font-size:13px;opacity:.8}
+.hc.blue .row .lbl{color:#ffffffbb}
+.hc .row{padding:5px 0}
+.pg{display:flex;justify-content:space-between;font-size:13px;margin-top:auto;padding-top:14px}
+.tr{height:8px;border-radius:4px;background:#ffffff26;margin-top:8px;overflow:hidden}
+.tr i{display:block;height:100%;border-radius:4px;background:#fff}
+.hc:not(.blue) .tr{background:var(--line)}
+.hc:not(.blue) .tr i{background:var(--ac)}
+.tiles{display:flex;gap:8px;margin-top:14px}
+.tile{flex:1;background:var(--tile);border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.ic{width:36px;height:36px;border-radius:50%;background:#3E5BFF26;color:var(--acs);display:flex;align-items:center;justify-content:center}
+.li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;background:var(--card);border:1px solid var(--line);border-radius:20px}
+.li .s{font-size:12px;color:var(--mut)}
+.li .n{font-weight:600;margin-top:2px}
+.up{font-size:12px;font-weight:600;padding:6px 12px;border-radius:14px;background:#3E5BFF26;color:var(--acs);white-space:nowrap}
+.dock{display:flex;align-items:center;gap:10px;padding:8px 16px calc(env(safe-area-inset-bottom) + 12px)}
+.tabs{flex:1;display:flex;background:#10121A;border:1px solid var(--line);border-radius:32px;padding:6px;min-width:0}
+.tab{flex:1;min-height:54px;border-radius:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:500;background:none;border:0;color:var(--mut);cursor:pointer}
+.tab.on{color:#fff;font-weight:600;background:var(--tile)}
+.tab.on svg{color:var(--acs)}
+.fab{flex:none;width:60px;height:60px;border-radius:50%;border:0;background:var(--ac);color:#fff;font-size:30px;line-height:1;cursor:pointer;box-shadow:0 10px 26px -6px #3E5BFFcc}
 .item{width:100%;min-height:48px;display:flex;justify-content:space-between;align-items:center;background:none;border:0;border-top:1px solid var(--line);cursor:pointer;text-align:left}
-.bx{width:22px;height:22px;border-radius:6px;border:2px solid #6B7280;display:flex;align-items:center;justify-content:center;margin-right:12px}
-.bx.ok{background:#15803D;border-color:#15803D}
+.bx{width:22px;height:22px;border-radius:7px;border:2px solid #4B5163;display:flex;align-items:center;justify-content:center;margin-right:12px}
+.bx.ok{background:var(--ac);border-color:var(--ac)}
 .done{color:var(--mut);text-decoration:line-through}
-.btn{min-height:48px;width:100%;border-radius:24px;border:1.5px solid var(--or);background:none;color:var(--or);font-weight:600;cursor:pointer}
-.btn.fill{background:var(--or);color:#0B0B0D}
-.tot{display:flex;justify-content:space-between;background:var(--or);color:#0B0B0D;border-radius:14px;padding:14px 16px;font-weight:500}
+.btn{min-height:48px;width:100%;border-radius:26px;border:1.5px solid var(--ac);background:none;color:var(--tx);font-weight:600;cursor:pointer}
+.btn.fill{background:var(--ac);color:#fff}
+.tot{display:flex;justify-content:space-between;background:linear-gradient(150deg,#4A66FF,#2438C9);color:#fff;border-radius:22px;padding:16px 18px;font-weight:500}
 .bars{display:flex;gap:10px;align-items:flex-end;height:160px;margin-top:10px}
 .bar{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;font-size:11px;background:none;border:0;cursor:pointer;padding:0}
-.bar i{display:block;width:100%;border-radius:6px 6px 0 0;background:#3F3F46}
-.bar.on i{background:var(--or)}
+.bar i{display:block;width:100%;border-radius:8px 8px 0 0;background:#2A2F42}
+.bar.on i{background:var(--ac)}
 .td{display:flex;font-size:14px;padding:9px 0;border-top:1px solid var(--line)}
 .td span{flex:1;text-align:right}.td span:first-child{text-align:left}
-.td.h{border:0;color:var(--mut);font-size:12px}.td.on{background:#2A1A10;margin:0 -8px;padding:9px 8px}
+.td.h{border:0;color:var(--mut);font-size:12px}.td.on{background:#141B45;margin:0 -8px;padding:9px 8px;border-radius:10px}
 .tag{display:inline-block;font-size:12px;font-weight:600;padding:3px 10px;border-radius:10px}
-.w{background:#3A1F10;color:#FDBA74}.i{background:#1B2A3D;color:#93C5FD}
-.fab{position:fixed;right:max(20px,calc(50% - 220px));bottom:calc(84px + env(safe-area-inset-bottom));width:56px;height:56px;border-radius:50%;border:0;background:var(--or);color:#0B0B0D;font-size:30px;line-height:1;cursor:pointer;box-shadow:0 4px 16px #0008}
-.login{height:100%;padding:56px 24px 28px;display:flex;flex-direction:column}
-.ring{width:300px;height:300px;border-radius:50%;border:3px solid var(--or);padding:12px;margin:0 auto}
-.ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 22%}
-.lb{min-height:56px;border-radius:16px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 20px;margin-top:12px;cursor:pointer;font-weight:500;width:100%;text-align:left}
-.lb.p{background:var(--or);color:#0B0B0D;font-weight:600;border-color:var(--or)}
-#sheet{position:fixed;inset:0;background:#000a;display:none;align-items:flex-end;justify-content:center;z-index:9}
+.w{background:#3A2A10;color:#FCD34D}.i{background:#1B2450;color:#A5B4FF}
+.login{height:100%;padding:56px 24px 28px;display:flex;flex-direction:column;overflow-y:auto}
+.wl{position:relative;background:radial-gradient(120% 70% at 20% 0%,#16257A 0%,#0A1040 38%,#06070B 78%);overflow:hidden}
+.wl::before{content:"";position:absolute;inset:0;background-image:linear-gradient(#5B78FF1f 1px,transparent 1px),linear-gradient(90deg,#5B78FF1f 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:linear-gradient(#000 0%,#0006 55%,transparent 80%);mask-image:linear-gradient(#000 0%,#0006 55%,transparent 80%);pointer-events:none}
+.wl>*{position:relative}
+.mark{width:64px;height:64px;color:#fff}
+.hero{font-size:38px;line-height:1.12;font-weight:300;letter-spacing:.01em;text-transform:uppercase;margin:0}
+.hero b{font-weight:700}
+.hero em{font-style:normal;font-weight:700;color:var(--ac)}
+.hero sup{font-size:.4em;font-weight:400;color:var(--acs);vertical-align:.9em;margin:0 2px}
+.go{min-height:64px;border-radius:32px;background:var(--card);border:1px solid #2A3050;display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 26px;margin-top:12px;cursor:pointer;font-weight:500;width:100%;text-align:left}
+.go span.c{width:48px;height:48px;border-radius:50%;background:var(--ac);color:#fff;display:flex;align-items:center;justify-content:center}
+.lb{min-height:56px;border-radius:28px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;margin-top:12px;cursor:pointer;font-weight:500;width:100%;text-align:left}
+.lb.sm{justify-content:center;text-align:center;padding:0 10px;font-size:14px;white-space:nowrap}
+.lb.p{background:var(--ac);color:#fff;font-weight:600;border-color:var(--ac)}
+#sheet{position:fixed;inset:0;background:#000b;display:none;align-items:flex-end;justify-content:center;z-index:9}
 #sheet.o{display:flex}
-.sh{background:var(--bg);width:100%;max-width:480px;max-height:92dvh;overflow-y:auto;border-radius:22px 22px 0 0;padding:20px;border:1px solid var(--line)}
+.sh{background:var(--bg);width:100%;max-width:480px;max-height:92dvh;overflow-y:auto;border-radius:28px 28px 0 0;padding:22px;border:1px solid var(--line)}
 .sh h2{margin:0 0 12px;font-size:20px}
 .f{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .f label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mut)}
-.f input,.f select,.sr input,.sr select{min-height:44px;border-radius:10px;border:1px solid #33333A;background:var(--card);padding:0 12px;width:100%}
+.f input,.f select,.sr input,.sr select{min-height:44px;border-radius:14px;border:1px solid var(--line);background:var(--card);padding:0 12px;width:100%}
 .sr{display:grid;grid-template-columns:1fr 70px 1fr;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
 .sr .x{grid-column:1/-1}
 .cp{font-size:13px;color:var(--mut);margin:12px 0}
-.login{overflow-y:auto}
 .bk{align-self:flex-start;min-height:44px;background:none;border:0;color:var(--mut);cursor:pointer;padding:0 8px 0 0}
 .lf label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mut);margin-top:14px}
-.lf input{min-height:52px;border-radius:14px;border:1px solid #33333A;background:var(--card);padding:0 16px;width:100%;font-size:16px}
-.pw{position:relative}.pw input{padding-right:96px}
-.pw button{position:absolute;right:4px;top:4px;min-width:80px;height:44px;background:none;border:0;color:var(--or);font-weight:600;cursor:pointer}
+.lf input{min-height:54px;border-radius:27px;border:1px solid var(--line);background:var(--card);padding:0 20px;width:100%;font-size:16px}
+.pw{position:relative}.pw input{padding-right:100px}
+.pw button{position:absolute;right:6px;top:5px;min-width:80px;height:44px;background:none;border:0;color:var(--acs);font-weight:600;cursor:pointer}
 #err{min-height:20px;color:var(--red);font-size:13px;margin:10px 0 6px}
-:focus-visible{outline:2px solid var(--or);outline-offset:2px}
+:focus-visible{outline:2px solid var(--acs);outline-offset:2px}
+@media(prefers-reduced-motion:no-preference){.rail{scroll-behavior:smooth}}
 </style></head><body>
 <div id="app"></div><div id="sheet"></div><input type="file" id="imp" accept=".json" hidden>
 <script>
@@ -99,18 +128,20 @@ const dateChips=()=>chips(S.days.map((x,i)=>[i,dm(x.d)]),S.date,'date');
 
 function chart(vals,labels){const n=vals.length,mn=Math.min(...vals),mx=Math.max(...vals);
 const P=vals.map((v,i)=>[n>1?40+i*230/(n-1):155,mx===mn?70:115-(v-mn)/(mx-mn)*65]);
-return `<svg viewBox="0 0 310 150" width="100%"><line x1="20" y1="120" x2="290" y2="120" stroke="#2A2A30"/><polyline points="${P.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#F97316" stroke-width="3" stroke-linejoin="round"/>${P.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="#F97316"/>${n<=4||i==0||i==n-1?`<text x="${p[0]}" y="${p[1]-11}" text-anchor="middle" font-size="12" font-weight="600" fill="#F5F5F5">${fmt(vals[i])}</text>`:''}<text x="${p[0]}" y="141" text-anchor="middle" font-size="12" fill="#A1A1AA">${labels[i]}</text>`).join('')}</svg>`}
+return `<svg viewBox="0 0 310 150" width="100%"><line x1="20" y1="120" x2="290" y2="120" stroke="#1C2030"/><polyline points="${P.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#4F6BFF" stroke-width="3" stroke-linejoin="round"/>${P.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="#4F6BFF"/>${n<=4||i==0||i==n-1?`<text x="${p[0]}" y="${p[1]-11}" text-anchor="middle" font-size="12" font-weight="600" fill="#F5F5F5">${fmt(vals[i])}</text>`:''}<text x="${p[0]}" y="141" text-anchor="middle" font-size="12" fill="#A1A1AA">${labels[i]}</text>`).join('')}</svg>`}
 
 function home(D){const key=i=>D.d+'-'+i,dn=D.sh.filter((_,i)=>S.done[key(i)]).length,pct=D.sh.length?Math.round(dn/D.sh.length*100):0;
 const ag={};D.sh.forEach(r=>ag[r[1]]=(ag[r[1]]||0)+r[2]);const top=Object.keys(ag).sort((a,b)=>ag[b]-ag[a]).slice(0,3);
+const tot=D.s+D.i,sp=tot>0?Math.max(0,Math.min(100,Math.round(sisa(D)/tot*100))):0;
 const tile=(ic,v,t)=>`<div class="tile"><span class="ic">${svg(IC[ic],18)}</span><div><div class="num" style="font-size:24px">${v}</div><div class="lbl">${t}</div></div></div>`;
-return dateChips()+`<div class="card"><div class="lbl">Sisa stok setelah Delivery Order</div><div class="num big">${fmt(sisa(D))}</div>
-<div style="border-top:1px solid var(--line)"><div class="row"><span class="lbl">Stok Today (07:00)</span><span class="num">${fmt(D.s)}</span></div><div class="row"><span class="lbl">+ IT Produksi</span><span class="num">${fmt(D.i)}</span></div><div class="row"><span class="lbl">− Delivery Order</span><span class="num" style="color:var(--red)">${fmt(D.o)}</span></div></div></div>
+return dateChips()+`<div class="sec"><b>Hari ini</b><span class="lbl">Geser untuk lihat lainnya</span></div>
+<div class="rail"><div class="hc blue"><div class="t">Sisa stok setelah Delivery Order</div><div class="num big">${fmt(sisa(D))}</div>
+<div class="row"><span class="lbl">Stok Today (07:00)</span><span class="num">${fmt(D.s)}</span></div><div class="row"><span class="lbl">+ IT Produksi</span><span class="num">${fmt(D.i)}</span></div><div class="row"><span class="lbl">− Delivery Order</span><span class="num">${fmt(D.o)}</span></div>
+<div class="pg"><span>Stok tersisa</span><span class="num">${sp}%</span></div><div class="tr"><i style="width:${sp}%"></i></div></div>
+<div class="hc"><div class="t" style="color:var(--mut)">Pengiriman Aktif</div><div class="num big">${dn}<span class="lbl" style="font-size:18px"> / ${D.sh.length}</span></div><div class="lbl">rute sudah terkirim</div>
+<div class="pg"><span>Progres</span><span class="num">${pct}%</span></div><div class="tr"><i style="width:${pct}%"></i></div><button class="btn" style="margin-top:16px" data-a="tab" data-v="ship">Lihat Detail</button></div></div>
 <div class="card"><div class="row" style="padding:0"><b>Status Armada</b><span class="lbl">Total <span class="num" style="color:var(--tx)">${arm(D)}</span></span></div><div class="tiles">${tile('pab',D.p,'Pabrik')}${tile('ship',D.e,'Ekspedisi')}${tile('glb',D.x,'Ekspor')}</div></div>
-<div class="card"><div class="row" style="padding:0"><b>Pengiriman Aktif</b><span class="lbl">${dn} dari ${D.sh.length} rute terkirim</span></div>
-<div style="height:6px;border-radius:3px;background:var(--line);margin:14px 0"><div style="height:6px;border-radius:3px;background:var(--or);width:${pct}%"></div></div>
-<button class="btn" data-a="tab" data-v="ship">Lihat Detail</button></div>
-<div class="card"><b>Tujuan terbanyak</b>${top.map(c=>`<div class="row"><span>${esc(c)}</span><span class="num">${ag[c]} unit</span></div>`).join('')||'<div class="lbl">Belum ada pengiriman.</div>'}</div>
+<div class="sec"><b>Tujuan terbanyak</b></div>${top.map(c=>`<div class="li"><div><div class="s">Tujuan</div><div class="n">${esc(c)}</div></div><span class="up num">${ag[c]} unit</span></div>`).join('')||'<div class="card lbl">Belum ada pengiriman.</div>'}
 <div class="lbl" style="text-align:center">Update: ${dm(D.d)}/${D.d.slice(2,4)}, ${esc(D.u||'-')}</div>`}
 
 function ship(D){const sh=D.sh.map((r,i)=>({r,k:D.d+'-'+i})).filter(o=>S.region==='Semua'||o.r[3]===S.region);
@@ -139,9 +170,9 @@ La.i===0?['w','Produksi berhenti di '+dm(La.d),'IT Produksi 0 pada hari terakhir
 if(tc)I.push(['i','Tujuan terpusat di '+tc,tc+' menerima '+ag[tc]+' dari '+tq+' unit pada '+dm(La.d)+' ('+Math.round(ag[tc]/tq*100)+'%).']);
 return h+I.map(([c,t,x])=>`<div class="card" style="padding:14px 16px"><span class="tag ${c}">${c=='w'?'Perlu perhatian':'Informasi'}</span><div style="font-weight:600;margin:8px 0 4px">${esc(t)}</div><div style="font-size:14px;color:#D4D4D8">${esc(x)}</div></div>`).join('')+`<div class="lbl" style="text-align:center">Dihitung dari ${n} hari data terakhir. Hasil ini perkiraan, bukan prediksi pasti.</div>`}
 
-const ttl={home:['Selamat datang','Ringkasan Harian'],ship:['','Pengiriman Ekspedisi'],hist:['Tujuh hari terakhir','Riwayat'],ana:['Tujuh hari terakhir','Trend & Analisa']};
+const ttl={home:['Selamat datang','Ringkasan harian'],ship:['','Pengiriman ekspedisi'],hist:['Tujuh hari terakhir','Riwayat'],ana:['Tujuh hari terakhir','Trend & analisa']};
 const arrow=svg(IC.ar,20);
-const welcome=()=>`<div class="login"><div class="ring"><img src="foto.jpg" alt="Foto profil"></div><div style="flex:1"></div><h1 style="font-size:34px;line-height:1.15">Monitoring<br><span style="color:var(--or)">Distribusi</span></h1><p class="lbl" style="font-size:15px;margin:10px 0 24px">Pantau stok, armada, dan pengiriman harian.</p><button class="lb" data-a="auth" data-v="login">Masuk ${arrow}</button><button class="lb p" data-a="auth" data-v="signup">Daftar ${arrow}</button><button class="lb" style="background:none;border:0;justify-content:center;color:var(--mut);font-weight:400;min-height:44px" data-a="enter">Lanjutkan sebagai tamu ›</button></div>`;
+const welcome=()=>`<div class="login wl"><svg class="mark" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="8" y="8" width="20" height="20"/><rect x="36" y="8" width="20" height="20" opacity=".5"/><rect x="8" y="36" width="20" height="20" opacity=".5"/><rect x="34" y="34" width="22" height="22" transform="rotate(45 45 45)" stroke="#8FA2FF"/><circle cx="18" cy="18" r="3" fill="currentColor" stroke="none"/></svg><div style="flex:1"></div><h1 class="hero">Pantau,<br>kelola &<br><b>stok</b><sup>°</sup><em>kirim</em></h1><p class="lbl" style="font-size:15px;margin:16px 0 28px;max-width:300px">Pantau stok, armada, dan pengiriman harian dalam satu tempat.</p><button class="go" data-a="auth" data-v="login">Masuk <span class="c">${arrow}</span></button><div style="display:flex;gap:10px"><button class="lb sm" data-a="auth" data-v="signup">Daftar</button><button class="lb sm" style="color:var(--mut);font-weight:400" data-a="enter">Masuk sebagai tamu</button></div></div>`;
 const authForm=m=>{const su=m==='signup';return `<div class="login"><button class="bk" data-a="auth" data-v="welcome">‹ Kembali</button><h1 style="font-size:32px;margin-top:24px">${su?'Buat akun':'Masuk'}</h1><p class="lbl" style="font-size:15px;margin:8px 0 0">${su?'Daftar untuk menyimpan data distribusi Anda.':'Masuk untuk melanjutkan ke ringkasan harian.'}</p>
 <form class="lf" data-f="${m}" novalidate>${su?'<label>Nama<input name="nm" autocomplete="name" placeholder="Nama lengkap"></label>':''}<label>Email<input name="em" type="email" autocomplete="email" autocapitalize="none" inputmode="email" placeholder="nama@perusahaan.com"></label><label>Kata sandi<span class="pw"><input name="pw" type="password" autocomplete="${su?'new-password':'current-password'}" placeholder="${su?'Minimal 6 karakter':'Kata sandi'}"><button type="button" data-a="eye">Lihat</button></span></label>${su?'<label>Ulangi kata sandi<input name="pw2" type="password" autocomplete="new-password" placeholder="Ketik ulang kata sandi"></label>':''}<div id="err" role="alert"></div><button class="lb p" type="submit" style="margin-top:0">${su?'Daftar':'Masuk'} ${arrow}</button></form>
 <div style="flex:1;min-height:16px"></div><button class="lb" style="background:none;border:0;justify-content:center;color:var(--mut);font-weight:400;min-height:44px" data-a="auth" data-v="${su?'login':'signup'}">${su?'Sudah punya akun? Masuk':'Belum punya akun? Daftar'}</button></div>`};
@@ -149,20 +180,19 @@ function draw(){const A=$('#app');
 if(!S.in){A.innerHTML=S.auth==='welcome'?welcome():authForm(S.auth);return}
 const y=($('.main')||{}).scrollTop||0,D=S.days[S.date],t=ttl[S.tab],sub=esc(S.tab==='ship'?dm(D.d)+'/'+D.d.slice(2,4)+' · '+D.sh.length+' rute':S.tab==='home'&&S.user?'Selamat datang, '+S.user:t[0]);
 const body=S.tab==='home'?home(D):S.tab==='ship'?ship(D):S.tab==='hist'?hist():ana();
-A.innerHTML=`<div class="hd"><div class="l"><button class="av" data-a="menu" aria-label="Menu data"><img src="foto.jpg" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 25%"></button><div><div class="eb">${sub}</div><h1>${t[1]}</h1></div></div></div><div class="main">${body}</div>
-${S.tab==='home'||S.tab==='ship'?'<button class="fab" data-a="form" aria-label="Tambah data harian">+</button>':''}
-<nav class="tabs">${[['home','Beranda'],['ship','Pengiriman'],['hist','Riwayat'],['ana','Analisa']].map(([k,n])=>`<button class="tab ${S.tab==k?'on':''}" data-a="tab" data-v="${k}">${svg(IC[k])}${n}</button>`).join('')}</nav>`;
+A.innerHTML=`<div class="hd"><div class="top"><button class="av" data-a="menu" aria-label="Menu data"><img src="foto.jpg" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 25%"></button><span class="pill">Update ${dm(D.d)}, ${esc(D.u||'-')}</span></div><div class="eb">${sub}</div><h1>${t[1]}</h1></div><div class="main">${body}</div>
+<div class="dock"><nav class="tabs">${[['home','Beranda'],['ship','Pengiriman'],['hist','Riwayat'],['ana','Analisa']].map(([k,n])=>`<button class="tab ${S.tab==k?'on':''}" data-a="tab" data-v="${k}">${svg(IC[k],20)}${n}</button>`).join('')}</nav>${S.tab==='home'||S.tab==='ship'?'<button class="fab" data-a="form" aria-label="Tambah data harian">+</button>':''}</div>`;
 $('.main').scrollTop=y}
 
 const sheet=h=>{$('#sheet').innerHTML=`<div class="sh">${h}</div>`;$('#sheet').classList.add('o')},closeS=()=>$('#sheet').classList.remove('o');
 const rowH=r=>`<div class="sr"><input class="x" placeholder="Ekspedisi" value="${esc(r[0]||'')}"><input placeholder="Kota" value="${esc(r[1]||'')}"><input type="number" min="1" placeholder="Qty" value="${r[2]||''}"><select>${REG.map(g=>`<option ${g==r[3]?'selected':''}>${g}</option>`).join('')}</select></div>`;
 const num=(id,l)=>`<label>${l}<input id="${id}" type="number" min="0" inputmode="numeric"></label>`;
-function form(){sheet(`<h2>Tambah data harian</h2><div class="f"><label>Tanggal<input id="fd" type="date" value="${new Date().toISOString().slice(0,10)}"></label><label>Jam update<input id="fu" type="time"></label>${num('fp','Armada pabrik')}${num('fe','Armada ekspedisi')}${num('fx','Armada ekspor')}<span></span>${num('fs','Stok today (07:00)')}${num('fi','IT Produksi')}${num('fo','Delivery Order')}</div><div class="cp">Sisa stok dihitung otomatis: stok + produksi − DO. Jika tanggal sudah ada, datanya diganti.</div><b>Pengiriman</b><div id="rows">${rowH([])}</div><button class="btn" style="margin:12px 0" data-a="addrow">+ Tambah rute</button><button class="btn fill" data-a="save">Simpan data</button><button class="btn" style="margin-top:8px;border-color:#33333A;color:var(--mut)" data-a="close">Batal</button>`)}
+function form(){sheet(`<h2>Tambah data harian</h2><div class="f"><label>Tanggal<input id="fd" type="date" value="${new Date().toISOString().slice(0,10)}"></label><label>Jam update<input id="fu" type="time"></label>${num('fp','Armada pabrik')}${num('fe','Armada ekspedisi')}${num('fx','Armada ekspor')}<span></span>${num('fs','Stok today (07:00)')}${num('fi','IT Produksi')}${num('fo','Delivery Order')}</div><div class="cp">Sisa stok dihitung otomatis: stok + produksi − DO. Jika tanggal sudah ada, datanya diganti.</div><b>Pengiriman</b><div id="rows">${rowH([])}</div><button class="btn" style="margin:12px 0" data-a="addrow">+ Tambah rute</button><button class="btn fill" data-a="save">Simpan data</button><button class="btn" style="margin-top:8px;border-color:#262B3D;color:var(--mut)" data-a="close">Batal</button>`)}
 function saveF(){const g=i=>+$('#'+i).value||0,d=$('#fd').value;if(!d){alert('Isi tanggal terlebih dahulu.');return}
 const sh=[...document.querySelectorAll('#rows .sr')].map(r=>{const i=r.querySelectorAll('input'),s=r.querySelector('select');return[i[0].value.trim(),i[1].value.trim(),+i[2].value||0,s.value]}).filter(r=>r[0]&&r[1]&&r[2]>0);
 const x={d,u:$('#fu').value,p:g('fp'),e:g('fe'),x:g('fx'),s:g('fs'),i:g('fi'),o:g('fo'),sh};
 S.days=S.days.filter(y=>y.d!==d).concat(x).sort((a,b)=>a.d<b.d?-1:1);S.date=S.days.findIndex(y=>y.d===d);S.tab='home';save();closeS();draw()}
-function menu(){sheet(`<h2>Data &amp; akun</h2><p class="cp">${S.user?'Masuk sebagai '+esc(S.user)+'. ':''}Data tersimpan di perangkat ini (${S.days.length} hari). Ekspor secara berkala sebagai cadangan.</p><button class="btn fill" data-a="export">Ekspor data (JSON)</button><button class="btn" style="margin-top:8px" data-a="import">Impor data</button><button class="btn" style="margin-top:8px" data-a="reset">Kembalikan data contoh</button><button class="btn" style="margin-top:8px" data-a="logout">Keluar</button><button class="btn" style="margin-top:8px;border-color:#33333A;color:var(--mut)" data-a="close">Tutup</button>`)}
+function menu(){sheet(`<h2>Data &amp; akun</h2><p class="cp">${S.user?'Masuk sebagai '+esc(S.user)+'. ':''}Data tersimpan di perangkat ini (${S.days.length} hari). Ekspor secara berkala sebagai cadangan.</p><button class="btn fill" data-a="export">Ekspor data (JSON)</button><button class="btn" style="margin-top:8px" data-a="import">Impor data</button><button class="btn" style="margin-top:8px" data-a="reset">Kembalikan data contoh</button><button class="btn" style="margin-top:8px" data-a="logout">Keluar</button><button class="btn" style="margin-top:8px;border-color:#262B3D;color:var(--mut)" data-a="close">Tutup</button>`)}
 const A={tab:v=>S.tab=v,date:v=>S.date=+v,region:v=>S.region=v,metric:v=>S.metric=v,done:v=>{S.done[v]=!S.done[v];save()},enter:()=>{localStorage.dm_in=1;localStorage.removeItem('dm_user');S.user='';S.in=true},auth:v=>S.auth=v,eye:(v,t)=>{const i=t.parentNode.querySelector('input');i.type=i.type==='password'?'text':'password';t.textContent=i.type==='password'?'Lihat':'Sembunyi'},logout:()=>{localStorage.removeItem('dm_in');localStorage.removeItem('dm_user');S.in=false;S.user='';S.auth='welcome';closeS()},close:closeS,form,menu,save:saveF,
 addrow:()=>$('#rows').insertAdjacentHTML('beforeend',rowH([])),
 export:()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S.days,null,1)],{type:'application/json'}));a.download='distribusi-'+new Date().toISOString().slice(0,10)+'.json';a.click()},
