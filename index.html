@@ -42,15 +42,21 @@ h1{margin:2px 0 0;font-size:30px;line-height:1.12;font-weight:600;letter-spacing
 .opt.on{color:#fff;font-weight:600;background:#141B45;border-radius:14px;border-color:transparent}
 .opt svg{color:var(--acs)}
 .ib{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mut)}
+.shi{flex:none;width:44px;height:44px;margin:-10px -10px 0 0;border-radius:50%;border:1px solid #ffffff4d;background:#ffffff22;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .rt{display:flex;gap:10px;align-items:center}
 .btn.red{border-color:var(--red);color:var(--red)}
 .g{background:#10301F;color:#6EE7A0}
 .pgr{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-shrink:0;padding-top:2px}
 .pgb{min-height:44px;padding:0 16px;border-radius:22px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-weight:600;font-size:14px}
 .pgb:disabled{opacity:.35;cursor:default}
-.stack{display:flex;flex-direction:column;gap:14px;flex:none}
-.hc{flex:none;width:100%;border-radius:26px;padding:20px;display:flex;flex-direction:column;background:linear-gradient(165deg,#12152A,#0C0E17);border:1px solid #232846}
-.hc.blue{background:linear-gradient(150deg,#4A66FF 0%,#2438C9 55%,#16208A 100%);border:0;color:#fff;box-shadow:0 14px 34px -14px #3E5BFF99}
+.stack{display:flex;gap:12px;flex:none;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;margin:0 -20px -18px;padding:0 20px 28px;scroll-padding-left:20px}
+.stack::-webkit-scrollbar{display:none}
+.dots{display:flex;justify-content:center;gap:6px;flex-shrink:0}
+.dots i{width:6px;height:6px;border-radius:3px;background:#2A2F42;transition:all .2s}
+.dots i.on{width:18px;background:var(--ac)}
+.r{background:#3A1417;color:#F87171}
+.hc{flex:0 0 88%;scroll-snap-align:start;scroll-snap-stop:always;border-radius:26px;padding:20px;display:flex;flex-direction:column;background:linear-gradient(165deg,#12152A,#0C0E17);border:1px solid #232846}
+.hc.blue{background:linear-gradient(150deg,#4A66FF 0%,#2438C9 55%,#16208A 100%);border:0;color:#fff;box-shadow:0 12px 28px -14px #3E5BFF99}
 .hc .t{font-size:13px;opacity:.8}
 .hc.blue .row .lbl{color:#ffffffbb}
 .hc .row{padding:5px 0}
@@ -71,7 +77,8 @@ h1{margin:2px 0 0;font-size:30px;line-height:1.12;font-weight:600;letter-spacing
 .tab{flex:1;min-width:0;min-height:54px;border-radius:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;font-weight:500;background:none;border:0;color:var(--mut);cursor:pointer;padding:0}
 .tab.on{color:#fff;font-weight:600;background:var(--tile)}
 .tab.on svg{color:var(--acs)}
-.fab{flex:none;width:56px;height:56px;border-radius:50%;border:0;background:var(--ac);color:#fff;font-size:30px;line-height:1;cursor:pointer;box-shadow:0 10px 26px -6px #3E5BFFcc}
+.fab{flex:none;width:56px;height:56px;border-radius:50%;border:0;padding:0;display:flex;align-items:center;justify-content:center;background:var(--ac);color:#fff;cursor:pointer;box-shadow:0 10px 26px -6px #3E5BFFcc}
+.fab svg{display:block;flex:none}
 .item{width:100%;min-height:48px;display:flex;justify-content:space-between;align-items:center;background:none;border:0;border-top:1px solid var(--line);cursor:pointer;text-align:left}
 .bx{width:22px;height:22px;border-radius:7px;border:2px solid #4B5163;display:flex;align-items:center;justify-content:center;margin-right:12px}
 .bx.ok{background:var(--ac);border-color:var(--ac)}
@@ -134,7 +141,7 @@ const SEED=[
 {d:'2026-10-02',u:'16:45',p:9,e:21,x:1,s:533167,i:30734,o:29099,sh:[['Bhakti Abadi Sejahtera, PT','Solo',1,J],['Bhakti Abadi Sejahtera, PT','Yogyakarta',1,J],['Crieta, PT','Batam',1,S_],['Eureka Logistics, PT','Cileungsi',2,J],['Eureka Logistics, PT','Purwokerto',2,J],['Mandiri Makmur Sempurna, PT','Bandung',6,J],['Natan Ekspress, CV','Lampung',1,S_],['Sarana Trans Sumatera, PT','Medan',5,S_],['TPIL Logistics, PT','Abepura',1,L],['Yudha Antar Nusa, PT','Pontianak',1,L],['Nusa Optimal Sejahtera, PT','Cambodia',1,E]]},
 {d:'2026-10-03',u:'16:07',p:0,e:17,x:0,s:517490,i:0,o:25551,sh:[['Crieta, PT','Palu',1,L],['Hoki Sejahtera Bersama, CV','Palembang',2,S_],['Hoki Sejahtera Bersama, CV','Pekanbaru',1,S_],['Mandiri Makmur Sempurna, PT','Bandung',4,J],['Moda Daya Trasindo, PT','Bandung',5,J],['Yudha Antar Nusa, PT','Kapuas',1,L],['Yudha Antar Nusa, PT','Makasar',1,L],['Yudha Antar Nusa, PT','Manado',1,L],['Yudha Antar Nusa, PT','Palopo',1,L]]}];
 const ld=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))||f}catch(e){return f}};
-const S={days:ld('dm_days',SEED),done:ld('dm_done',{}),tab:'home',lp:0,top:0,date:0,region:'Semua',metric:'o',in:!!(localStorage.dm_in&&localStorage.dm_user),auth:'welcome',user:localStorage.dm_user||''};
+const S={days:ld('dm_days',SEED),done:ld('dm_done',{}),tab:'home',lp:0,top:0,cap:+localStorage.dm_cap||400000,date:0,region:'Semua',metric:'o',in:!!(localStorage.dm_in&&localStorage.dm_user),auth:'welcome',user:localStorage.dm_user||''};
 S.date=S.days.length-1;
 const save=()=>{localStorage.dm_days=JSON.stringify(S.days);localStorage.dm_done=JSON.stringify(S.done)};
 const logA=(a,d,u,m)=>{try{const L=ld('dm_log',[]);L.unshift({t:Date.now(),u:u??S.user,m:m??(localStorage.dm_email||''),a,d:d||''});localStorage.dm_log=JSON.stringify(L.slice(0,1000))}catch(e){}};
@@ -158,16 +165,23 @@ function chart(vals,labels){const n=vals.length,mn=Math.min(...vals),mx=Math.max
 const P=vals.map((v,i)=>[n>1?40+i*230/(n-1):155,mx===mn?70:115-(v-mn)/(mx-mn)*65]);
 return `<svg viewBox="0 0 310 150" width="100%"><line x1="20" y1="120" x2="290" y2="120" stroke="#1C2030"/><polyline points="${P.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#4F6BFF" stroke-width="3" stroke-linejoin="round"/>${P.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="#4F6BFF"/>${n<=4||i==0||i==n-1?`<text x="${p[0]}" y="${p[1]-11}" text-anchor="middle" font-size="12" font-weight="600" fill="#F5F5F5">${fmt(vals[i])}</text>`:''}<text x="${p[0]}" y="141" text-anchor="middle" font-size="12" fill="#A1A1AA">${labels[i]}</text>`).join('')}</svg>`}
 
+function capCard(D){const cap=S.cap,sv=sisa(D),df=sv-cap,pr=Math.abs(df/cap*100).toFixed(1).replace('.',','),fill=Math.min(100,Math.max(0,sv/cap*100));
+const st=df>0?['r','▲ STOK OVER +'+pr+'%','Lebih '+fmt(df)+' ctn dari kapasitas']:df<0?['w','▼ STOK UNDER −'+pr+'%','Kurang '+fmt(-df)+' ctn dari kapasitas']:['g','● SESUAI KAPASITAS','Tepat 100%'];
+return `<div class="card"><div class="row" style="padding:0;align-items:center"><b>Kapasitas Whs FG</b><button class="up" style="border:0;cursor:pointer;min-height:36px;padding:0 14px" data-a="cap">Ubah</button></div>
+<div style="margin-top:12px"><span class="tag ${st[0]}" style="font-size:13px;padding:5px 12px">${st[1]}</span></div><div class="lbl" style="margin-top:6px">${st[2]}</div>
+<div class="tr" style="background:var(--line);margin-top:12px"><i style="width:${fill}%;background:${df>0?'var(--red)':'var(--ac)'}"></i></div>
+<div class="row" style="padding:12px 0 2px"><span class="lbl">Sisa stok (setelah DO)</span><span class="num">${fmt(sv)}</span></div><div class="row" style="padding:2px 0 0"><span class="lbl">Kapasitas</span><span class="num">${fmt(cap)} ctn</span></div></div>`}
+
 function home(D){const key=i=>D.d+'-'+i,dn=D.sh.filter((_,i)=>S.done[key(i)]).length,pct=D.sh.length?Math.round(dn/D.sh.length*100):0;
 const ag={};D.sh.forEach(r=>ag[r[1]]=(ag[r[1]]||0)+r[2]);const top=Object.keys(ag).sort((a,b)=>ag[b]-ag[a]).slice(0,3);
 const tot=D.s+D.i,sp=tot>0?Math.max(0,Math.min(100,Math.round(sisa(D)/tot*100))):0;
 const tile=(ic,v,t)=>`<div class="tile"><span class="ic">${svg(IC[ic],18)}</span><div><div class="num" style="font-size:24px">${v}</div><div class="lbl">${t}</div></div></div>`;
 return '<div class="pks">'+dateSel()+'</div>'+`<div class="sec"><b>Hari ini</b></div>
-<div class="stack"><div class="hc blue"><div class="t">Sisa stok setelah Delivery Order</div><div class="num big">${fmt(sisa(D))}</div>
+<div class="stack"><div class="hc blue"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div class="t">Sisa stok setelah Delivery Order</div><button class="shi" data-a="sharepdf" aria-label="Bagikan PDF" title="Bagikan PDF">${svg(IC.sh,20)}</button></div><div class="num big">${fmt(sisa(D))}</div>
 <div class="row"><span class="lbl">Stok Today (07:00)</span><span class="num">${fmt(D.s)}</span></div><div class="row"><span class="lbl">+ IT Produksi</span><span class="num">${fmt(D.i)}</span></div><div class="row"><span class="lbl">− Delivery Order</span><span class="num">${fmt(D.o)}</span></div>
 <div class="pg"><span>Stok tersisa</span><span class="num">${sp}%</span></div><div class="tr"><i style="width:${sp}%"></i></div></div>
 <div class="hc"><div class="t" style="color:var(--mut)">Pengiriman Aktif</div><div class="num big">${dn}<span class="lbl" style="font-size:18px"> / ${D.sh.length}</span></div><div class="lbl">rute sudah terkirim</div>
-<div class="pg"><span>Progres</span><span class="num">${pct}%</span></div><div class="tr"><i style="width:${pct}%"></i></div><button class="btn" style="margin-top:16px" data-a="tab" data-v="ship">Lihat Detail</button></div></div>
+<div class="pg"><span>Progres</span><span class="num">${pct}%</span></div><div class="tr"><i style="width:${pct}%"></i></div><button class="btn" style="margin-top:16px" data-a="tab" data-v="ship">Lihat Detail</button></div></div><div class="dots"><i class="on"></i><i></i></div>${capCard(D)}
 <div class="card"><div class="row" style="padding:0"><b>Status Armada</b><span class="lbl">Total <span class="num" style="color:var(--tx)">${arm(D)}</span></span></div><div class="tiles">${tile('pab',D.p,'Pabrik')}${tile('ship',D.e,'Ekspedisi')}${tile('glb',D.x,'Ekspor')}</div></div>
 <div class="sec"><b>Tujuan terbanyak</b></div>${top.map(c=>`<div class="li"><div><div class="s">Tujuan</div><div class="n">${esc(c)}</div></div><span class="up num">${ag[c]} unit</span></div>`).join('')||'<div class="card lbl">Belum ada pengiriman.</div>'}
 <div class="lbl" style="text-align:center">Update: ${dm(D.d)}/${D.d.slice(2,4)}, ${esc(D.u||'-')}</div>`}
@@ -215,8 +229,8 @@ function draw(){const A=$('#app');
 if(!S.in){A.innerHTML=S.auth==='welcome'?welcome():authForm(S.auth);return}
 const y=($('.main')||{}).scrollTop||0,D=S.days[S.date],t=ttl[S.tab],sub=esc(S.tab==='ship'?dm(D.d)+'/'+D.d.slice(2,4)+' · '+D.sh.length+' rute':S.tab==='home'&&S.user?'Selamat datang, '+S.user:t[0]);
 const ini=inits(),body=S.tab==='home'?home(D):S.tab==='ship'?ship(D):S.tab==='hist'?hist():S.tab==='act'?actv():ana();
-A.innerHTML=`<div class="hd"><div class="top"><button class="av" data-a="acct" aria-label="Akun"><span class="avi">${ini?esc(ini):svg(IC.us,20)}</span></button><div class="rt"><button class="shr" data-a="sharepdf">${svg(IC.sh,18)}Bagikan PDF</button><button class="ib" data-a="acct" aria-label="Keluar">${svg(IC.out,18)}</button></div></div><div class="eb">${sub}</div><h1>${t[1]}</h1></div><div class="main">${body}</div>
-<div class="dock"><nav class="tabs">${[['home','Beranda'],['ship','Pengiriman'],['hist','Riwayat'],['ana','Analisa'],['act','Aktivitas']].map(([k,n])=>`<button class="tab ${S.tab==k?'on':''}" data-a="tab" data-v="${k}">${svg(IC[k],20)}${n}</button>`).join('')}</nav>${S.tab==='home'||S.tab==='ship'?'<button class="fab" data-a="form" aria-label="Tambah data harian">+</button>':''}</div>`;
+A.innerHTML=`<div class="hd"><div class="top"><button class="av" data-a="acct" aria-label="Akun"><span class="avi">${ini?esc(ini):svg(IC.us,20)}</span></button><div class="rt"><button class="ib" data-a="acct" aria-label="Keluar">${svg(IC.out,18)}</button></div></div><div class="eb">${sub}</div><h1>${t[1]}</h1></div><div class="main">${body}</div>
+<div class="dock"><nav class="tabs">${[['home','Beranda'],['ship','Pengiriman'],['hist','Riwayat'],['ana','Analisa'],['act','Aktivitas']].map(([k,n])=>`<button class="tab ${S.tab==k?'on':''}" data-a="tab" data-v="${k}">${svg(IC[k],20)}${n}</button>`).join('')}</nav>${S.tab==='home'||S.tab==='ship'?'<button class="fab" data-a="form" aria-label="Tambah data harian"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>':''}</div>`;
 $('.main').scrollTop=S.top?0:y;S.top=0}
 
 const sheet=h=>{$('#sheet').innerHTML=`<div class="sh">${h}</div>`;$('#sheet').classList.add('o')},closeS=()=>$('#sheet').classList.remove('o');
@@ -230,11 +244,14 @@ const ex=S.days.some(y=>y.d===d);S.days=S.days.filter(y=>y.d!==d).concat(x).sort
 const A={tab:v=>{S.tab=v;if(v==='act'){S.lp=0;S.top=1}},lp:v=>{S.lp+=+v;S.top=1},date:v=>S.date=+v,region:v=>S.region=v,metric:v=>S.metric=v,done:v=>{S.done[v]=!S.done[v];save();const d=v.slice(0,10),r=((S.days.find(x=>x.d===d)||{}).sh||[])[+v.slice(11)];logA('done',(S.done[v]?'Menandai terkirim: ':'Membatalkan tanda terkirim: ')+(r?r[0]+' → '+r[1]:v)+' ('+dm(d)+'/'+d.slice(2,4)+')')},auth:v=>S.auth=v,eye:(v,t)=>{const i=t.parentNode.querySelector('input');i.type=i.type==='password'?'text':'password';t.textContent=i.type==='password'?'Lihat':'Sembunyi'},close:closeS,form,save:saveF,
 addrow:()=>$('#rows').insertAdjacentHTML('beforeend',rowH([])),
 sharepdf:()=>{const D=S.days[S.date];if(D)logA('pdf','Bagikan PDF tanggal '+dm(D.d)+'/'+D.d.slice(2,4));sharePdf()},
+cap:()=>sheet(`<h2>Kapasitas Whs FG</h2><div class="f" style="grid-template-columns:1fr"><label>Kapasitas (ctn)<input id="fc" type="number" min="1" inputmode="numeric" value="${S.cap}"></label></div><div class="cp">Stok over/under dihitung dari sisa stok setelah Delivery Order dibanding kapasitas ini.</div><button class="btn fill" data-a="capsave">Simpan</button><button class="btn" style="margin-top:8px;border-color:#262B3D;color:var(--mut)" data-a="close">Batal</button>`),
+capsave:()=>{const n=Math.round(+$('#fc').value);if(!(n>0)){alert('Isi kapasitas dengan angka lebih dari 0.');return}const o=S.cap;S.cap=n;localStorage.dm_cap=n;if(n!==o)logA('data','Mengubah kapasitas Whs FG: '+fmt(o)+' → '+fmt(n)+' ctn');closeS()},
 pick:k=>{const p=OPT[k]();sheet(`<h2>${p.t}</h2>`+p.o.map(([v,t])=>`<button class="opt ${v==p.cur?'on':''}" data-a="set" data-k="${k}" data-v="${esc(v)}"><span>${esc(t)}</span>${v==p.cur?CK:''}</button>`).join(''));const e=document.querySelector('.opt.on');if(e)e.scrollIntoView({block:'center'})},
 set:(v,t)=>{const k=t.dataset.k;if(k==='date')S.date=+v;else if(k==='region')S.region=v;else S.metric=v;closeS()},
 acct:()=>sheet(`<h2>Akun</h2><div class="card" style="display:flex;align-items:center;gap:14px"><div class="av" style="cursor:default"><span class="avi">${inits()?esc(inits()):svg(IC.us,20)}</span></div><div style="min-width:0"><div style="font-weight:600">${esc(S.user)}</div><div class="lbl">Masuk dengan akun</div></div></div><button class="btn red" style="margin-top:14px" data-a="logout">Keluar</button><button class="btn" style="margin-top:8px;border-color:#262B3D;color:var(--mut)" data-a="close">Batal</button>`),
 logout:()=>{logA('logout','Keluar dari aplikasi');closeS();localStorage.removeItem('dm_in');localStorage.removeItem('dm_user');localStorage.removeItem('dm_email');S.in=false;S.user='';S.auth='welcome';S.tab='home'},};
-document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a;if(!A[a])return;A[a](t.dataset.v,t);if(!['addrow','form','eye','sharepdf','pick','acct'].includes(a))draw()});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a;if(!A[a])return;A[a](t.dataset.v,t);if(!['addrow','form','eye','sharepdf','pick','acct','cap'].includes(a))draw()});
+document.addEventListener('scroll',e=>{const t=e.target;if(t.classList&&t.classList.contains('stack')){const d=t.nextElementSibling;if(d&&d.classList.contains('dots')){const k=t.scrollLeft>(t.scrollWidth-t.clientWidth)/2?1:0;[...d.children].forEach((x,i)=>x.classList.toggle('on',i===k))}}},true);
 $('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet')closeS()});
 /* ---- PDF laporan harian (tanpa library, ASCII/Helvetica) ---- */
 const PW=842,PH=595,FW={' ':278,',':278,'.':278,'/':278,':':278,';':278,'+':584,'-':333};
