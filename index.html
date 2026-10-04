@@ -13,7 +13,7 @@ button,input,select{font:inherit;color:inherit}
 #app{max-width:480px;height:100dvh;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
 .hd{padding:calc(env(safe-area-inset-top) + 16px) 20px 12px}
 .hd .top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
-.av{width:44px;height:44px;border-radius:50%;border:2px solid var(--ac);padding:2px;flex:none}
+.av{width:44px;height:44px;border-radius:50%;border:2px solid var(--ac);padding:2px;flex:none;background:none;cursor:pointer}
 .avi{width:100%;height:100%;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(150deg,#4A66FF,#16208A);color:#fff;font-weight:600;font-size:14px;letter-spacing:.02em}
 .shr{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid var(--ac);background:none;color:var(--tx);font-weight:600;font-size:14px;cursor:pointer}
 .shr svg{color:var(--acs)}
@@ -33,6 +33,21 @@ h1{margin:2px 0 0;font-size:30px;line-height:1.12;font-weight:600;letter-spacing
 .main .chips{padding:0}
 .chip{min-height:44px;padding:0 18px;border-radius:22px;border:1px solid var(--line);background:var(--card);white-space:nowrap;cursor:pointer;color:var(--mut)}
 .chip.on{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600}
+.pks{display:flex;gap:10px;flex-shrink:0}
+.sel{flex:1;min-width:0;min-height:56px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 16px;border-radius:20px;border:1px solid var(--line);background:var(--card);cursor:pointer;text-align:left}
+.sel .k{display:block;font-size:11px;color:var(--mut)}
+.sel .v{display:block;font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sel svg{flex:none;color:var(--acs)}
+.opt{width:100%;min-height:52px;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 14px;background:none;border:0;border-bottom:1px solid var(--line);cursor:pointer;text-align:left;font-size:16px;color:var(--mut)}
+.opt.on{color:#fff;font-weight:600;background:#141B45;border-radius:14px;border-color:transparent}
+.opt svg{color:var(--acs)}
+.ib{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mut)}
+.rt{display:flex;gap:10px;align-items:center}
+.btn.red{border-color:var(--red);color:var(--red)}
+.g{background:#10301F;color:#6EE7A0}
+.pgr{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-shrink:0;padding-top:2px}
+.pgb{min-height:44px;padding:0 16px;border-radius:22px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-weight:600;font-size:14px}
+.pgb:disabled{opacity:.35;cursor:default}
 .stack{display:flex;flex-direction:column;gap:14px;flex:none}
 .hc{flex:none;width:100%;border-radius:26px;padding:20px;display:flex;flex-direction:column;background:linear-gradient(165deg,#12152A,#0C0E17);border:1px solid #232846}
 .hc.blue{background:linear-gradient(150deg,#4A66FF 0%,#2438C9 55%,#16208A 100%);border:0;color:#fff;box-shadow:0 14px 34px -14px #3E5BFF99}
@@ -51,12 +66,12 @@ h1{margin:2px 0 0;font-size:30px;line-height:1.12;font-weight:600;letter-spacing
 .li .s{font-size:12px;color:var(--mut)}
 .li .n{font-weight:600;margin-top:2px}
 .up{font-size:12px;font-weight:600;padding:6px 12px;border-radius:14px;background:#3E5BFF26;color:var(--acs);white-space:nowrap}
-.dock{display:flex;align-items:center;gap:10px;padding:8px 16px calc(env(safe-area-inset-bottom) + 12px)}
-.tabs{flex:1;display:flex;background:#10121A;border:1px solid var(--line);border-radius:32px;padding:6px;min-width:0}
-.tab{flex:1;min-height:54px;border-radius:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:500;background:none;border:0;color:var(--mut);cursor:pointer}
+.dock{display:flex;align-items:center;gap:8px;padding:8px 12px calc(env(safe-area-inset-bottom) + 12px)}
+.tabs{flex:1;display:flex;background:#10121A;border:1px solid var(--line);border-radius:32px;padding:5px;min-width:0}
+.tab{flex:1;min-width:0;min-height:54px;border-radius:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;font-weight:500;background:none;border:0;color:var(--mut);cursor:pointer;padding:0}
 .tab.on{color:#fff;font-weight:600;background:var(--tile)}
 .tab.on svg{color:var(--acs)}
-.fab{flex:none;width:60px;height:60px;border-radius:50%;border:0;background:var(--ac);color:#fff;font-size:30px;line-height:1;cursor:pointer;box-shadow:0 10px 26px -6px #3E5BFFcc}
+.fab{flex:none;width:56px;height:56px;border-radius:50%;border:0;background:var(--ac);color:#fff;font-size:30px;line-height:1;cursor:pointer;box-shadow:0 10px 26px -6px #3E5BFFcc}
 .item{width:100%;min-height:48px;display:flex;justify-content:space-between;align-items:center;background:none;border:0;border-top:1px solid var(--line);cursor:pointer;text-align:left}
 .bx{width:22px;height:22px;border-radius:7px;border:2px solid #4B5163;display:flex;align-items:center;justify-content:center;margin-right:12px}
 .bx.ok{background:var(--ac);border-color:var(--ac)}
@@ -108,6 +123,7 @@ h1{margin:2px 0 0;font-size:30px;line-height:1.12;font-weight:600;letter-spacing
 .main,.login,.sh,.chips{scrollbar-width:none;-ms-overflow-style:none}
 .main::-webkit-scrollbar,.login::-webkit-scrollbar,.sh::-webkit-scrollbar,.chips::-webkit-scrollbar{display:none;width:0;height:0}
 :focus-visible{outline:2px solid var(--acs);outline-offset:2px}
+@media(max-width:380px){.tab{font-size:9px;letter-spacing:-.02em}.tabs{padding:4px}.fab{width:52px;height:52px}}
 </style></head><body>
 <div id="app"></div><div id="sheet"></div>
 <script>
@@ -118,19 +134,25 @@ const SEED=[
 {d:'2026-10-02',u:'16:45',p:9,e:21,x:1,s:533167,i:30734,o:29099,sh:[['Bhakti Abadi Sejahtera, PT','Solo',1,J],['Bhakti Abadi Sejahtera, PT','Yogyakarta',1,J],['Crieta, PT','Batam',1,S_],['Eureka Logistics, PT','Cileungsi',2,J],['Eureka Logistics, PT','Purwokerto',2,J],['Mandiri Makmur Sempurna, PT','Bandung',6,J],['Natan Ekspress, CV','Lampung',1,S_],['Sarana Trans Sumatera, PT','Medan',5,S_],['TPIL Logistics, PT','Abepura',1,L],['Yudha Antar Nusa, PT','Pontianak',1,L],['Nusa Optimal Sejahtera, PT','Cambodia',1,E]]},
 {d:'2026-10-03',u:'16:07',p:0,e:17,x:0,s:517490,i:0,o:25551,sh:[['Crieta, PT','Palu',1,L],['Hoki Sejahtera Bersama, CV','Palembang',2,S_],['Hoki Sejahtera Bersama, CV','Pekanbaru',1,S_],['Mandiri Makmur Sempurna, PT','Bandung',4,J],['Moda Daya Trasindo, PT','Bandung',5,J],['Yudha Antar Nusa, PT','Kapuas',1,L],['Yudha Antar Nusa, PT','Makasar',1,L],['Yudha Antar Nusa, PT','Manado',1,L],['Yudha Antar Nusa, PT','Palopo',1,L]]}];
 const ld=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))||f}catch(e){return f}};
-const S={days:ld('dm_days',SEED),done:ld('dm_done',{}),tab:'home',date:0,region:'Semua',metric:'o',in:!!localStorage.dm_in,auth:'welcome',user:localStorage.dm_user||''};
+const S={days:ld('dm_days',SEED),done:ld('dm_done',{}),tab:'home',lp:0,top:0,date:0,region:'Semua',metric:'o',in:!!(localStorage.dm_in&&localStorage.dm_user),auth:'welcome',user:localStorage.dm_user||''};
 S.date=S.days.length-1;
 const save=()=>{localStorage.dm_days=JSON.stringify(S.days);localStorage.dm_done=JSON.stringify(S.done)};
+const logA=(a,d,u,m)=>{try{const L=ld('dm_log',[]);L.unshift({t:Date.now(),u:u??S.user,m:m??(localStorage.dm_email||''),a,d:d||''});localStorage.dm_log=JSON.stringify(L.slice(0,1000))}catch(e){}};
 const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=n=>(+n||0).toLocaleString('id-ID'),dm=d=>d.slice(8)+'/'+d.slice(5,7);
 const sisa=x=>x.s+x.i-x.o,units=x=>x.sh.reduce((a,r)=>a+r[2],0),arm=x=>x.p+x.e+x.x;
 const val=(x,k)=>k==='sisa'?sisa(x):k==='unit'?units(x):x[k];
 const pc=(a,b)=>b?' ('+(a>=b?'+':'−')+Math.abs((a-b)/b*100).toFixed(1).replace('.',',')+'%)':'';
 const dl=(a,b)=>(a>=b?'▲ +':'▼ −')+fmt(Math.abs(a-b))+pc(a,b);
-const IC={home:'<path d="M3 11l9-8 9 8v10H3z"/>',ship:'<path d="M1 6h14v11H1zM15 10h4l4 3v4h-8"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/>',hist:'<path d="M4 20V10M12 20V4M20 20v-7"/>',ana:'<path d="M3 17l6-6 4 4 8-9M15 6h6v6"/>',pab:'<path d="M3 21h18M5 21V8l5 3V8l5 3V4h4v17"/>',glb:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',ar:'<path d="M5 12h14M13 6l6 6-6 6"/>',us:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',sh:'<path d="M12 15V3M7 8l5-5 5 5M5 13v7h14v-7"/>'};
+const IC={home:'<path d="M3 11l9-8 9 8v10H3z"/>',ship:'<path d="M1 6h14v11H1zM15 10h4l4 3v4h-8"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/>',hist:'<path d="M4 20V10M12 20V4M20 20v-7"/>',ana:'<path d="M3 17l6-6 4 4 8-9M15 6h6v6"/>',pab:'<path d="M3 21h18M5 21V8l5 3V8l5 3V4h4v17"/>',glb:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',ar:'<path d="M5 12h14M13 6l6 6-6 6"/>',out:'<path d="M9 21H5V3h4M16 17l5-5-5-5M21 12H9"/>',act:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',us:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',sh:'<path d="M12 15V3M7 8l5-5 5 5M5 13v7h14v-7"/>'};
 const svg=(p,s=22)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${p}</svg>`;
-const chips=(a,cur,act)=>`<div class="chips">${a.map(([v,t])=>`<button class="chip ${v==cur?'on':''}" data-a="${act}" data-v="${v}">${esc(t)}</button>`).join('')}</div>`;
-const dateChips=()=>chips(S.days.map((x,i)=>[i,dm(x.d)]),S.date,'date');
+const CH=svg('<path d="M6 9l6 6 6-6"/>',18),CK=svg('<path d="M4 12l6 6 10-12"/>',18);
+const sel=(l,v,act)=>`<button class="sel" data-a="pick" data-v="${act}"><span style="min-width:0"><span class="k">${l}</span><span class="v">${esc(v)}</span></span>${CH}</button>`;
+const dd=d=>['Min','Sen','Sel','Rab','Kam','Jum','Sab'][new Date(d+'T00:00:00').getDay()]+', '+dm(d)+'/'+d.slice(2,4);
+const dateSel=()=>sel('Tanggal',dm(S.days[S.date].d)+'/'+S.days[S.date].d.slice(2,4),'date');
+const MET=[['o','Delivery Order'],['sisa','Sisa stok'],['s','Stok 07:00'],['i','Produksi'],['unit','Unit kirim']];
+const OPT={date:()=>({t:'Pilih tanggal',cur:S.date,o:S.days.map((x,i)=>[i,dd(x.d)]).reverse()}),region:()=>({t:'Pilih wilayah',cur:S.region,o:['Semua',...REG].map(r=>[r,r])}),metric:()=>({t:'Pilih data',cur:S.metric,o:MET})};
+const inits=()=>(S.user||'').trim().split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
 
 function chart(vals,labels){const n=vals.length,mn=Math.min(...vals),mx=Math.max(...vals);
 const P=vals.map((v,i)=>[n>1?40+i*230/(n-1):155,mx===mn?70:115-(v-mn)/(mx-mn)*65]);
@@ -140,7 +162,7 @@ function home(D){const key=i=>D.d+'-'+i,dn=D.sh.filter((_,i)=>S.done[key(i)]).le
 const ag={};D.sh.forEach(r=>ag[r[1]]=(ag[r[1]]||0)+r[2]);const top=Object.keys(ag).sort((a,b)=>ag[b]-ag[a]).slice(0,3);
 const tot=D.s+D.i,sp=tot>0?Math.max(0,Math.min(100,Math.round(sisa(D)/tot*100))):0;
 const tile=(ic,v,t)=>`<div class="tile"><span class="ic">${svg(IC[ic],18)}</span><div><div class="num" style="font-size:24px">${v}</div><div class="lbl">${t}</div></div></div>`;
-return dateChips()+`<div class="sec"><b>Hari ini</b></div>
+return '<div class="pks">'+dateSel()+'</div>'+`<div class="sec"><b>Hari ini</b></div>
 <div class="stack"><div class="hc blue"><div class="t">Sisa stok setelah Delivery Order</div><div class="num big">${fmt(sisa(D))}</div>
 <div class="row"><span class="lbl">Stok Today (07:00)</span><span class="num">${fmt(D.s)}</span></div><div class="row"><span class="lbl">+ IT Produksi</span><span class="num">${fmt(D.i)}</span></div><div class="row"><span class="lbl">− Delivery Order</span><span class="num">${fmt(D.o)}</span></div>
 <div class="pg"><span>Stok tersisa</span><span class="num">${sp}%</span></div><div class="tr"><i style="width:${sp}%"></i></div></div>
@@ -152,7 +174,7 @@ return dateChips()+`<div class="sec"><b>Hari ini</b></div>
 
 function ship(D){const sh=D.sh.map((r,i)=>({r,k:D.d+'-'+i})).filter(o=>S.region==='Semua'||o.r[3]===S.region);
 const names=[...new Set(sh.map(o=>o.r[0]))],dn=sh.filter(o=>S.done[o.k]).length;
-return dateChips()+chips(['Semua',...REG].map(r=>[r,r]),S.region,'region')+`<div class="lbl">Ketuk rute untuk menandai terkirim · ${dn} dari ${sh.length} rute</div>`+
+return '<div class="pks">'+dateSel()+sel('Wilayah',S.region,'region')+'</div>'+`<div class="lbl">Ketuk rute untuk menandai terkirim · ${dn} dari ${sh.length} rute</div>`+
 names.map(n=>`<div class="card" style="padding:6px 16px 4px"><b style="display:block;padding:10px 0 6px;font-size:14px">${esc(n)}</b>${sh.filter(o=>o.r[0]===n).map(o=>{const ok=S.done[o.k];return `<button class="item" data-a="done" data-v="${o.k}"><span style="display:flex;align-items:center"><span class="bx ${ok?'ok':''}">${ok?svg('<path d="M4 12l6 6 10-12"/>',14).replace('currentColor','#fff'):''}</span><span class="${ok?'done':''}">${esc(o.r[1])}</span></span><span class="num">${o.r[2]}</span></button>`}).join('')}</div>`).join('')+
 (sh.length?'':'<div class="card lbl" style="text-align:center">Tidak ada pengiriman di wilayah ini.</div>')+`<div class="tot"><span>Total unit ditampilkan</span><span class="num">${sh.reduce((a,o)=>a+o.r[2],0)}</span></div>`}
 
@@ -161,9 +183,9 @@ return `<div class="card"><b>Delivery Order · ketuk batang</b><div class="bars"
 <div class="card"><div class="td h"><span>Tanggal</span><span>Armada</span><span>Unit kirim</span><span>Sisa stok</span></div>${L7.map((x,i)=>`<div class="td ${i+off==S.date?'on':''}"><span>${dm(x.d)}</span><span class="num">${arm(x)}</span><span class="num">${units(x)}</span><span class="num">${fmt(sisa(x))}</span></div>`).join('')}</div>
 <div class="card"><b>Produksi (IT Produksi)</b>${L7.map(x=>`<div class="row"><span class="lbl">${dm(x.d)}</span><span class="num">${fmt(x.i)}</span></div>`).join('')}</div>`}
 
-function ana(){const L7=S.days.slice(-7),M=[['o','Delivery Order'],['sisa','Sisa stok'],['s','Stok 07:00'],['i','Produksi'],['unit','Unit kirim']];
+function ana(){const L7=S.days.slice(-7),M=MET;
 const v=L7.map(x=>val(x,S.metric)),n=v.length,F=L7[0],La=L7[n-1];
-let h=chips(M,S.metric,'metric');
+let h='<div class="pks">'+sel('Data',M.find(m=>m[0]==S.metric)[1],'metric')+'</div>';
 if(n<2)return h+'<div class="card lbl">Tambahkan data minimal 2 hari untuk melihat trend dan analisa.</div>';
 const up=v.every((x,i)=>!i||x>=v[i-1]),dw=v.every((x,i)=>!i||x<=v[i-1]);
 h+=`<div class="card"><div class="row" style="padding:0"><b>${M.find(m=>m[0]==S.metric)[1]}</b><span class="lbl">${up&&v[n-1]>v[0]?'Tren naik':dw&&v[n-1]<v[0]?'Tren turun':'Fluktuatif'}</span></div>${chart(v,L7.map(x=>dm(x.d)))}</div>
@@ -176,19 +198,26 @@ La.i===0?['w','Produksi berhenti di '+dm(La.d),'IT Produksi 0 pada hari terakhir
 if(tc)I.push(['i','Tujuan terpusat di '+tc,tc+' menerima '+ag[tc]+' dari '+tq+' unit pada '+dm(La.d)+' ('+Math.round(ag[tc]/tq*100)+'%).']);
 return h+I.map(([c,t,x])=>`<div class="card" style="padding:14px 16px"><span class="tag ${c}">${c=='w'?'Perlu perhatian':'Informasi'}</span><div style="font-weight:600;margin:8px 0 4px">${esc(t)}</div><div style="font-size:14px;color:#D4D4D8">${esc(x)}</div></div>`).join('')+`<div class="lbl" style="text-align:center">Dihitung dari ${n} hari data terakhir. Hasil ini perkiraan, bukan prediksi pasti.</div>`}
 
-const ttl={home:['Selamat datang','Ringkasan harian'],ship:['','Pengiriman ekspedisi'],hist:['Tujuh hari terakhir','Riwayat'],ana:['Tujuh hari terakhir','Trend & analisa']};
+const LG={login:['Masuk','i'],signup:['Daftar','i'],logout:['Keluar','i'],fail:['Gagal masuk','w'],data:['Data harian','g'],done:['Pengiriman','g'],pdf:['Bagikan PDF','g']};
+const PG=10,p2=n=>String(n).padStart(2,'0'),ft=t=>{const x=new Date(t);return p2(x.getDate())+'/'+p2(x.getMonth()+1)+'/'+String(x.getFullYear()).slice(2)+' '+p2(x.getHours())+':'+p2(x.getMinutes())};
+function actv(){const L=ld('dm_log',[]),n=L.length,pages=Math.max(1,Math.ceil(n/PG));S.lp=Math.min(Math.max(S.lp,0),pages-1);
+const sl=L.slice(S.lp*PG,S.lp*PG+PG);
+return `<div class="lbl">${n} aktivitas tercatat · hanya dari perangkat ini</div>`+(n?sl.map(e=>{const g=LG[e.a]||[e.a,'i'];return `<div class="card" style="padding:14px 16px"><div class="row" style="padding:0"><span class="tag ${g[1]}">${esc(g[0])}</span><span class="lbl">${ft(e.t)}</span></div><div style="font-weight:600;margin:8px 0 2px">${esc(e.d||g[0])}</div><div class="lbl">${esc(e.u||'Tidak dikenal')}${e.m?' · '+esc(e.m):''}</div></div>`}).join(''):'<div class="card lbl" style="text-align:center">Belum ada aktivitas tercatat.</div>')+
+`<div class="pgr"><button class="pgb" data-a="lp" data-v="-1" ${S.lp<=0?'disabled':''}>‹ Sebelumnya</button><span class="lbl">Hal ${S.lp+1} dari ${pages}</span><button class="pgb" data-a="lp" data-v="1" ${S.lp>=pages-1?'disabled':''}>Berikutnya ›</button></div>`}
+
+const ttl={home:['Selamat datang','Ringkasan harian'],ship:['','Pengiriman ekspedisi'],hist:['Tujuh hari terakhir','Riwayat'],ana:['Tujuh hari terakhir','Trend & analisa'],act:['Siapa melakukan apa','Log aktivitas']};
 const arrow=svg(IC.ar,20);
-const welcome=()=>`<div class="login wl"><svg class="mark" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="8" y="8" width="20" height="20"/><rect x="36" y="8" width="20" height="20" opacity=".5"/><rect x="8" y="36" width="20" height="20" opacity=".5"/><rect x="34" y="34" width="22" height="22" transform="rotate(45 45 45)" stroke="#8FA2FF"/><circle cx="18" cy="18" r="3" fill="currentColor" stroke="none"/></svg><div style="flex:1"></div><h1 class="hero">Pantau,<br>kelola &<br><b>stok</b><sup>°</sup><em>kirim</em></h1><p class="lbl" style="font-size:15px;margin:16px 0 28px;max-width:300px">Pantau stok, armada, dan pengiriman harian dalam satu tempat.</p><button class="go" data-a="auth" data-v="login">Masuk <span class="c">${arrow}</span></button><div style="display:flex;gap:10px"><button class="lb sm" data-a="auth" data-v="signup">Daftar</button><button class="lb sm" style="color:var(--mut);font-weight:400" data-a="enter">Masuk sebagai tamu</button></div></div>`;
+const welcome=()=>`<div class="login wl"><svg class="mark" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="8" y="8" width="20" height="20"/><rect x="36" y="8" width="20" height="20" opacity=".5"/><rect x="8" y="36" width="20" height="20" opacity=".5"/><rect x="34" y="34" width="22" height="22" transform="rotate(45 45 45)" stroke="#8FA2FF"/><circle cx="18" cy="18" r="3" fill="currentColor" stroke="none"/></svg><div style="flex:1"></div><h1 class="hero">Pantau,<br>kelola &<br><b>stok</b><sup>°</sup><em>kirim</em></h1><p class="lbl" style="font-size:15px;margin:16px 0 28px;max-width:300px">Pantau stok, armada, dan pengiriman harian dalam satu tempat.</p><button class="go" data-a="auth" data-v="login">Masuk <span class="c">${arrow}</span></button><button class="lb sm" data-a="auth" data-v="signup">Daftar</button></div>`;
 const authForm=m=>{const su=m==='signup';return `<div class="login"><button class="bk" data-a="auth" data-v="welcome">‹ Kembali</button><h1 style="font-size:32px;margin-top:24px">${su?'Buat akun':'Masuk'}</h1><p class="lbl" style="font-size:15px;margin:8px 0 0">${su?'Daftar untuk menyimpan data distribusi Anda.':'Masuk untuk melanjutkan ke ringkasan harian.'}</p>
 <form class="lf" data-f="${m}" novalidate>${su?'<label>Nama<input name="nm" autocomplete="name" placeholder="Nama lengkap"></label>':''}<label>Email<input name="em" type="email" autocomplete="email" autocapitalize="none" inputmode="email" placeholder="nama@perusahaan.com"></label><label>Kata sandi<span class="pw"><input name="pw" type="password" autocomplete="${su?'new-password':'current-password'}" placeholder="${su?'Minimal 6 karakter':'Kata sandi'}"><button type="button" data-a="eye">Lihat</button></span></label>${su?'<label>Ulangi kata sandi<input name="pw2" type="password" autocomplete="new-password" placeholder="Ketik ulang kata sandi"></label>':''}<div id="err" role="alert"></div><button class="lb p" type="submit" style="margin-top:0">${su?'Daftar':'Masuk'} ${arrow}</button></form>
 <div style="flex:1;min-height:16px"></div><button class="lb" style="background:none;border:0;justify-content:center;color:var(--mut);font-weight:400;min-height:44px" data-a="auth" data-v="${su?'login':'signup'}">${su?'Sudah punya akun? Masuk':'Belum punya akun? Daftar'}</button></div>`};
 function draw(){const A=$('#app');
 if(!S.in){A.innerHTML=S.auth==='welcome'?welcome():authForm(S.auth);return}
 const y=($('.main')||{}).scrollTop||0,D=S.days[S.date],t=ttl[S.tab],sub=esc(S.tab==='ship'?dm(D.d)+'/'+D.d.slice(2,4)+' · '+D.sh.length+' rute':S.tab==='home'&&S.user?'Selamat datang, '+S.user:t[0]);
-const ini=(S.user||'').trim().split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase(),body=S.tab==='home'?home(D):S.tab==='ship'?ship(D):S.tab==='hist'?hist():ana();
-A.innerHTML=`<div class="hd"><div class="top"><div class="av" role="img" aria-label="Avatar"><span class="avi">${ini?esc(ini):svg(IC.us,20)}</span></div><button class="shr" data-a="sharepdf">${svg(IC.sh,18)}Bagikan PDF</button></div><div class="eb">${sub}</div><h1>${t[1]}</h1></div><div class="main">${body}</div>
-<div class="dock"><nav class="tabs">${[['home','Beranda'],['ship','Pengiriman'],['hist','Riwayat'],['ana','Analisa']].map(([k,n])=>`<button class="tab ${S.tab==k?'on':''}" data-a="tab" data-v="${k}">${svg(IC[k],20)}${n}</button>`).join('')}</nav>${S.tab==='home'||S.tab==='ship'?'<button class="fab" data-a="form" aria-label="Tambah data harian">+</button>':''}</div>`;
-$('.main').scrollTop=y}
+const ini=inits(),body=S.tab==='home'?home(D):S.tab==='ship'?ship(D):S.tab==='hist'?hist():S.tab==='act'?actv():ana();
+A.innerHTML=`<div class="hd"><div class="top"><button class="av" data-a="acct" aria-label="Akun"><span class="avi">${ini?esc(ini):svg(IC.us,20)}</span></button><div class="rt"><button class="shr" data-a="sharepdf">${svg(IC.sh,18)}Bagikan PDF</button><button class="ib" data-a="acct" aria-label="Keluar">${svg(IC.out,18)}</button></div></div><div class="eb">${sub}</div><h1>${t[1]}</h1></div><div class="main">${body}</div>
+<div class="dock"><nav class="tabs">${[['home','Beranda'],['ship','Pengiriman'],['hist','Riwayat'],['ana','Analisa'],['act','Aktivitas']].map(([k,n])=>`<button class="tab ${S.tab==k?'on':''}" data-a="tab" data-v="${k}">${svg(IC[k],20)}${n}</button>`).join('')}</nav>${S.tab==='home'||S.tab==='ship'?'<button class="fab" data-a="form" aria-label="Tambah data harian">+</button>':''}</div>`;
+$('.main').scrollTop=S.top?0:y;S.top=0}
 
 const sheet=h=>{$('#sheet').innerHTML=`<div class="sh">${h}</div>`;$('#sheet').classList.add('o')},closeS=()=>$('#sheet').classList.remove('o');
 const rowH=r=>`<div class="sr"><input class="x" placeholder="Ekspedisi" value="${esc(r[0]||'')}"><input placeholder="Kota" value="${esc(r[1]||'')}"><input type="number" min="1" placeholder="Qty" value="${r[2]||''}"><select>${REG.map(g=>`<option ${g==r[3]?'selected':''}>${g}</option>`).join('')}</select></div>`;
@@ -197,11 +226,15 @@ function form(){sheet(`<h2>Tambah data harian</h2><div class="f"><label>Tanggal<
 function saveF(){const g=i=>+$('#'+i).value||0,d=$('#fd').value;if(!d){alert('Isi tanggal terlebih dahulu.');return}
 const sh=[...document.querySelectorAll('#rows .sr')].map(r=>{const i=r.querySelectorAll('input'),s=r.querySelector('select');return[i[0].value.trim(),i[1].value.trim(),+i[2].value||0,s.value]}).filter(r=>r[0]&&r[1]&&r[2]>0);
 const x={d,u:$('#fu').value,p:g('fp'),e:g('fe'),x:g('fx'),s:g('fs'),i:g('fi'),o:g('fo'),sh};
-S.days=S.days.filter(y=>y.d!==d).concat(x).sort((a,b)=>a.d<b.d?-1:1);S.date=S.days.findIndex(y=>y.d===d);S.tab='home';save();closeS();draw()}
-const A={tab:v=>S.tab=v,date:v=>S.date=+v,region:v=>S.region=v,metric:v=>S.metric=v,done:v=>{S.done[v]=!S.done[v];save()},enter:()=>{localStorage.dm_in=1;localStorage.removeItem('dm_user');S.user='';S.in=true},auth:v=>S.auth=v,eye:(v,t)=>{const i=t.parentNode.querySelector('input');i.type=i.type==='password'?'text':'password';t.textContent=i.type==='password'?'Lihat':'Sembunyi'},close:closeS,form,save:saveF,
+const ex=S.days.some(y=>y.d===d);S.days=S.days.filter(y=>y.d!==d).concat(x).sort((a,b)=>a.d<b.d?-1:1);logA('data',(ex?'Memperbarui':'Menambah')+' data harian '+dm(d)+'/'+d.slice(2,4)+' · DO '+fmt(x.o)+' · '+sh.length+' rute');S.date=S.days.findIndex(y=>y.d===d);S.tab='home';save();closeS();draw()}
+const A={tab:v=>{S.tab=v;if(v==='act'){S.lp=0;S.top=1}},lp:v=>{S.lp+=+v;S.top=1},date:v=>S.date=+v,region:v=>S.region=v,metric:v=>S.metric=v,done:v=>{S.done[v]=!S.done[v];save();const d=v.slice(0,10),r=((S.days.find(x=>x.d===d)||{}).sh||[])[+v.slice(11)];logA('done',(S.done[v]?'Menandai terkirim: ':'Membatalkan tanda terkirim: ')+(r?r[0]+' → '+r[1]:v)+' ('+dm(d)+'/'+d.slice(2,4)+')')},auth:v=>S.auth=v,eye:(v,t)=>{const i=t.parentNode.querySelector('input');i.type=i.type==='password'?'text':'password';t.textContent=i.type==='password'?'Lihat':'Sembunyi'},close:closeS,form,save:saveF,
 addrow:()=>$('#rows').insertAdjacentHTML('beforeend',rowH([])),
-sharepdf:()=>sharePdf(),};
-document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a;if(!A[a])return;A[a](t.dataset.v,t);if(!['addrow','form','eye','sharepdf'].includes(a))draw()});
+sharepdf:()=>{const D=S.days[S.date];if(D)logA('pdf','Bagikan PDF tanggal '+dm(D.d)+'/'+D.d.slice(2,4));sharePdf()},
+pick:k=>{const p=OPT[k]();sheet(`<h2>${p.t}</h2>`+p.o.map(([v,t])=>`<button class="opt ${v==p.cur?'on':''}" data-a="set" data-k="${k}" data-v="${esc(v)}"><span>${esc(t)}</span>${v==p.cur?CK:''}</button>`).join(''));const e=document.querySelector('.opt.on');if(e)e.scrollIntoView({block:'center'})},
+set:(v,t)=>{const k=t.dataset.k;if(k==='date')S.date=+v;else if(k==='region')S.region=v;else S.metric=v;closeS()},
+acct:()=>sheet(`<h2>Akun</h2><div class="card" style="display:flex;align-items:center;gap:14px"><div class="av" style="cursor:default"><span class="avi">${inits()?esc(inits()):svg(IC.us,20)}</span></div><div style="min-width:0"><div style="font-weight:600">${esc(S.user)}</div><div class="lbl">Masuk dengan akun</div></div></div><button class="btn red" style="margin-top:14px" data-a="logout">Keluar</button><button class="btn" style="margin-top:8px;border-color:#262B3D;color:var(--mut)" data-a="close">Batal</button>`),
+logout:()=>{logA('logout','Keluar dari aplikasi');closeS();localStorage.removeItem('dm_in');localStorage.removeItem('dm_user');localStorage.removeItem('dm_email');S.in=false;S.user='';S.auth='welcome';S.tab='home'},};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a;if(!A[a])return;A[a](t.dataset.v,t);if(!['addrow','form','eye','sharepdf','pick','acct'].includes(a))draw()});
 $('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet')closeS()});
 /* ---- PDF laporan harian (tanpa library, ASCII/Helvetica) ---- */
 const PW=842,PH=595,FW={' ':278,',':278,'.':278,'/':278,':':278,';':278,'+':584,'-':333};
@@ -254,7 +287,7 @@ if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.s
 const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=nm;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
 const enc=new TextEncoder();
 async function hp(pw,salt){if(!(window.crypto&&crypto.subtle))return btoa(salt+pw);const k=await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveBits']),b=await crypto.subtle.deriveBits({name:'PBKDF2',salt:enc.encode(salt),iterations:120000,hash:'SHA-256'},k,256);return btoa(String.fromCharCode(...new Uint8Array(b)))}
-const okIn=n=>{localStorage.dm_in=1;localStorage.dm_user=n;S.user=n;S.in=true;draw()};
+const okIn=(n,em,ty)=>{localStorage.dm_in=1;localStorage.dm_user=n;localStorage.dm_email=em;S.user=n;S.in=true;S.tab='home';logA(ty,ty==='signup'?'Membuat akun baru':'Masuk ke aplikasi',n,em);draw()};
 document.addEventListener('submit',async e=>{e.preventDefault();const f=e.target,m=f.dataset.f;if(!m)return;
 const em=f.em.value.trim().toLowerCase(),pw=f.pw.value,er=$('#err'),acc=ld('dm_acc',{});
 if(!/^\S+@\S+\.\S+$/.test(em)){er.textContent='Format email belum benar.';return}
@@ -265,8 +298,8 @@ if(pw.length<6){er.textContent='Kata sandi minimal 6 karakter.';return}
 if(pw!==f.pw2.value){er.textContent='Konfirmasi kata sandi tidak sama.';return}
 if(acc[em]){er.textContent='Email ini sudah terdaftar. Silakan masuk.';return}
 const salt=(crypto.randomUUID?crypto.randomUUID():String(Math.random()));
-acc[em]={n:nm,s:salt,h:await hp(pw,salt)};localStorage.dm_acc=JSON.stringify(acc);okIn(nm)}
-else{const a=acc[em];if(!a||a.h!==await hp(pw,a.s)){er.textContent='Email atau kata sandi salah.';return}okIn(a.n)}});
+acc[em]={n:nm,s:salt,h:await hp(pw,salt)};localStorage.dm_acc=JSON.stringify(acc);okIn(nm,em,'signup')}
+else{const a=acc[em];if(!a||a.h!==await hp(pw,a.s)){logA('fail','Percobaan masuk gagal','',em);er.textContent='Email atau kata sandi salah.';return}okIn(a.n,em,'login')}});
 draw();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script></body></html>

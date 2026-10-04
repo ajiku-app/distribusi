@@ -17,6 +17,7 @@ Aplikasi web statis tanpa build. Bisa dipasang di HP lewat "Tambahkan ke layar u
 ## Catatan
 - Data dan akun disimpan di browser perangkat (localStorage). Tidak ada cadangan otomatis; jika data browser dihapus, data hilang.
 - Login hanya untuk perangkat ini; belum ada server.
+- Log aktivitas (menu Aktivitas) juga tersimpan di browser perangkat ini, maksimal 1.000 catatan terbaru.
 - Paket Vercel Hobby hanya untuk pemakaian pribadi nonkomersial.
 
 ## Lisensi
