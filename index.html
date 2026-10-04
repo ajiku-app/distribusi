@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0B0B0D">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<title>Monitoring Distribusi</title>
+<style>
+:root{--bg:#0B0B0D;--card:#17171B;--tile:#222228;--line:#26262C;--tx:#F5F5F5;--mut:#A1A1AA;--or:#F97316;--red:#F87171}
+*{box-sizing:border-box}
+body{margin:0;background:#000;color:var(--tx);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,select{font:inherit;color:inherit}
+#app{max-width:480px;height:100dvh;margin:0 auto;background:var(--bg);display:flex;flex-direction:column}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top) + 16px) 20px 10px}
+.hd .l{display:flex;align-items:center;gap:12px;min-width:0}
+.av{width:48px;height:48px;border-radius:50%;object-fit:cover;object-position:50% 25%;border:2px solid var(--or);padding:0;background:none;cursor:pointer}
+.eb{font-size:13px;font-weight:500;color:var(--or)}
+h1{margin:2px 0 0;font-size:24px;font-weight:600}
+.main{flex:1;overflow-y:auto;padding:0 20px 16px;display:flex;flex-direction:column;gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.lbl{font-size:13px;color:var(--mut)}
+.num{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-weight:600}
+.big{font-size:38px;margin:4px 0 8px}
+.row{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0}
+.chips{display:flex;gap:8px;overflow-x:auto;flex-shrink:0;padding:0 20px 12px}
+.main .chips{padding:0}
+.chip{min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33333A;background:var(--card);white-space:nowrap;cursor:pointer}
+.chip.on{background:var(--or);border-color:var(--or);color:#0B0B0D;font-weight:600}
+.tiles{display:flex;gap:8px;margin-top:12px}
+.tile{flex:1;background:var(--tile);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.ic{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--or);color:var(--or);display:flex;align-items:center;justify-content:center}
+.tabs{display:flex;background:#121215;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.tab{flex:1;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:500;background:none;border:0;color:var(--mut);cursor:pointer}
+.tab.on{color:var(--or);font-weight:600}
+.item{width:100%;min-height:48px;display:flex;justify-content:space-between;align-items:center;background:none;border:0;border-top:1px solid var(--line);cursor:pointer;text-align:left}
+.bx{width:22px;height:22px;border-radius:6px;border:2px solid #6B7280;display:flex;align-items:center;justify-content:center;margin-right:12px}
+.bx.ok{background:#15803D;border-color:#15803D}
+.done{color:var(--mut);text-decoration:line-through}
+.btn{min-height:48px;width:100%;border-radius:24px;border:1.5px solid var(--or);background:none;color:var(--or);font-weight:600;cursor:pointer}
+.btn.fill{background:var(--or);color:#0B0B0D}
+.tot{display:flex;justify-content:space-between;background:var(--or);color:#0B0B0D;border-radius:14px;padding:14px 16px;font-weight:500}
+.bars{display:flex;gap:10px;align-items:flex-end;height:160px;margin-top:10px}
+.bar{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;font-size:11px;background:none;border:0;cursor:pointer;padding:0}
+.bar i{display:block;width:100%;border-radius:6px 6px 0 0;background:#3F3F46}
+.bar.on i{background:var(--or)}
+.td{display:flex;font-size:14px;padding:9px 0;border-top:1px solid var(--line)}
+.td span{flex:1;text-align:right}.td span:first-child{text-align:left}
+.td.h{border:0;color:var(--mut);font-size:12px}.td.on{background:#2A1A10;margin:0 -8px;padding:9px 8px}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:3px 10px;border-radius:10px}
+.w{background:#3A1F10;color:#FDBA74}.i{background:#1B2A3D;color:#93C5FD}
+.fab{position:fixed;right:max(20px,calc(50% - 220px));bottom:calc(84px + env(safe-area-inset-bottom));width:56px;height:56px;border-radius:50%;border:0;background:var(--or);color:#0B0B0D;font-size:30px;line-height:1;cursor:pointer;box-shadow:0 4px 16px #0008}
+.login{height:100%;padding:56px 24px 28px;display:flex;flex-direction:column}
+.ring{width:300px;height:300px;border-radius:50%;border:3px solid var(--or);padding:12px;margin:0 auto}
+.ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 22%}
+.lb{min-height:56px;border-radius:16px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 20px;margin-top:12px;cursor:pointer;font-weight:500;width:100%;text-align:left}
+.lb.p{background:var(--or);color:#0B0B0D;font-weight:600;border-color:var(--or)}
+#sheet{position:fixed;inset:0;background:#000a;display:none;align-items:flex-end;justify-content:center;z-index:9}
+#sheet.o{display:flex}
+.sh{background:var(--bg);width:100%;max-width:480px;max-height:92dvh;overflow-y:auto;border-radius:22px 22px 0 0;padding:20px;border:1px solid var(--line)}
+.sh h2{margin:0 0 12px;font-size:20px}
+.f{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.f label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mut)}
+.f input,.f select,.sr input,.sr select{min-height:44px;border-radius:10px;border:1px solid #33333A;background:var(--card);padding:0 12px;width:100%}
+.sr{display:grid;grid-template-columns:1fr 70px 1fr;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
+.sr .x{grid-column:1/-1}
+.cp{font-size:13px;color:var(--mut);margin:12px 0}
+.login{overflow-y:auto}
+.bk{align-self:flex-start;min-height:44px;background:none;border:0;color:var(--mut);cursor:pointer;padding:0 8px 0 0}
+.lf label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mut);margin-top:14px}
+.lf input{min-height:52px;border-radius:14px;border:1px solid #33333A;background:var(--card);padding:0 16px;width:100%;font-size:16px}
+.pw{position:relative}.pw input{padding-right:96px}
+.pw button{position:absolute;right:4px;top:4px;min-width:80px;height:44px;background:none;border:0;color:var(--or);font-weight:600;cursor:pointer}
+#err{min-height:20px;color:var(--red);font-size:13px;margin:10px 0 6px}
+:focus-visible{outline:2px solid var(--or);outline-offset:2px}
+</style></head><body>
+<div id="app"></div><div id="sheet"></div><input type="file" id="imp" accept=".json" hidden>
+<script>
+const $=s=>document.querySelector(s),REG=['Jawa','Sumatera','Lainnya','Ekspor'];
+const J='Jawa',S_='Sumatera',L='Lainnya',E='Ekspor';
+const SEED=[
+{d:'2026-10-01',u:'14:46',p:9,e:12,x:3,s:524226,i:34055,o:18273,sh:[['Eureka Logistics, PT','Pondok Kacang (DKI)',2,J],['Yudha Antar Nusa, PT','Banjarmasin',1,L],['Mandiri Makmur Sempurna, PT','Cirebon',1,J],['Sarana Trans Sumatera, PT','Pekanbaru',3,S_],['Sarana Trans Sumatera, PT','Medan',4,S_],['Bhakti Abadi Sejahtera, PT','Semarang',1,J],['Menara Lautan Semesta, PT','Korea',3,E]]},
+{d:'2026-10-02',u:'16:45',p:9,e:21,x:1,s:533167,i:30734,o:29099,sh:[['Bhakti Abadi Sejahtera, PT','Solo',1,J],['Bhakti Abadi Sejahtera, PT','Yogyakarta',1,J],['Crieta, PT','Batam',1,S_],['Eureka Logistics, PT','Cileungsi',2,J],['Eureka Logistics, PT','Purwokerto',2,J],['Mandiri Makmur Sempurna, PT','Bandung',6,J],['Natan Ekspress, CV','Lampung',1,S_],['Sarana Trans Sumatera, PT','Medan',5,S_],['TPIL Logistics, PT','Abepura',1,L],['Yudha Antar Nusa, PT','Pontianak',1,L],['Nusa Optimal Sejahtera, PT','Cambodia',1,E]]},
+{d:'2026-10-03',u:'16:07',p:0,e:17,x:0,s:517490,i:0,o:25551,sh:[['Crieta, PT','Palu',1,L],['Hoki Sejahtera Bersama, CV','Palembang',2,S_],['Hoki Sejahtera Bersama, CV','Pekanbaru',1,S_],['Mandiri Makmur Sempurna, PT','Bandung',4,J],['Moda Daya Trasindo, PT','Bandung',5,J],['Yudha Antar Nusa, PT','Kapuas',1,L],['Yudha Antar Nusa, PT','Makasar',1,L],['Yudha Antar Nusa, PT','Manado',1,L],['Yudha Antar Nusa, PT','Palopo',1,L]]}];
+const ld=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))||f}catch(e){return f}};
+const S={days:ld('dm_days',SEED),done:ld('dm_done',{}),tab:'home',date:0,region:'Semua',metric:'o',in:!!localStorage.dm_in,auth:'welcome',user:localStorage.dm_user||''};
+S.date=S.days.length-1;
+const save=()=>{localStorage.dm_days=JSON.stringify(S.days);localStorage.dm_done=JSON.stringify(S.done)};
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>(+n||0).toLocaleString('id-ID'),dm=d=>d.slice(8)+'/'+d.slice(5,7);
+const sisa=x=>x.s+x.i-x.o,units=x=>x.sh.reduce((a,r)=>a+r[2],0),arm=x=>x.p+x.e+x.x;
+const val=(x,k)=>k==='sisa'?sisa(x):k==='unit'?units(x):x[k];
+const pc=(a,b)=>b?' ('+(a>=b?'+':'−')+Math.abs((a-b)/b*100).toFixed(1).replace('.',',')+'%)':'';
+const dl=(a,b)=>(a>=b?'▲ +':'▼ −')+fmt(Math.abs(a-b))+pc(a,b);
+const IC={home:'<path d="M3 11l9-8 9 8v10H3z"/>',ship:'<path d="M1 6h14v11H1zM15 10h4l4 3v4h-8"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/>',hist:'<path d="M4 20V10M12 20V4M20 20v-7"/>',ana:'<path d="M3 17l6-6 4 4 8-9M15 6h6v6"/>',pab:'<path d="M3 21h18M5 21V8l5 3V8l5 3V4h4v17"/>',glb:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',ar:'<path d="M5 12h14M13 6l6 6-6 6"/>'};
+const svg=(p,s=22)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${p}</svg>`;
+const chips=(a,cur,act)=>`<div class="chips">${a.map(([v,t])=>`<button class="chip ${v==cur?'on':''}" data-a="${act}" data-v="${v}">${esc(t)}</button>`).join('')}</div>`;
+const dateChips=()=>chips(S.days.map((x,i)=>[i,dm(x.d)]),S.date,'date');
+
+function chart(vals,labels){const n=vals.length,mn=Math.min(...vals),mx=Math.max(...vals);
+const P=vals.map((v,i)=>[n>1?40+i*230/(n-1):155,mx===mn?70:115-(v-mn)/(mx-mn)*65]);
+return `<svg viewBox="0 0 310 150" width="100%"><line x1="20" y1="120" x2="290" y2="120" stroke="#2A2A30"/><polyline points="${P.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#F97316" stroke-width="3" stroke-linejoin="round"/>${P.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="#F97316"/>${n<=4||i==0||i==n-1?`<text x="${p[0]}" y="${p[1]-11}" text-anchor="middle" font-size="12" font-weight="600" fill="#F5F5F5">${fmt(vals[i])}</text>`:''}<text x="${p[0]}" y="141" text-anchor="middle" font-size="12" fill="#A1A1AA">${labels[i]}</text>`).join('')}</svg>`}
+
+function home(D){const key=i=>D.d+'-'+i,dn=D.sh.filter((_,i)=>S.done[key(i)]).length,pct=D.sh.length?Math.round(dn/D.sh.length*100):0;
+const ag={};D.sh.forEach(r=>ag[r[1]]=(ag[r[1]]||0)+r[2]);const top=Object.keys(ag).sort((a,b)=>ag[b]-ag[a]).slice(0,3);
+const tile=(ic,v,t)=>`<div class="tile"><span class="ic">${svg(IC[ic],18)}</span><div><div class="num" style="font-size:24px">${v}</div><div class="lbl">${t}</div></div></div>`;
+return dateChips()+`<div class="card"><div class="lbl">Sisa stok setelah Delivery Order</div><div class="num big">${fmt(sisa(D))}</div>
+<div style="border-top:1px solid var(--line)"><div class="row"><span class="lbl">Stok Today (07:00)</span><span class="num">${fmt(D.s)}</span></div><div class="row"><span class="lbl">+ IT Produksi</span><span class="num">${fmt(D.i)}</span></div><div class="row"><span class="lbl">− Delivery Order</span><span class="num" style="color:var(--red)">${fmt(D.o)}</span></div></div></div>
+<div class="card"><div class="row" style="padding:0"><b>Status Armada</b><span class="lbl">Total <span class="num" style="color:var(--tx)">${arm(D)}</span></span></div><div class="tiles">${tile('pab',D.p,'Pabrik')}${tile('ship',D.e,'Ekspedisi')}${tile('glb',D.x,'Ekspor')}</div></div>
+<div class="card"><div class="row" style="padding:0"><b>Pengiriman Aktif</b><span class="lbl">${dn} dari ${D.sh.length} rute terkirim</span></div>
+<div style="height:6px;border-radius:3px;background:var(--line);margin:14px 0"><div style="height:6px;border-radius:3px;background:var(--or);width:${pct}%"></div></div>
+<button class="btn" data-a="tab" data-v="ship">Lihat Detail</button></div>
+<div class="card"><b>Tujuan terbanyak</b>${top.map(c=>`<div class="row"><span>${esc(c)}</span><span class="num">${ag[c]} unit</span></div>`).join('')||'<div class="lbl">Belum ada pengiriman.</div>'}</div>
+<div class="lbl" style="text-align:center">Update: ${dm(D.d)}/${D.d.slice(2,4)}, ${esc(D.u||'-')}</div>`}
+
+function ship(D){const sh=D.sh.map((r,i)=>({r,k:D.d+'-'+i})).filter(o=>S.region==='Semua'||o.r[3]===S.region);
+const names=[...new Set(sh.map(o=>o.r[0]))],dn=sh.filter(o=>S.done[o.k]).length;
+return dateChips()+chips(['Semua',...REG].map(r=>[r,r]),S.region,'region')+`<div class="lbl">Ketuk rute untuk menandai terkirim · ${dn} dari ${sh.length} rute</div>`+
+names.map(n=>`<div class="card" style="padding:6px 16px 4px"><b style="display:block;padding:10px 0 6px;font-size:14px">${esc(n)}</b>${sh.filter(o=>o.r[0]===n).map(o=>{const ok=S.done[o.k];return `<button class="item" data-a="done" data-v="${o.k}"><span style="display:flex;align-items:center"><span class="bx ${ok?'ok':''}">${ok?svg('<path d="M4 12l6 6 10-12"/>',14).replace('currentColor','#fff'):''}</span><span class="${ok?'done':''}">${esc(o.r[1])}</span></span><span class="num">${o.r[2]}</span></button>`}).join('')}</div>`).join('')+
+(sh.length?'':'<div class="card lbl" style="text-align:center">Tidak ada pengiriman di wilayah ini.</div>')+`<div class="tot"><span>Total unit ditampilkan</span><span class="num">${sh.reduce((a,o)=>a+o.r[2],0)}</span></div>`}
+
+function hist(){const L7=S.days.slice(-7),mx=Math.max(...L7.map(x=>x.o),1),off=S.days.length-L7.length;
+return `<div class="card"><b>Delivery Order · ketuk batang</b><div class="bars">${L7.map((x,i)=>`<button class="bar ${i+off==S.date?'on':''}" data-a="date" data-v="${i+off}"><span class="num">${fmt(x.o)}</span><i style="height:${Math.round(x.o/mx*105)}px"></i><span class="lbl">${dm(x.d)}</span></button>`).join('')}</div></div>
+<div class="card"><div class="td h"><span>Tanggal</span><span>Armada</span><span>Unit kirim</span><span>Sisa stok</span></div>${L7.map((x,i)=>`<div class="td ${i+off==S.date?'on':''}"><span>${dm(x.d)}</span><span class="num">${arm(x)}</span><span class="num">${units(x)}</span><span class="num">${fmt(sisa(x))}</span></div>`).join('')}</div>
+<div class="card"><b>Produksi (IT Produksi)</b>${L7.map(x=>`<div class="row"><span class="lbl">${dm(x.d)}</span><span class="num">${fmt(x.i)}</span></div>`).join('')}</div>`}
+
+function ana(){const L7=S.days.slice(-7),M=[['o','Delivery Order'],['sisa','Sisa stok'],['s','Stok 07:00'],['i','Produksi'],['unit','Unit kirim']];
+const v=L7.map(x=>val(x,S.metric)),n=v.length,F=L7[0],La=L7[n-1];
+let h=chips(M,S.metric,'metric');
+if(n<2)return h+'<div class="card lbl">Tambahkan data minimal 2 hari untuk melihat trend dan analisa.</div>';
+const up=v.every((x,i)=>!i||x>=v[i-1]),dw=v.every((x,i)=>!i||x<=v[i-1]);
+h+=`<div class="card"><div class="row" style="padding:0"><b>${M.find(m=>m[0]==S.metric)[1]}</b><span class="lbl">${up&&v[n-1]>v[0]?'Tren naik':dw&&v[n-1]<v[0]?'Tren turun':'Fluktuatif'}</span></div>${chart(v,L7.map(x=>dm(x.d)))}</div>
+<div class="card"><div class="td h"><span>Tanggal</span><span>Nilai</span><span>Perubahan</span></div>${v.map((x,i)=>`<div class="td"><span>${dm(L7[i].d)}</span><span class="num">${fmt(x)}</span><span class="num">${i?dl(x,v[i-1]):'—'}</span></div>`).join('')}</div><b>Analisa</b>`;
+const avg=L7.reduce((a,x)=>a+x.o,0)/n,pu=x=>x.o/Math.max(units(x),1),ag={};La.sh.forEach(r=>ag[r[1]]=(ag[r[1]]||0)+r[2]);
+const tc=Object.keys(ag).sort((a,b)=>ag[b]-ag[a])[0],tq=units(La);
+const I=[[ 'w','Sisa stok '+(sisa(La)<sisa(F)?'turun ':'naik ')+fmt(Math.abs(sisa(F)-sisa(La))),'Dari '+fmt(sisa(F))+' ('+dm(F.d)+') menjadi '+fmt(sisa(La))+' ('+dm(La.d)+')'+pc(sisa(La),sisa(F))+'.'],
+La.i===0?['w','Produksi berhenti di '+dm(La.d),'IT Produksi 0 pada hari terakhir. Dengan rata-rata DO '+fmt(Math.round(avg))+' per hari dan tanpa produksi, sisa stok setara sekitar '+Math.round(sisa(La)/Math.max(avg,1))+' hari.']:['i','Produksi '+fmt(La.i)+' pada '+dm(La.d),'Selisih produksi dikurangi DO: '+fmt(La.i-La.o)+' pada hari itu.'],
+['i','DO per unit kirim '+(pu(La)>=pu(F)?'naik':'turun'),fmt(Math.round(pu(F)))+' → '+fmt(Math.round(pu(La)))+pc(pu(La),pu(F))+'. Dihitung dari DO dibagi total unit kirim.']];
+if(tc)I.push(['i','Tujuan terpusat di '+tc,tc+' menerima '+ag[tc]+' dari '+tq+' unit pada '+dm(La.d)+' ('+Math.round(ag[tc]/tq*100)+'%).']);
+return h+I.map(([c,t,x])=>`<div class="card" style="padding:14px 16px"><span class="tag ${c}">${c=='w'?'Perlu perhatian':'Informasi'}</span><div style="font-weight:600;margin:8px 0 4px">${esc(t)}</div><div style="font-size:14px;color:#D4D4D8">${esc(x)}</div></div>`).join('')+`<div class="lbl" style="text-align:center">Dihitung dari ${n} hari data terakhir. Hasil ini perkiraan, bukan prediksi pasti.</div>`}
+
+const ttl={home:['Selamat datang','Ringkasan Harian'],ship:['','Pengiriman Ekspedisi'],hist:['Tujuh hari terakhir','Riwayat'],ana:['Tujuh hari terakhir','Trend & Analisa']};
+const arrow=svg(IC.ar,20);
+const welcome=()=>`<div class="login"><div class="ring"><img src="foto.jpg" alt="Foto profil"></div><div style="flex:1"></div><h1 style="font-size:34px;line-height:1.15">Monitoring<br><span style="color:var(--or)">Distribusi</span></h1><p class="lbl" style="font-size:15px;margin:10px 0 24px">Pantau stok, armada, dan pengiriman harian.</p><button class="lb" data-a="auth" data-v="login">Masuk ${arrow}</button><button class="lb p" data-a="auth" data-v="signup">Daftar ${arrow}</button><button class="lb" style="background:none;border:0;justify-content:center;color:var(--mut);font-weight:400;min-height:44px" data-a="enter">Lanjutkan sebagai tamu ›</button></div>`;
+const authForm=m=>{const su=m==='signup';return `<div class="login"><button class="bk" data-a="auth" data-v="welcome">‹ Kembali</button><h1 style="font-size:32px;margin-top:24px">${su?'Buat akun':'Masuk'}</h1><p class="lbl" style="font-size:15px;margin:8px 0 0">${su?'Daftar untuk menyimpan data distribusi Anda.':'Masuk untuk melanjutkan ke ringkasan harian.'}</p>
+<form class="lf" data-f="${m}" novalidate>${su?'<label>Nama<input name="nm" autocomplete="name" placeholder="Nama lengkap"></label>':''}<label>Email<input name="em" type="email" autocomplete="email" autocapitalize="none" inputmode="email" placeholder="nama@perusahaan.com"></label><label>Kata sandi<span class="pw"><input name="pw" type="password" autocomplete="${su?'new-password':'current-password'}" placeholder="${su?'Minimal 6 karakter':'Kata sandi'}"><button type="button" data-a="eye">Lihat</button></span></label>${su?'<label>Ulangi kata sandi<input name="pw2" type="password" autocomplete="new-password" placeholder="Ketik ulang kata sandi"></label>':''}<div id="err" role="alert"></div><button class="lb p" type="submit" style="margin-top:0">${su?'Daftar':'Masuk'} ${arrow}</button></form>
+<div style="flex:1;min-height:16px"></div><button class="lb" style="background:none;border:0;justify-content:center;color:var(--mut);font-weight:400;min-height:44px" data-a="auth" data-v="${su?'login':'signup'}">${su?'Sudah punya akun? Masuk':'Belum punya akun? Daftar'}</button></div>`};
+function draw(){const A=$('#app');
+if(!S.in){A.innerHTML=S.auth==='welcome'?welcome():authForm(S.auth);return}
+const y=($('.main')||{}).scrollTop||0,D=S.days[S.date],t=ttl[S.tab],sub=esc(S.tab==='ship'?dm(D.d)+'/'+D.d.slice(2,4)+' · '+D.sh.length+' rute':S.tab==='home'&&S.user?'Selamat datang, '+S.user:t[0]);
+const body=S.tab==='home'?home(D):S.tab==='ship'?ship(D):S.tab==='hist'?hist():ana();
+A.innerHTML=`<div class="hd"><div class="l"><button class="av" data-a="menu" aria-label="Menu data"><img src="foto.jpg" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 25%"></button><div><div class="eb">${sub}</div><h1>${t[1]}</h1></div></div></div><div class="main">${body}</div>
+${S.tab==='home'||S.tab==='ship'?'<button class="fab" data-a="form" aria-label="Tambah data harian">+</button>':''}
+<nav class="tabs">${[['home','Beranda'],['ship','Pengiriman'],['hist','Riwayat'],['ana','Analisa']].map(([k,n])=>`<button class="tab ${S.tab==k?'on':''}" data-a="tab" data-v="${k}">${svg(IC[k])}${n}</button>`).join('')}</nav>`;
+$('.main').scrollTop=y}
+
+const sheet=h=>{$('#sheet').innerHTML=`<div class="sh">${h}</div>`;$('#sheet').classList.add('o')},closeS=()=>$('#sheet').classList.remove('o');
+const rowH=r=>`<div class="sr"><input class="x" placeholder="Ekspedisi" value="${esc(r[0]||'')}"><input placeholder="Kota" value="${esc(r[1]||'')}"><input type="number" min="1" placeholder="Qty" value="${r[2]||''}"><select>${REG.map(g=>`<option ${g==r[3]?'selected':''}>${g}</option>`).join('')}</select></div>`;
+const num=(id,l)=>`<label>${l}<input id="${id}" type="number" min="0" inputmode="numeric"></label>`;
+function form(){sheet(`<h2>Tambah data harian</h2><div class="f"><label>Tanggal<input id="fd" type="date" value="${new Date().toISOString().slice(0,10)}"></label><label>Jam update<input id="fu" type="time"></label>${num('fp','Armada pabrik')}${num('fe','Armada ekspedisi')}${num('fx','Armada ekspor')}<span></span>${num('fs','Stok today (07:00)')}${num('fi','IT Produksi')}${num('fo','Delivery Order')}</div><div class="cp">Sisa stok dihitung otomatis: stok + produksi − DO. Jika tanggal sudah ada, datanya diganti.</div><b>Pengiriman</b><div id="rows">${rowH([])}</div><button class="btn" style="margin:12px 0" data-a="addrow">+ Tambah rute</button><button class="btn fill" data-a="save">Simpan data</button><button class="btn" style="margin-top:8px;border-color:#33333A;color:var(--mut)" data-a="close">Batal</button>`)}
+function saveF(){const g=i=>+$('#'+i).value||0,d=$('#fd').value;if(!d){alert('Isi tanggal terlebih dahulu.');return}
+const sh=[...document.querySelectorAll('#rows .sr')].map(r=>{const i=r.querySelectorAll('input'),s=r.querySelector('select');return[i[0].value.trim(),i[1].value.trim(),+i[2].value||0,s.value]}).filter(r=>r[0]&&r[1]&&r[2]>0);
+const x={d,u:$('#fu').value,p:g('fp'),e:g('fe'),x:g('fx'),s:g('fs'),i:g('fi'),o:g('fo'),sh};
+S.days=S.days.filter(y=>y.d!==d).concat(x).sort((a,b)=>a.d<b.d?-1:1);S.date=S.days.findIndex(y=>y.d===d);S.tab='home';save();closeS();draw()}
+function menu(){sheet(`<h2>Data &amp; akun</h2><p class="cp">${S.user?'Masuk sebagai '+esc(S.user)+'. ':''}Data tersimpan di perangkat ini (${S.days.length} hari). Ekspor secara berkala sebagai cadangan.</p><button class="btn fill" data-a="export">Ekspor data (JSON)</button><button class="btn" style="margin-top:8px" data-a="import">Impor data</button><button class="btn" style="margin-top:8px" data-a="reset">Kembalikan data contoh</button><button class="btn" style="margin-top:8px" data-a="logout">Keluar</button><button class="btn" style="margin-top:8px;border-color:#33333A;color:var(--mut)" data-a="close">Tutup</button>`)}
+const A={tab:v=>S.tab=v,date:v=>S.date=+v,region:v=>S.region=v,metric:v=>S.metric=v,done:v=>{S.done[v]=!S.done[v];save()},enter:()=>{localStorage.dm_in=1;localStorage.removeItem('dm_user');S.user='';S.in=true},auth:v=>S.auth=v,eye:(v,t)=>{const i=t.parentNode.querySelector('input');i.type=i.type==='password'?'text':'password';t.textContent=i.type==='password'?'Lihat':'Sembunyi'},logout:()=>{localStorage.removeItem('dm_in');localStorage.removeItem('dm_user');S.in=false;S.user='';S.auth='welcome';closeS()},close:closeS,form,menu,save:saveF,
+addrow:()=>$('#rows').insertAdjacentHTML('beforeend',rowH([])),
+export:()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S.days,null,1)],{type:'application/json'}));a.download='distribusi-'+new Date().toISOString().slice(0,10)+'.json';a.click()},
+import:()=>$('#imp').click(),
+reset:()=>{if(confirm('Semua data diganti dengan data contoh. Lanjutkan?')){S.days=SEED;S.done={};S.date=2;save();closeS()}}};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a;if(!A[a])return;A[a](t.dataset.v,t);if(!['addrow','form','menu','export','import','eye'].includes(a))draw()});
+$('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet')closeS()});
+$('#imp').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const a=JSON.parse(r.result);if(!Array.isArray(a)||!a.every(x=>x&&typeof x.d==='string'&&Array.isArray(x.sh)))throw 0;S.days=a.map(x=>({d:x.d.slice(0,10),u:String(x.u||''),p:+x.p||0,e:+x.e||0,x:+x.x||0,s:+x.s||0,i:+x.i||0,o:+x.o||0,sh:x.sh.map(r=>[String(r[0]),String(r[1]),+r[2]||0,REG.includes(r[3])?r[3]:L])})).sort((a,b)=>a.d<b.d?-1:1);S.date=S.days.length-1;save();closeS();draw()}catch(_){alert('File tidak valid. Gunakan file hasil ekspor aplikasi ini.')}};r.readAsText(f);e.target.value=''});
+const enc=new TextEncoder();
+async function hp(pw,salt){if(!(window.crypto&&crypto.subtle))return btoa(salt+pw);const k=await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveBits']),b=await crypto.subtle.deriveBits({name:'PBKDF2',salt:enc.encode(salt),iterations:120000,hash:'SHA-256'},k,256);return btoa(String.fromCharCode(...new Uint8Array(b)))}
+const okIn=n=>{localStorage.dm_in=1;localStorage.dm_user=n;S.user=n;S.in=true;draw()};
+document.addEventListener('submit',async e=>{e.preventDefault();const f=e.target,m=f.dataset.f;if(!m)return;
+const em=f.em.value.trim().toLowerCase(),pw=f.pw.value,er=$('#err'),acc=ld('dm_acc',{});
+if(!/^\S+@\S+\.\S+$/.test(em)){er.textContent='Format email belum benar.';return}
+if(!pw){er.textContent='Isi kata sandi.';return}
+if(m==='signup'){const nm=f.nm.value.trim();
+if(!nm){er.textContent='Isi nama Anda.';return}
+if(pw.length<6){er.textContent='Kata sandi minimal 6 karakter.';return}
+if(pw!==f.pw2.value){er.textContent='Konfirmasi kata sandi tidak sama.';return}
+if(acc[em]){er.textContent='Email ini sudah terdaftar. Silakan masuk.';return}
+const salt=(crypto.randomUUID?crypto.randomUUID():String(Math.random()));
+acc[em]={n:nm,s:salt,h:await hp(pw,salt)};localStorage.dm_acc=JSON.stringify(acc);okIn(nm)}
+else{const a=acc[em];if(!a||a.h!==await hp(pw,a.s)){er.textContent='Email atau kata sandi salah.';return}okIn(a.n)}});
+draw();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script></body></html>
