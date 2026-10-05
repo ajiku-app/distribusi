@@ -334,11 +334,16 @@ S.days=d.data.map(r=>({d:r.d,u:r.u||'',p:r.p,e:r.e,x:r.x,s:r.s,i:r.i,o:r.o,sh:r.
 if(t.data&&t.data[0])S.cap=+t.data[0].v||400000;
 S.date=first?S.days.length-1:Math.min(S.date,S.days.length-1);if(S.date<0)S.date=0}
 async function loadLog(){const r=await DB().from('activity_log').select('*').order('t',{ascending:false}).limit(1000);if(r.error)return;S.log=r.data.map(x=>({t:Date.parse(x.t),u:x.nama,m:x.email,a:x.a,d:x.d}));if(S.tab==='act')draw()}
-async function enter(ty){const g=await DB().auth.getSession(),u=g.data&&(g.data.user||(g.data.session&&g.data.session.user));if(!u)return false;
+const uOf=g=>g&&g.data&&(g.data.user||(g.data.session&&g.data.session.user));
+async function enter(ty,hint){const A=DB().auth;let g,u,why='';
+try{g=await A.getSession();u=uOf(g)}catch(x){why+=' getSession: '+(x&&x.message||x)}
+if(!u){try{g=await A.getSession({fetchOptions:{headers:{'X-Force-Fetch':'true'}}});u=uOf(g)}catch(x){why+=' | paksa: '+(x&&x.message||x)}}
+if(!u){window.DIAG=(hint||'')+' | sesi='+JSON.stringify(g?{data:g.data?Object.keys(g.data):null,error:g.error?(g.error.message||String(g.error)):null}:null)+(why?' |'+why:'')+' | cookie='+navigator.cookieEnabled;return false}
+
 S.uid=u.id;S.em=u.email;S.user=u.name||u.email;
 let p=await DB().from('profiles').select('*').eq('user_id',u.id).maybeSingle();
 if(!p.error&&!p.data)p=await DB().from('profiles').insert({nama:S.user,email:S.em}).select().single();
-if(p.error||!p.data){alert('Gagal memuat profil: '+((p.error&&p.error.message)||''));return false}
+if(p.error||!p.data){window.DIAG='profil: '+((p.error&&(p.error.message||p.error.code))||'kosong')+' | '+(hint||'');alert('Gagal memuat profil: '+((p.error&&p.error.message)||''));return false}
 S.role=p.data.role;S.st=p.data.status;S.in=true;
 if(S.st==='approved'){await loadAll(true);if(ty)logA(ty,ty==='signup'?'Membuat akun baru':'Masuk ke aplikasi')}
 S.tab='home';return true}
@@ -367,7 +372,7 @@ if(m==='signup'){r=await su();
 if(r.error&&/already|exist|terdaftar/i.test(r.error.message||'')){r=await si();if(r.error){er.textContent=net(r.error.message)?'Tidak bisa terhubung ke server ('+r.error.message+').':'Email ini sudah terdaftar. Silakan Masuk dengan kata sandi yang benar.';return}}
 else if(r.error){er.textContent=net(r.error.message)?'Tidak bisa terhubung ke server ('+r.error.message+').':(r.error.message||'Gagal mendaftar.');return}}
 else{r=await si();if(r.error){er.textContent=net(r.error.message)?'Tidak bisa terhubung ke server ('+r.error.message+').':'Email atau kata sandi salah.';return}}
-if(!(await enter(m))){r=await si();if(r.error||!(await enter(m))){er.textContent='Berhasil masuk ke akun, tetapi data belum bisa dimuat. Coba tekan Masuk lagi.';return}}
+const hint='signIn='+Object.keys((r&&r.data)||{}).join(',');if(!(await enter(m,hint))){r=await si();if(r.error||!(await enter(m,'ulang '+hint))){er.textContent='Login diterima, tetapi sesi/data belum bisa dibaca. Diagnosa: '+(window.DIAG||'-');return}}
 draw()}catch(x){console.error(x);er.textContent='Terjadi kesalahan: '+(x&&x.message||x)}finally{b.disabled=false}});
 draw();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
