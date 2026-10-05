@@ -157,7 +157,7 @@ const CH=svg('<path d="M6 9l6 6 6-6"/>',18),CK=svg('<path d="M4 12l6 6 10-12"/>'
 const sel=(l,v,act)=>`<button class="sel" data-a="pick" data-v="${act}"><span style="min-width:0"><span class="k">${l}</span><span class="v">${esc(v)}</span></span>${CH}</button>`;
 const dd=d=>['Min','Sen','Sel','Rab','Kam','Jum','Sab'][new Date(d+'T00:00:00').getDay()]+', '+dm(d)+'/'+d.slice(2,4);
 const dateSel=()=>sel('Tanggal',dm(S.days[S.date].d)+'/'+S.days[S.date].d.slice(2,4),'date');
-const MET=[['o','Delivery Order'],['sisa','Sisa stok'],['s','Stok 07:00'],['i','Produksi'],['unit','Unit kirim']];
+const MET=[['o','Outbound Logistics'],['sisa','Sisa stok'],['s','Beginning Inventory (07:00)'],['i','Inbound Production'],['unit','Unit kirim']];
 const OPT={date:()=>({t:'Pilih tanggal',cur:S.date,o:S.days.map((x,i)=>[i,dd(x.d)]).reverse()}),region:()=>({t:'Pilih wilayah',cur:S.region,o:['Semua',...REG].map(r=>[r,r])}),metric:()=>({t:'Pilih data',cur:S.metric,o:MET})};
 const inits=()=>(S.user||'').trim().split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
 
@@ -170,19 +170,19 @@ const st=df>0?['r','▲ STOK OVER +'+pr+'%','Lebih '+fmt(df)+' ctn dari kapasita
 return `<div class="card"><div class="row" style="padding:0;align-items:center"><b>Kapasitas Whs FG</b><button class="up" style="border:0;cursor:pointer;min-height:36px;padding:0 14px" data-a="cap">Ubah</button></div>
 <div style="margin-top:12px"><span class="tag ${st[0]}" style="font-size:13px;padding:5px 12px">${st[1]}</span></div><div class="lbl" style="margin-top:6px">${st[2]}</div>
 <div class="tr" style="background:var(--line);margin-top:12px"><i style="width:${fill}%;background:${df>0?'var(--red)':'var(--ac)'}"></i></div>
-<div class="row" style="padding:12px 0 2px"><span class="lbl">Sisa stok (setelah DO)</span><span class="num">${fmt(sv)}</span></div><div class="row" style="padding:2px 0 0"><span class="lbl">Kapasitas</span><span class="num">${fmt(cap)} ctn</span></div></div>`}
+<div class="row" style="padding:12px 0 2px"><span class="lbl">Sisa stok (setelah Outbound Logistics)</span><span class="num">${fmt(sv)}</span></div><div class="row" style="padding:2px 0 0"><span class="lbl">Kapasitas</span><span class="num">${fmt(cap)} ctn</span></div></div>`}
 
 function home(D){const key=i=>D.d+'-'+i,dn=D.sh.filter((_,i)=>S.done[key(i)]).length,pct=D.sh.length?Math.round(dn/D.sh.length*100):0;
 const ag={};D.sh.forEach(r=>ag[r[1]]=(ag[r[1]]||0)+r[2]);const top=Object.keys(ag).sort((a,b)=>ag[b]-ag[a]).slice(0,3);
 const tot=D.s+D.i,sp=tot>0?Math.max(0,Math.min(100,Math.round(sisa(D)/tot*100))):0;
 const tile=(ic,v,t)=>`<div class="tile"><span class="ic">${svg(IC[ic],18)}</span><div><div class="num" style="font-size:24px">${v}</div><div class="lbl">${t}</div></div></div>`;
 return '<div class="pks">'+dateSel()+'</div>'+`<div class="sec"><b>Hari ini</b></div>
-<div class="stack"><div class="hc blue"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div class="t">Sisa stok setelah Delivery Order</div><button class="shi" data-a="sharepdf" aria-label="Bagikan PDF" title="Bagikan PDF">${svg(IC.sh,20)}</button></div><div class="num big">${fmt(sisa(D))}</div>
-<div class="row"><span class="lbl">Stok Today (07:00)</span><span class="num">${fmt(D.s)}</span></div><div class="row"><span class="lbl">+ IT Produksi</span><span class="num">${fmt(D.i)}</span></div><div class="row"><span class="lbl">− Delivery Order</span><span class="num">${fmt(D.o)}</span></div>
+<div class="stack"><div class="hc blue"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div class="t">Sisa stok setelah Outbound Logistics</div><button class="shi" data-a="sharepdf" aria-label="Bagikan PDF" title="Bagikan PDF">${svg(IC.sh,20)}</button></div><div class="num big">${fmt(sisa(D))}</div>
+<div class="row"><span class="lbl">Beginning Inventory (07:00)</span><span class="num">${fmt(D.s)}</span></div><div class="row"><span class="lbl">+ Inbound Production</span><span class="num">${fmt(D.i)}</span></div><div class="row"><span class="lbl">− Outbound Logistics</span><span class="num">${fmt(D.o)}</span></div>
 <div class="pg"><span>Stok tersisa</span><span class="num">${sp}%</span></div><div class="tr"><i style="width:${sp}%"></i></div></div>
 <div class="hc"><div class="t" style="color:var(--mut)">Pengiriman Aktif</div><div class="num big">${dn}<span class="lbl" style="font-size:18px"> / ${D.sh.length}</span></div><div class="lbl">rute sudah terkirim</div>
 <div class="pg"><span>Progres</span><span class="num">${pct}%</span></div><div class="tr"><i style="width:${pct}%"></i></div><button class="btn" style="margin-top:16px" data-a="tab" data-v="ship">Lihat Detail</button></div></div><div class="dots"><i class="on"></i><i></i></div>${capCard(D)}
-<div class="card"><div class="row" style="padding:0"><b>Status Armada</b><span class="lbl">Total <span class="num" style="color:var(--tx)">${arm(D)}</span></span></div><div class="tiles">${tile('pab',D.p,'Pabrik')}${tile('ship',D.e,'Ekspedisi')}${tile('glb',D.x,'Ekspor')}</div></div>
+<div class="card"><div class="row" style="padding:0"><b>Status Carrier</b><span class="lbl">Total <span class="num" style="color:var(--tx)">${arm(D)}</span></span></div><div class="tiles">${tile('pab',D.p,'Private Carrier')}${tile('ship',D.e,'Common Carrier')}${tile('glb',D.x,'International Freight Carrier')}</div></div>
 <div class="sec"><b>Tujuan terbanyak</b></div>${top.map(c=>`<div class="li"><div><div class="s">Tujuan</div><div class="n">${esc(c)}</div></div><span class="up num">${ag[c]} unit</span></div>`).join('')||'<div class="card lbl">Belum ada pengiriman.</div>'}
 <div class="lbl" style="text-align:center">Update: ${dm(D.d)}/${D.d.slice(2,4)}, ${esc(D.u||'-')}</div>`}
 
@@ -193,9 +193,9 @@ names.map(n=>`<div class="card" style="padding:6px 16px 4px"><b style="display:b
 (sh.length?'':'<div class="card lbl" style="text-align:center">Tidak ada pengiriman di wilayah ini.</div>')+`<div class="tot"><span>Total unit ditampilkan</span><span class="num">${sh.reduce((a,o)=>a+o.r[2],0)}</span></div>`}
 
 function hist(){const L7=S.days.slice(-7),mx=Math.max(...L7.map(x=>x.o),1),off=S.days.length-L7.length;
-return `<div class="card"><b>Delivery Order · ketuk batang</b><div class="bars">${L7.map((x,i)=>`<button class="bar ${i+off==S.date?'on':''}" data-a="date" data-v="${i+off}"><span class="num">${fmt(x.o)}</span><i style="height:${Math.round(x.o/mx*105)}px"></i><span class="lbl">${dm(x.d)}</span></button>`).join('')}</div></div>
-<div class="card"><div class="td h"><span>Tanggal</span><span>Armada</span><span>Unit kirim</span><span>Sisa stok</span></div>${L7.map((x,i)=>`<div class="td ${i+off==S.date?'on':''}"><span>${dm(x.d)}</span><span class="num">${arm(x)}</span><span class="num">${units(x)}</span><span class="num">${fmt(sisa(x))}</span></div>`).join('')}</div>
-<div class="card"><b>Produksi (IT Produksi)</b>${L7.map(x=>`<div class="row"><span class="lbl">${dm(x.d)}</span><span class="num">${fmt(x.i)}</span></div>`).join('')}</div>`}
+return `<div class="card"><b>Outbound Logistics · ketuk batang</b><div class="bars">${L7.map((x,i)=>`<button class="bar ${i+off==S.date?'on':''}" data-a="date" data-v="${i+off}"><span class="num">${fmt(x.o)}</span><i style="height:${Math.round(x.o/mx*105)}px"></i><span class="lbl">${dm(x.d)}</span></button>`).join('')}</div></div>
+<div class="card"><div class="td h"><span>Tanggal</span><span>Carrier</span><span>Unit kirim</span><span>Sisa stok</span></div>${L7.map((x,i)=>`<div class="td ${i+off==S.date?'on':''}"><span>${dm(x.d)}</span><span class="num">${arm(x)}</span><span class="num">${units(x)}</span><span class="num">${fmt(sisa(x))}</span></div>`).join('')}</div>
+<div class="card"><b>Inbound Production</b>${L7.map(x=>`<div class="row"><span class="lbl">${dm(x.d)}</span><span class="num">${fmt(x.i)}</span></div>`).join('')}</div>`}
 
 function ana(){const L7=S.days.slice(-7),M=MET;
 const v=L7.map(x=>val(x,S.metric)),n=v.length,F=L7[0],La=L7[n-1];
@@ -207,8 +207,8 @@ h+=`<div class="card"><div class="row" style="padding:0"><b>${M.find(m=>m[0]==S.
 const avg=L7.reduce((a,x)=>a+x.o,0)/n,pu=x=>x.o/Math.max(units(x),1),ag={};La.sh.forEach(r=>ag[r[1]]=(ag[r[1]]||0)+r[2]);
 const tc=Object.keys(ag).sort((a,b)=>ag[b]-ag[a])[0],tq=units(La);
 const I=[[ 'w','Sisa stok '+(sisa(La)<sisa(F)?'turun ':'naik ')+fmt(Math.abs(sisa(F)-sisa(La))),'Dari '+fmt(sisa(F))+' ('+dm(F.d)+') menjadi '+fmt(sisa(La))+' ('+dm(La.d)+')'+pc(sisa(La),sisa(F))+'.'],
-La.i===0?['w','Produksi berhenti di '+dm(La.d),'IT Produksi 0 pada hari terakhir. Dengan rata-rata DO '+fmt(Math.round(avg))+' per hari dan tanpa produksi, sisa stok setara sekitar '+Math.round(sisa(La)/Math.max(avg,1))+' hari.']:['i','Produksi '+fmt(La.i)+' pada '+dm(La.d),'Selisih produksi dikurangi DO: '+fmt(La.i-La.o)+' pada hari itu.'],
-['i','DO per unit kirim '+(pu(La)>=pu(F)?'naik':'turun'),fmt(Math.round(pu(F)))+' → '+fmt(Math.round(pu(La)))+pc(pu(La),pu(F))+'. Dihitung dari DO dibagi total unit kirim.']];
+La.i===0?['w','Inbound Production berhenti di '+dm(La.d),'Inbound Production 0 pada hari terakhir. Dengan rata-rata Outbound Logistics '+fmt(Math.round(avg))+' per hari dan tanpa inbound production, sisa stok setara sekitar '+Math.round(sisa(La)/Math.max(avg,1))+' hari.']:['i','Inbound Production '+fmt(La.i)+' pada '+dm(La.d),'Selisih inbound production dikurangi outbound logistics: '+fmt(La.i-La.o)+' pada hari itu.'],
+['i','Outbound Logistics per unit kirim '+(pu(La)>=pu(F)?'naik':'turun'),fmt(Math.round(pu(F)))+' → '+fmt(Math.round(pu(La)))+pc(pu(La),pu(F))+'. Dihitung dari outbound logistics dibagi total unit kirim.']];
 if(tc)I.push(['i','Tujuan terpusat di '+tc,tc+' menerima '+ag[tc]+' dari '+tq+' unit pada '+dm(La.d)+' ('+Math.round(ag[tc]/tq*100)+'%).']);
 return h+I.map(([c,t,x])=>`<div class="card" style="padding:14px 16px"><span class="tag ${c}">${c=='w'?'Perlu perhatian':'Informasi'}</span><div style="font-weight:600;margin:8px 0 4px">${esc(t)}</div><div style="font-size:14px;color:#D4D4D8">${esc(x)}</div></div>`).join('')+`<div class="lbl" style="text-align:center">Dihitung dari ${n} hari data terakhir. Hasil ini perkiraan, bukan prediksi pasti.</div>`}
 
@@ -236,15 +236,15 @@ $('.main').scrollTop=S.top?0:y;S.top=0}
 const sheet=h=>{$('#sheet').innerHTML=`<div class="sh">${h}</div>`;$('#sheet').classList.add('o')},closeS=()=>$('#sheet').classList.remove('o');
 const rowH=r=>`<div class="sr"><input class="x" placeholder="Ekspedisi" value="${esc(r[0]||'')}"><input placeholder="Kota" value="${esc(r[1]||'')}"><input type="number" min="1" placeholder="Qty" value="${r[2]||''}"><select>${REG.map(g=>`<option ${g==r[3]?'selected':''}>${g}</option>`).join('')}</select></div>`;
 const num=(id,l)=>`<label>${l}<input id="${id}" type="number" min="0" inputmode="numeric"></label>`;
-function form(){sheet(`<h2>Tambah data harian</h2><div class="f"><label>Tanggal<input id="fd" type="date" value="${new Date().toISOString().slice(0,10)}"></label><label>Jam update<input id="fu" type="time"></label>${num('fp','Armada pabrik')}${num('fe','Armada ekspedisi')}${num('fx','Armada ekspor')}<span></span>${num('fs','Stok today (07:00)')}${num('fi','IT Produksi')}${num('fo','Delivery Order')}</div><div class="cp">Sisa stok dihitung otomatis: stok + produksi − DO. Jika tanggal sudah ada, datanya diganti.</div><b>Pengiriman</b><div id="rows">${rowH([])}</div><button class="btn" style="margin:12px 0" data-a="addrow">+ Tambah rute</button><button class="btn fill" data-a="save">Simpan data</button><button class="btn" style="margin-top:8px;border-color:#262B3D;color:var(--mut)" data-a="close">Batal</button>`)}
+function form(){sheet(`<h2>Tambah data harian</h2><div class="f"><label>Tanggal<input id="fd" type="date" value="${new Date().toISOString().slice(0,10)}"></label><label>Jam update<input id="fu" type="time"></label>${num('fp','Private Carrier')}${num('fe','Common Carrier')}${num('fx','International Freight Carrier')}<span></span>${num('fs','Beginning Inventory (07:00)')}${num('fi','Inbound Production')}${num('fo','Outbound Logistics')}</div><div class="cp">Sisa stok dihitung otomatis: beginning inventory + inbound production − outbound logistics. Jika tanggal sudah ada, datanya diganti.</div><b>Pengiriman</b><div id="rows">${rowH([])}</div><button class="btn" style="margin:12px 0" data-a="addrow">+ Tambah rute</button><button class="btn fill" data-a="save">Simpan data</button><button class="btn" style="margin-top:8px;border-color:#262B3D;color:var(--mut)" data-a="close">Batal</button>`)}
 function saveF(){const g=i=>+$('#'+i).value||0,d=$('#fd').value;if(!d){alert('Isi tanggal terlebih dahulu.');return}
 const sh=[...document.querySelectorAll('#rows .sr')].map(r=>{const i=r.querySelectorAll('input'),s=r.querySelector('select');return[i[0].value.trim(),i[1].value.trim(),+i[2].value||0,s.value]}).filter(r=>r[0]&&r[1]&&r[2]>0);
 const x={d,u:$('#fu').value,p:g('fp'),e:g('fe'),x:g('fx'),s:g('fs'),i:g('fi'),o:g('fo'),sh};
-const ex=S.days.some(y=>y.d===d);S.days=S.days.filter(y=>y.d!==d).concat(x).sort((a,b)=>a.d<b.d?-1:1);logA('data',(ex?'Memperbarui':'Menambah')+' data harian '+dm(d)+'/'+d.slice(2,4)+' · DO '+fmt(x.o)+' · '+sh.length+' rute');S.date=S.days.findIndex(y=>y.d===d);S.tab='home';save();closeS();draw()}
+const ex=S.days.some(y=>y.d===d);S.days=S.days.filter(y=>y.d!==d).concat(x).sort((a,b)=>a.d<b.d?-1:1);logA('data',(ex?'Memperbarui':'Menambah')+' data harian '+dm(d)+'/'+d.slice(2,4)+' · Outbound Logistics '+fmt(x.o)+' · '+sh.length+' rute');S.date=S.days.findIndex(y=>y.d===d);S.tab='home';save();closeS();draw()}
 const A={tab:v=>{S.tab=v;if(v==='act'){S.lp=0;S.top=1}},lp:v=>{S.lp+=+v;S.top=1},date:v=>S.date=+v,region:v=>S.region=v,metric:v=>S.metric=v,done:v=>{S.done[v]=!S.done[v];save();const d=v.slice(0,10),r=((S.days.find(x=>x.d===d)||{}).sh||[])[+v.slice(11)];logA('done',(S.done[v]?'Menandai terkirim: ':'Membatalkan tanda terkirim: ')+(r?r[0]+' → '+r[1]:v)+' ('+dm(d)+'/'+d.slice(2,4)+')')},auth:v=>S.auth=v,eye:(v,t)=>{const i=t.parentNode.querySelector('input');i.type=i.type==='password'?'text':'password';t.textContent=i.type==='password'?'Lihat':'Sembunyi'},close:closeS,form,save:saveF,
 addrow:()=>$('#rows').insertAdjacentHTML('beforeend',rowH([])),
 sharepdf:()=>{const D=S.days[S.date];if(D)logA('pdf','Bagikan PDF tanggal '+dm(D.d)+'/'+D.d.slice(2,4));sharePdf()},
-cap:()=>sheet(`<h2>Kapasitas Whs FG</h2><div class="f" style="grid-template-columns:1fr"><label>Kapasitas (ctn)<input id="fc" type="number" min="1" inputmode="numeric" value="${S.cap}"></label></div><div class="cp">Stok over/under dihitung dari sisa stok setelah Delivery Order dibanding kapasitas ini.</div><button class="btn fill" data-a="capsave">Simpan</button><button class="btn" style="margin-top:8px;border-color:#262B3D;color:var(--mut)" data-a="close">Batal</button>`),
+cap:()=>sheet(`<h2>Kapasitas Whs FG</h2><div class="f" style="grid-template-columns:1fr"><label>Kapasitas (ctn)<input id="fc" type="number" min="1" inputmode="numeric" value="${S.cap}"></label></div><div class="cp">Stok over/under dihitung dari sisa stok setelah Outbound Logistics dibanding kapasitas ini.</div><button class="btn fill" data-a="capsave">Simpan</button><button class="btn" style="margin-top:8px;border-color:#262B3D;color:var(--mut)" data-a="close">Batal</button>`),
 capsave:()=>{const n=Math.round(+$('#fc').value);if(!(n>0)){alert('Isi kapasitas dengan angka lebih dari 0.');return}const o=S.cap;S.cap=n;localStorage.dm_cap=n;if(n!==o)logA('data','Mengubah kapasitas Whs FG: '+fmt(o)+' → '+fmt(n)+' ctn');closeS()},
 pick:k=>{const p=OPT[k]();sheet(`<h2>${p.t}</h2>`+p.o.map(([v,t])=>`<button class="opt ${v==p.cur?'on':''}" data-a="set" data-k="${k}" data-v="${esc(v)}"><span>${esc(t)}</span>${v==p.cur?CK:''}</button>`).join(''));const e=document.querySelector('.opt.on');if(e)e.scrollIntoView({block:'center'})},
 set:(v,t)=>{const k=t.dataset.k;if(k==='date')S.date=+v;else if(k==='region')S.region=v;else S.metric=v;closeS()},
@@ -254,35 +254,41 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t
 document.addEventListener('scroll',e=>{const t=e.target;if(t.classList&&t.classList.contains('stack')){const d=t.nextElementSibling;if(d&&d.classList.contains('dots')){const k=t.scrollLeft>(t.scrollWidth-t.clientWidth)/2?1:0;[...d.children].forEach((x,i)=>x.classList.toggle('on',i===k))}}},true);
 $('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet')closeS()});
 /* ---- PDF laporan harian (tanpa library, ASCII/Helvetica) ---- */
-const PW=842,PH=595,FW={' ':278,',':278,'.':278,'/':278,':':278,';':278,'+':584,'-':333};
+const PW=842,PH=595,FW={' ':278,',':278,'.':278,'/':278,':':278,';':278,'+':584,'-':333,'(':333,')':333};
 const tw=(t,z)=>String(t).split('').reduce((a,c)=>a+(/\d/.test(c)?556:FW[c]||650),0)*z/1000;
 const pa=t=>String(t).replace(/[\u2212\u2013\u2014]/g,'-').replace(/[^\x20-\x7E]/g,'?').replace(/([\\()])/g,'\\$1');
 const nf=n=>(+n||0).toLocaleString('en-US');
 function pdfPages(D){
-const out=[],dt=dm(D.d)+'/'+D.d.slice(2,4),ink='0.1 0.1 0.12',gr='0.55 0.55 0.6',rd='0.8 0.15 0.15',ln='0.82 0.83 0.86';
+const out=[],dt=dm(D.d)+'/'+D.d.slice(2,4),hr=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][new Date(D.d+'T00:00:00').getDay()],ink='0.1 0.1 0.12',gr='0.55 0.55 0.6',rd='0.8 0.15 0.15',ln='0.82 0.83 0.86';
 let c;
 const T=(x,y,t,z,o={})=>{const w=o.al==='r'?tw(t,z):o.al==='c'?tw(t,z)/2:0;c.push(`BT /${o.f||'F1'} ${z} Tf ${o.c||ink} rg ${(x-w).toFixed(2)} ${(PH-y).toFixed(2)} Td (${pa(t)}) Tj ET`)};
 const Ln=(x1,y,x2,w=.6,col=ln)=>c.push(`${col} RG ${w} w ${x1} ${PH-y} m ${x2} ${PH-y} l S`);
 const sh=D.sh,cap=16,chunks=[];for(let i=0;i<Math.max(sh.length,1);i+=cap)chunks.push(sh.slice(i,i+cap));
 const tot=sh.reduce((a,r)=>a+r[2],0),sis=sisa(D);
+const vh=(()=>{let h=2166136261;const z=[D.d,D.u,D.p,D.e,D.x,D.s,D.i,D.o,...sh.map(r=>r.join('~'))].join('|');for(let i=0;i<z.length;i++){h^=z.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return h.toString(16).toUpperCase().padStart(8,'0')})(),vc=vh.slice(0,4)+'-'+vh.slice(4);
+const n2=n=>String(n).padStart(2,'0'),g=new Date(),gen=n2(g.getDate())+'/'+n2(g.getMonth()+1)+'/'+g.getFullYear()+' '+n2(g.getHours())+':'+n2(g.getMinutes());
 chunks.forEach((ch,pi)=>{c=[];const last=pi===chunks.length-1;
-T(40,58,dt,24,{f:'F2'});if(chunks.length>1)T(PW-40,58,'Hal. '+(pi+1)+'/'+chunks.length,10,{al:'r',c:gr});
-Ln(40,72,PW-40,1,ink);
-if(pi===0){const X=40,V=290,row=(y,l,v,o={})=>{T(X,y,l,12,o.lf?{f:o.lf}:{});T(V,y,v,12,{al:'r',f:o.f||'F1',c:o.c});if(o.sg)T(V+10,y,o.sg,12,{c:gr})};
-row(112,'Armada Pabrik',nf(D.p));row(138,'Armada Ekspedisi',nf(D.e));row(164,'Armada Eksport',nf(D.x));
-Ln(X,174,V+22);row(194,'',nf(arm(D)),{f:'F2',sg:'+'});
-row(246,'Stok Today (07:00)',nf(D.s));row(272,'IT Produksi',nf(D.i));
-Ln(X,282,V+22);row(302,'',nf(D.s+D.i),{f:'F2',sg:'+'});
-row(354,'Delivery Order',nf(D.o),{c:rd});
-Ln(X,364,V+22);row(384,'',nf(sis),{f:'F2',sg:'-'})}
-const NX=375,EX=395,KX=630,QX=785,hy=112;
-T(NX,hy,'NO',11,{f:'F2',al:'c'});T(EX,hy,'EKSPEDISI',11,{f:'F2'});T(KX,hy,'KOTA',11,{f:'F2'});T(QX,hy,'QTY',11,{f:'F2',al:'c'});Ln(350,hy+9,PW-40,1,ink);
+T(40,40,'FG Warehouse Distribution & Stock Summary Report',16,{f:'F2'});T(40,62,hr+', '+dt,16,{f:'F2'});if(chunks.length>1)T(PW-40,62,'Hal. '+(pi+1)+'/'+chunks.length,10,{al:'r',c:gr});
+Ln(40,74,PW-40,1,ink);
+if(pi===0){const X=40,V=290,row=(y,l,v,o={})=>{T(X,y,l,12,o.lf?{f:o.lf}:{});T(V,y,v,12,{al:'r',f:o.f||'F1',c:o.c});if(o.sg)T(V+10,y,o.sg,12,{c:gr})};const hd=(y,l,r)=>{T(X,y,l,11,{f:'F2'});T(V,y,r,11,{f:'F2',al:'r'});Ln(X,y+9,V+22,1,ink)};
+hd(112,'CARRIER FLEET','UNIT');row(144,'Private Carrier',nf(D.p));row(170,'Common Carrier',nf(D.e));row(196,'International Freight Carrier',nf(D.x));
+Ln(X,206,V+22);row(226,'Total Carrier',nf(arm(D)),{f:'F2',lf:'F2',sg:'+'});
+hd(276,'INVENTORY','QTY (CTN)');row(308,'Beginning Inventory (07:00)',nf(D.s));row(334,'Inbound Production',nf(D.i));
+Ln(X,344,V+22);row(364,'Available Inventory',nf(D.s+D.i),{f:'F2',lf:'F2',sg:'+'});
+row(414,'Outbound Logistics',nf(D.o),{c:rd});
+Ln(X,424,V+22);row(444,'Ending Inventory',nf(sis),{f:'F2',lf:'F2',sg:'-'})}
+const NX=375,EX=395,KX=630,QX=770,hy=112;
+T(NX,hy,'NO',11,{f:'F2',al:'c'});T(EX,hy,'CARRIER',11,{f:'F2'});T(KX,hy,'DESTINATION',11,{f:'F2'});T(QX,hy,'QTY (UNIT)',11,{f:'F2',al:'c'});Ln(350,hy+9,PW-40,1,ink);
 let y=hy+32;
 if(!sh.length)T(EX,y,'Tidak ada pengiriman pada tanggal ini.',11,{c:gr});
 ch.forEach((r,i)=>{const no=pi*cap+i+1,nm=String(r[0]).toUpperCase(),nmx=nm.length>34?nm.slice(0,33)+'.':nm;
 T(NX,y,String(no),10.5,{al:'c'});T(EX,y,nmx,10.5);T(KX,y,String(r[1]).toUpperCase().slice(0,22),10.5);T(QX,y,String(r[2]),10.5,{al:'c'});Ln(350,y+7,PW-40,.4);y+=23});
 if(last){Ln(350,y-12,PW-40,1,ink);T(KX,y+6,'TOTAL',11,{f:'F2'});T(QX,y+6,String(tot),11,{f:'F2',al:'c'})}
-T(PW-40,PH-34,'Update : '+dt+' ; '+(D.u||'-'),9,{f:'F3',al:'r',c:gr});
+const fy=PH-50;Ln(40,fy,PW-40,.6);
+c.push(`0.1 0.55 0.3 RG 1.6 w 41 ${PH-(fy+14)} m 45 ${PH-(fy+18)} l 52 ${PH-(fy+8)} l S`);
+T(60,fy+17,'Validated by Distribusi App',10,{f:'F2'});
+T(60,fy+30,'Kode validasi: '+vc+'  |  Dibuat otomatis: '+gen,8,{c:gr});
+T(PW-40,fy+17,'Update : '+dt+' ; '+(D.u||'-'),9,{f:'F3',al:'r',c:gr});
 out.push(c.join('\n'))});
 return out}
 function makePdf(D){const pg=pdfPages(D),o=[];
