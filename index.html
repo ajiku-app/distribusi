@@ -148,15 +148,10 @@ h1{margin:2px 0 0;font-size:30px;line-height:1.12;font-weight:600;letter-spacing
 <script>
 const $=s=>document.querySelector(s),REG=['Jawa','Sumatera','Lainnya','Ekspor'];
 const J='Jawa',S_='Sumatera',L='Lainnya',E='Ekspor';
-const SEED=[
-{d:'2026-10-01',u:'14:46',p:9,e:12,x:3,s:524226,i:34055,o:18273,sh:[['Eureka Logistics, PT','Pondok Kacang (DKI)',2,J],['Yudha Antar Nusa, PT','Banjarmasin',1,L],['Mandiri Makmur Sempurna, PT','Cirebon',1,J],['Sarana Trans Sumatera, PT','Pekanbaru',3,S_],['Sarana Trans Sumatera, PT','Medan',4,S_],['Bhakti Abadi Sejahtera, PT','Semarang',1,J],['Menara Lautan Semesta, PT','Korea',3,E]]},
-{d:'2026-10-02',u:'16:45',p:9,e:21,x:1,s:533167,i:30734,o:29099,sh:[['Bhakti Abadi Sejahtera, PT','Solo',1,J],['Bhakti Abadi Sejahtera, PT','Yogyakarta',1,J],['Crieta, PT','Batam',1,S_],['Eureka Logistics, PT','Cileungsi',2,J],['Eureka Logistics, PT','Purwokerto',2,J],['Mandiri Makmur Sempurna, PT','Bandung',6,J],['Natan Ekspress, CV','Lampung',1,S_],['Sarana Trans Sumatera, PT','Medan',5,S_],['TPIL Logistics, PT','Abepura',1,L],['Yudha Antar Nusa, PT','Pontianak',1,L],['Nusa Optimal Sejahtera, PT','Cambodia',1,E]]},
-{d:'2026-10-03',u:'16:07',p:0,e:17,x:0,s:517490,i:0,o:25551,sh:[['Crieta, PT','Palu',1,L],['Hoki Sejahtera Bersama, CV','Palembang',2,S_],['Hoki Sejahtera Bersama, CV','Pekanbaru',1,S_],['Mandiri Makmur Sempurna, PT','Bandung',4,J],['Moda Daya Trasindo, PT','Bandung',5,J],['Yudha Antar Nusa, PT','Kapuas',1,L],['Yudha Antar Nusa, PT','Makasar',1,L],['Yudha Antar Nusa, PT','Manado',1,L],['Yudha Antar Nusa, PT','Palopo',1,L]]}];
-const ld=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))||f}catch(e){return f}};
-const S={days:ld('dm_days',SEED),done:ld('dm_done',{}),tab:'home',lp:0,top:0,cap:+localStorage.dm_cap||400000,date:0,region:'Semua',metric:'o',in:!!(localStorage.dm_in&&localStorage.dm_user),auth:'welcome',user:localStorage.dm_user||''};
-S.date=S.days.length-1;
-const save=()=>{localStorage.dm_days=JSON.stringify(S.days);localStorage.dm_done=JSON.stringify(S.done)};
-const logA=(a,d,u,m)=>{try{const L=ld('dm_log',[]);L.unshift({t:Date.now(),u:u??S.user,m:m??(localStorage.dm_email||''),a,d:d||''});localStorage.dm_log=JSON.stringify(L.slice(0,1000))}catch(e){}};
+const S={days:[],done:{},tab:'home',lp:0,top:0,cap:400000,date:0,region:'Semua',metric:'o',in:false,auth:'welcome',user:'',em:'',uid:'',role:'user',st:'',log:[],users:[],busy:true};
+const DB=()=>window.DB;
+const dbe=(r,m)=>{if(r&&r.error){alert((m||'Gagal menyimpan')+': '+(r.error.message||'kesalahan server'));return true}return false};
+const logA=async(a,d)=>{try{if(S.st==='approved')await DB().from('activity_log').insert({a,d:d||'',nama:S.user,email:S.em})}catch(e){}};
 const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=n=>(+n||0).toLocaleString('id-ID'),dm=d=>d.slice(8)+'/'+d.slice(5,7);
 const sisa=x=>x.s+x.i-x.o,units=x=>x.sh.reduce((a,r)=>a+r[2],0),arm=x=>x.p+x.e+x.x;
@@ -226,9 +221,9 @@ return h+I.map(([c,t,x])=>`<div class="card" style="padding:14px 16px"><span cla
 
 const LG={login:['Masuk','i'],signup:['Daftar','i'],logout:['Keluar','i'],fail:['Gagal masuk','w'],data:['Data harian','g'],done:['Pengiriman','g'],pdf:['Bagikan PDF','g']};
 const PG=10,p2=n=>String(n).padStart(2,'0'),ft=t=>{const x=new Date(t);return p2(x.getDate())+'/'+p2(x.getMonth()+1)+'/'+String(x.getFullYear()).slice(2)+' '+p2(x.getHours())+':'+p2(x.getMinutes())};
-function actv(){const L=ld('dm_log',[]),n=L.length,pages=Math.max(1,Math.ceil(n/PG));S.lp=Math.min(Math.max(S.lp,0),pages-1);
+function actv(){const L=S.log,n=L.length,pages=Math.max(1,Math.ceil(n/PG));S.lp=Math.min(Math.max(S.lp,0),pages-1);
 const sl=L.slice(S.lp*PG,S.lp*PG+PG);
-return `<div class="lbl">${n} aktivitas tercatat · hanya dari perangkat ini</div>`+(n?sl.map(e=>{const g=LG[e.a]||[e.a,'i'];return `<div class="card" style="padding:14px 16px"><div class="row" style="padding:0"><span class="tag ${g[1]}">${esc(g[0])}</span><span class="lbl">${ft(e.t)}</span></div><div style="font-weight:600;margin:8px 0 2px">${esc(e.d||g[0])}</div><div class="lbl">${esc(e.u||'Tidak dikenal')}${e.m?' · '+esc(e.m):''}</div></div>`}).join(''):'<div class="card lbl" style="text-align:center">Belum ada aktivitas tercatat.</div>')+
+return `<div class="lbl">${n} aktivitas tercatat · ${S.role==='admin'?'semua pengguna':'milik Anda'}</div>`+(n?sl.map(e=>{const g=LG[e.a]||[e.a,'i'];return `<div class="card" style="padding:14px 16px"><div class="row" style="padding:0"><span class="tag ${g[1]}">${esc(g[0])}</span><span class="lbl">${ft(e.t)}</span></div><div style="font-weight:600;margin:8px 0 2px">${esc(e.d||g[0])}</div><div class="lbl">${esc(e.u||'Tidak dikenal')}${e.m?' · '+esc(e.m):''}</div></div>`}).join(''):'<div class="card lbl" style="text-align:center">Belum ada aktivitas tercatat.</div>')+
 `<div class="pgr"><button class="pgb" data-a="lp" data-v="-1" ${S.lp<=0?'disabled':''}>‹ Sebelumnya</button><span class="lbl">Hal ${S.lp+1} dari ${pages}</span><button class="pgb" data-a="lp" data-v="1" ${S.lp>=pages-1?'disabled':''}>Berikutnya ›</button></div>`}
 
 const ttl={home:['Selamat datang','Ringkasan harian'],ship:['','Pengiriman ekspedisi'],hist:['Tujuh hari terakhir','Riwayat'],ana:['Tujuh hari terakhir','Trend & analisa'],act:['Siapa melakukan apa','Log aktivitas']};
@@ -238,9 +233,11 @@ const authForm=m=>{const su=m==='signup';return `<div class="login"><button clas
 <form class="lf" data-f="${m}" novalidate>${su?'<label>Nama<input name="nm" autocomplete="name" placeholder="Nama lengkap"></label>':''}<label>Email<input name="em" type="email" autocomplete="email" autocapitalize="none" inputmode="email" placeholder="nama@perusahaan.com"></label><label>Kata sandi<span class="pw"><input name="pw" type="password" autocomplete="${su?'new-password':'current-password'}" placeholder="${su?'Minimal 6 karakter':'Kata sandi'}"><button type="button" data-a="eye">Lihat</button></span></label>${su?'<label>Ulangi kata sandi<input name="pw2" type="password" autocomplete="new-password" placeholder="Ketik ulang kata sandi"></label>':''}<div id="err" role="alert"></div><button class="lb p" type="submit" style="margin-top:0">${su?'Daftar':'Masuk'} ${arrow}</button></form>
 <div style="flex:1;min-height:16px"></div><button class="lb" style="background:none;border:0;justify-content:center;color:var(--mut);font-weight:400;min-height:44px" data-a="auth" data-v="${su?'login':'signup'}">${su?'Sudah punya akun? Masuk':'Belum punya akun? Daftar'}</button></div>`};
 function draw(){const A=$('#app');
+if(S.busy){A.innerHTML='<div class="login"><div style="flex:1"></div><p class="lbl" style="text-align:center">Memuat…</p><div style="flex:1"></div></div>';return}
 if(!S.in){A.innerHTML=S.auth==='welcome'?welcome():authForm(S.auth);return}
-const y=($('.main')||{}).scrollTop||0,D=S.days[S.date],t=ttl[S.tab],sub=esc(S.tab==='ship'?dm(D.d)+'/'+D.d.slice(2,4)+' · '+D.sh.length+' rute':S.tab==='home'&&S.user?'Selamat datang, '+S.user:t[0]);
-const ini=inits(),body=S.tab==='home'?home(D):S.tab==='ship'?ship(D):S.tab==='hist'?hist():S.tab==='act'?actv():ana();
+if(S.st!=='approved'){A.innerHTML=pending();return}
+const y=($('.main')||{}).scrollTop||0,D=S.days[S.date],t=ttl[S.tab],sub=esc(S.tab==='ship'&&D?dm(D.d)+'/'+D.d.slice(2,4)+' · '+D.sh.length+' rute':S.tab==='home'&&S.user?'Selamat datang, '+S.user:t[0]);
+const ini=inits(),body=!D&&S.tab!=='act'?empty():S.tab==='home'?home(D):S.tab==='ship'?ship(D):S.tab==='hist'?hist():S.tab==='act'?actv():ana();
 A.innerHTML=`<div class="hd"><div class="top"><button class="av" data-a="acct" aria-label="Akun"><span class="avi">${ini?esc(ini):svg(IC.us,20)}</span></button></div><div class="eb">${sub}</div><h1>${t[1]}</h1></div><div class="main">${body}</div>
 <div class="dock"><nav class="tabs">${[['home','Beranda'],['ship','Pengiriman'],['hist','Riwayat'],['ana','Analisa'],['act','Aktivitas']].map(([k,n])=>`<button class="tab ${S.tab==k?'on':''}" data-a="tab" data-v="${k}">${svg(IC[k],20)}${n}</button>`).join('')}</nav>${S.tab==='home'||S.tab==='ship'?'<button class="fab" data-a="form" aria-label="Tambah data harian"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>':''}</div>`;
 $('.main').scrollTop=S.top?0:y;S.top=0}
@@ -252,16 +249,21 @@ function form(){sheet(`<h2>Tambah data harian</h2><div class="f"><label>Tanggal<
 function saveF(){const g=i=>+$('#'+i).value||0,d=$('#fd').value;if(!d){alert('Isi tanggal terlebih dahulu.');return}
 const sh=[...document.querySelectorAll('#rows .sr')].map(r=>{const i=r.querySelectorAll('input'),s=r.querySelector('select');return[i[0].value.trim(),i[1].value.trim(),+i[2].value||0,s.value]}).filter(r=>r[0]&&r[1]&&r[2]>0);
 const x={d,u:$('#fu').value,p:g('fp'),e:g('fe'),x:g('fx'),s:g('fs'),i:g('fi'),o:g('fo'),sh};
-const ex=S.days.some(y=>y.d===d);S.days=S.days.filter(y=>y.d!==d).concat(x).sort((a,b)=>a.d<b.d?-1:1);logA('data',(ex?'Memperbarui':'Menambah')+' data harian '+dm(d)+'/'+d.slice(2,4)+' · Outbound Logistics '+fmt(x.o)+' · '+sh.length+' rute');S.date=S.days.findIndex(y=>y.d===d);S.tab='home';save();closeS();draw()}
-const A={tab:v=>{S.tab=v;if(v==='act'){S.lp=0;S.top=1}},lp:v=>{S.lp+=+v;S.top=1},date:v=>S.date=+v,region:v=>S.region=v,metric:v=>S.metric=v,done:v=>{S.done[v]=!S.done[v];save();const d=v.slice(0,10),r=((S.days.find(x=>x.d===d)||{}).sh||[])[+v.slice(11)];logA('done',(S.done[v]?'Menandai terkirim: ':'Membatalkan tanda terkirim: ')+(r?r[0]+' → '+r[1]:v)+' ('+dm(d)+'/'+d.slice(2,4)+')')},auth:v=>S.auth=v,eye:(v,t)=>{const i=t.parentNode.querySelector('input');i.type=i.type==='password'?'text':'password';t.textContent=i.type==='password'?'Lihat':'Sembunyi'},close:closeS,form,save:saveF,
+const ex=S.days.some(y=>y.d===d);
+DB().from('days').upsert({d,u:x.u,p:x.p,e:x.e,x:x.x,s:x.s,i:x.i,o:x.o,sh:x.sh},{onConflict:'d'}).then(r=>{if(dbe(r))return;S.days=S.days.filter(y=>y.d!==d).concat(x).sort((a,b)=>a.d<b.d?-1:1);logA('data',(ex?'Memperbarui':'Menambah')+' data harian '+dm(d)+'/'+d.slice(2,4)+' · Outbound Logistics '+fmt(x.o)+' · '+sh.length+' rute');S.date=S.days.findIndex(y=>y.d===d);S.tab='home';closeS();draw()})}
+const A={tab:v=>{S.tab=v;if(v==='act'){S.lp=0;S.top=1;loadLog()}},lp:v=>{S.lp+=+v;S.top=1},date:v=>S.date=+v,region:v=>S.region=v,metric:v=>S.metric=v,done:v=>{S.done[v]=!S.done[v];dbDone(v);const d=v.slice(0,10),r=((S.days.find(x=>x.d===d)||{}).sh||[])[+v.slice(11)];logA('done',(S.done[v]?'Menandai terkirim: ':'Membatalkan tanda terkirim: ')+(r?r[0]+' → '+r[1]:v)+' ('+dm(d)+'/'+d.slice(2,4)+')')},auth:v=>S.auth=v,eye:(v,t)=>{const i=t.parentNode.querySelector('input');i.type=i.type==='password'?'text':'password';t.textContent=i.type==='password'?'Lihat':'Sembunyi'},close:closeS,form,save:saveF,
 addrow:()=>$('#rows').insertAdjacentHTML('beforeend',rowH([])),
 sharepdf:()=>{const D=S.days[S.date];if(D)logA('pdf','Bagikan PDF tanggal '+dm(D.d)+'/'+D.d.slice(2,4));sharePdf()},
-cap:()=>sheet(`<h2>Kapasitas Whs FG</h2><div class="f" style="grid-template-columns:1fr"><label>Kapasitas (ctn)<input id="fc" type="number" min="1" inputmode="numeric" value="${S.cap}"></label></div><div class="cp">Stok over/under dihitung dari sisa stok setelah Outbound Logistics dibanding kapasitas ini.</div><button class="btn fill" data-a="capsave">Simpan</button><button class="btn" style="margin-top:8px;border-color:#262B3D;color:var(--mut)" data-a="close">Batal</button>`),
-capsave:()=>{const n=Math.round(+$('#fc').value);if(!(n>0)){alert('Isi kapasitas dengan angka lebih dari 0.');return}const o=S.cap;S.cap=n;localStorage.dm_cap=n;if(n!==o)logA('data','Mengubah kapasitas Whs FG: '+fmt(o)+' → '+fmt(n)+' ctn');closeS()},
+cap:()=>S.role!=='admin'?alert('Hanya admin yang dapat mengubah kapasitas.'):sheet(`<h2>Kapasitas Whs FG</h2><div class="f" style="grid-template-columns:1fr"><label>Kapasitas (ctn)<input id="fc" type="number" min="1" inputmode="numeric" value="${S.cap}"></label></div><div class="cp">Stok over/under dihitung dari sisa stok setelah Outbound Logistics dibanding kapasitas ini.</div><button class="btn fill" data-a="capsave">Simpan</button><button class="btn" style="margin-top:8px;border-color:#262B3D;color:var(--mut)" data-a="close">Batal</button>`),
+capsave:()=>{const n=Math.round(+$('#fc').value);if(!(n>0)){alert('Isi kapasitas dengan angka lebih dari 0.');return}const o=S.cap;S.cap=n;dbCap(n);if(n!==o)logA('data','Mengubah kapasitas Whs FG: '+fmt(o)+' → '+fmt(n)+' ctn');closeS()},
 pick:k=>{const p=OPT[k]();sheet(`<h2>${p.t}</h2>`+p.o.map(([v,t])=>`<button class="opt ${v==p.cur?'on':''}" data-a="set" data-k="${k}" data-v="${esc(v)}"><span>${esc(t)}</span>${v==p.cur?CK:''}</button>`).join(''));const e=document.querySelector('.opt.on');if(e)e.scrollIntoView({block:'center'})},
 set:(v,t)=>{const k=t.dataset.k;if(k==='date')S.date=+v;else if(k==='region')S.region=v;else S.metric=v;closeS()},
-acct:()=>sheet(`<h2>Akun</h2><div class="card" style="display:flex;align-items:center;gap:14px"><div class="av" style="cursor:default"><span class="avi">${inits()?esc(inits()):svg(IC.us,20)}</span></div><div style="min-width:0"><div style="font-weight:600">${esc(S.user)}</div><div class="lbl">Masuk dengan akun</div></div></div><button class="btn red" style="margin-top:14px" data-a="logout">Keluar</button><button class="btn" style="margin-top:8px;border-color:#262B3D;color:var(--mut)" data-a="close">Batal</button>`),
-logout:()=>{logA('logout','Keluar dari aplikasi');closeS();localStorage.removeItem('dm_in');localStorage.removeItem('dm_user');localStorage.removeItem('dm_email');S.in=false;S.user='';S.auth='welcome';S.tab='home'},};
+acct:()=>sheet(`<h2>Akun</h2><div class="card" style="display:flex;align-items:center;gap:14px"><div class="av" style="cursor:default"><span class="avi">${inits()?esc(inits()):svg(IC.us,20)}</span></div><div style="min-width:0"><div style="font-weight:600">${esc(S.user)}</div><div class="lbl">${S.role==='admin'?'Admin':'Pengguna'} · ${esc(S.em)}</div></div></div>${S.role==='admin'?'<button class="btn" style="margin-top:14px" data-a="users">Kelola pengguna</button>':''}<button class="btn red" style="margin-top:14px" data-a="logout">Keluar</button><button class="btn" style="margin-top:8px;border-color:#262B3D;color:var(--mut)" data-a="close">Batal</button>`),
+logout:async()=>{await logA('logout','Keluar dari aplikasi');closeS();try{await DB().auth.signOut()}catch(e){}Object.assign(S,{in:false,user:'',em:'',uid:'',role:'user',st:'',days:[],done:{},log:[],auth:'welcome',tab:'home'});draw()},
+recheck:async()=>{S.busy=true;draw();await enter();S.busy=false;draw()},
+users:async()=>{const r=await DB().from('profiles').select('*').order('created_at');if(dbe(r,'Gagal memuat pengguna'))return;S.users=r.data;uSheet()},
+usr:async v=>{const[id,f,val]=v.split('|');const r=await DB().from('profiles').update({[f]:val}).eq('user_id',id);if(dbe(r))return;const u=S.users.find(x=>x.user_id===id);if(u){u[f]=val;logA('data','Mengubah pengguna '+u.nama+': '+f+' → '+val)}uSheet()},
+};
 document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a;if(!A[a])return;A[a](t.dataset.v,t);if(!['addrow','form','eye','sharepdf','pick','acct','cap'].includes(a))draw()});
 document.addEventListener('scroll',e=>{const t=e.target;if(t.classList&&t.classList.contains('stack')){const d=t.nextElementSibling;if(d&&d.classList.contains('dots')){const k=t.scrollLeft>(t.scrollWidth-t.clientWidth)/2?1:0;[...d.children].forEach((x,i)=>x.classList.toggle('on',i===k))}}},true);
 $('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet')closeS()});
@@ -324,21 +326,48 @@ async function sharePdf(){const D=S.days[S.date];if(!D)return;
 const blob=makePdf(D),nm='distribusi-'+D.d+'.pdf',file=new File([blob],nm,{type:'application/pdf'});
 if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:'Distribusi '+dm(D.d)+'/'+D.d.slice(2,4)});return}catch(e){if(e&&e.name==='AbortError')return}}
 const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=nm;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
-const enc=new TextEncoder();
-async function hp(pw,salt){if(!(window.crypto&&crypto.subtle))return btoa(salt+pw);const k=await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveBits']),b=await crypto.subtle.deriveBits({name:'PBKDF2',salt:enc.encode(salt),iterations:120000,hash:'SHA-256'},k,256);return btoa(String.fromCharCode(...new Uint8Array(b)))}
-const okIn=(n,em,ty)=>{localStorage.dm_in=1;localStorage.dm_user=n;localStorage.dm_email=em;S.user=n;S.in=true;S.tab='home';logA(ty,ty==='signup'?'Membuat akun baru':'Masuk ke aplikasi',n,em);draw()};
+const dbDone=async k=>{const r=await DB().from('done').upsert({k,v:!!S.done[k]},{onConflict:'k'});if(r.error){S.done[k]=!S.done[k];alert('Gagal menyimpan: '+r.error.message);draw()}};
+const dbCap=async n=>{const r=await DB().from('settings').upsert({k:'cap',v:String(n)},{onConflict:'k'});dbe(r)};
+async function loadAll(first){const c=DB(),[d,k,t]=await Promise.all([c.from('days').select('*').order('d'),c.from('done').select('k').eq('v',true),c.from('settings').select('*').eq('k','cap')]);
+const er=d.error||k.error;if(er){alert('Gagal memuat data: '+er.message);return}
+S.days=d.data.map(r=>({d:r.d,u:r.u||'',p:r.p,e:r.e,x:r.x,s:r.s,i:r.i,o:r.o,sh:r.sh||[]}));S.done={};k.data.forEach(r=>S.done[r.k]=true);
+if(t.data&&t.data[0])S.cap=+t.data[0].v||400000;
+S.date=first?S.days.length-1:Math.min(S.date,S.days.length-1);if(S.date<0)S.date=0}
+async function loadLog(){const r=await DB().from('activity_log').select('*').order('t',{ascending:false}).limit(1000);if(r.error)return;S.log=r.data.map(x=>({t:Date.parse(x.t),u:x.nama,m:x.email,a:x.a,d:x.d}));if(S.tab==='act')draw()}
+async function enter(ty){const g=await DB().auth.getSession(),u=g.data&&(g.data.user||(g.data.session&&g.data.session.user));if(!u)return false;
+S.uid=u.id;S.em=u.email;S.user=u.name||u.email;
+let p=await DB().from('profiles').select('*').eq('user_id',u.id).maybeSingle();
+if(!p.error&&!p.data)p=await DB().from('profiles').insert({nama:S.user,email:S.em}).select().single();
+if(p.error||!p.data){alert('Gagal memuat profil: '+((p.error&&p.error.message)||''));return false}
+S.role=p.data.role;S.st=p.data.status;S.in=true;
+if(S.st==='approved'){await loadAll(true);if(ty)logA(ty,ty==='signup'?'Membuat akun baru':'Masuk ke aplikasi')}
+S.tab='home';return true}
+async function boot(){try{if(DB())await enter()}catch(e){console.error(e)}S.busy=false;draw()}
+window.boot=boot;
+const empty=()=>'<div class="card lbl" style="text-align:center">Belum ada data. Tekan tombol + untuk menambah data harian.</div>';
+const pending=()=>`<div class="login"><div style="flex:1"></div><h1 style="font-size:30px">${S.st==='rejected'?'Akun dinonaktifkan':'Menunggu persetujuan'}</h1><p class="lbl" style="font-size:15px;margin:10px 0 24px">${S.st==='rejected'?'Hubungi admin untuk mengaktifkan kembali akun Anda.':'Akun Anda sudah terdaftar. Admin perlu menyetujui dulu sebelum Anda bisa melihat data.'}</p><button class="lb p" data-a="recheck">Periksa lagi</button><button class="lb" style="background:none;border:0;justify-content:center;color:var(--mut);min-height:44px" data-a="logout">Keluar</button></div>`;
+const uSheet=()=>sheet('<h2>Pengguna</h2>'+S.users.map(u=>{const me=u.user_id===S.uid,b=(l,f,v)=>`<button class="btn" style="margin-top:8px" data-a="usr" data-v="${esc(u.user_id)}|${f}|${v}">${l}</button>`;return `<div class="card" style="margin-bottom:10px"><b>${esc(u.nama)}</b><div class="lbl">${esc(u.email)} · ${u.role==='admin'?'Admin':'Pengguna'} · ${u.status==='approved'?'Aktif':u.status==='pending'?'Menunggu':'Nonaktif'}</div>${me?'':(u.status!=='approved'?b('Setujui','status','approved'):b('Nonaktifkan','status','rejected')+(u.role==='user'?b('Jadikan admin','role','admin'):b('Jadikan pengguna biasa','role','user')))}</div>`}).join('')+'<button class="btn" style="border-color:#262B3D;color:var(--mut)" data-a="close">Tutup</button>');
+document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='visible'&&S.in&&S.st==='approved'){await loadAll();draw()}});
 document.addEventListener('submit',async e=>{e.preventDefault();const f=e.target,m=f.dataset.f;if(!m)return;
-const em=f.em.value.trim().toLowerCase(),pw=f.pw.value,er=$('#err'),acc=ld('dm_acc',{});
+const em=f.em.value.trim().toLowerCase(),pw=f.pw.value,er=$('#err');
 if(!/^\S+@\S+\.\S+$/.test(em)){er.textContent='Format email belum benar.';return}
 if(!pw){er.textContent='Isi kata sandi.';return}
-if(m==='signup'){const nm=f.nm.value.trim();
-if(!nm){er.textContent='Isi nama Anda.';return}
-if(pw.length<6){er.textContent='Kata sandi minimal 6 karakter.';return}
-if(pw!==f.pw2.value){er.textContent='Konfirmasi kata sandi tidak sama.';return}
-if(acc[em]){er.textContent='Email ini sudah terdaftar. Silakan masuk.';return}
-const salt=(crypto.randomUUID?crypto.randomUUID():String(Math.random()));
-acc[em]={n:nm,s:salt,h:await hp(pw,salt)};localStorage.dm_acc=JSON.stringify(acc);okIn(nm,em,'signup')}
-else{const a=acc[em];if(!a||a.h!==await hp(pw,a.s)){logA('fail','Percobaan masuk gagal','',em);er.textContent='Email atau kata sandi salah.';return}okIn(a.n,em,'login')}});
+const nm=m==='signup'?f.nm.value.trim():'';
+if(m==='signup'){if(!nm){er.textContent='Isi nama Anda.';return}
+if(pw.length<8){er.textContent='Kata sandi minimal 8 karakter.';return}
+if(pw!==f.pw2.value){er.textContent='Konfirmasi kata sandi tidak sama.';return}}
+if(!DB()){er.textContent='Tidak bisa terhubung ke server. Periksa koneksi internet.';return}
+const b=f.querySelector('button[type=submit]');b.disabled=true;er.textContent='';
+try{let r;
+if(m==='signup'){r=await DB().auth.signUp.email({email:em,password:pw,name:nm});if(r.error){er.textContent=r.error.message||'Gagal mendaftar.';return}}
+else{r=await DB().auth.signIn.email({email:em,password:pw});if(r.error){er.textContent='Email atau kata sandi salah.';return}}
+if(!(await enter(m))){r=await DB().auth.signIn.email({email:em,password:pw});if(r.error||!(await enter(m))){er.textContent='Gagal masuk. Coba lagi.';return}}
+draw()}catch(x){console.error(x);er.textContent='Tidak bisa terhubung ke server.'}finally{b.disabled=false}});
 draw();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+<script type="module">
+try{const{createClient}=await import('https://esm.sh/@neondatabase/neon-js@0.7.0-beta');
+window.DB=createClient({auth:{url:'https://ep-sweet-violet-b3cm8n6p.neonauth.c-4.ap-southeast-1.aws.neon.tech/neondb/auth'},dataApi:{url:'https://ep-sweet-violet-b3cm8n6p.apirest.c-4.ap-southeast-1.aws.neon.tech/neondb/rest/v1'}})}catch(e){console.error(e);window.DB=null}
+window.boot()
 </script></body></html>
