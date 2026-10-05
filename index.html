@@ -356,18 +356,18 @@ const nm=m==='signup'?f.nm.value.trim():'';
 if(m==='signup'){if(!nm){er.textContent='Isi nama Anda.';return}
 if(pw.length<8){er.textContent='Kata sandi minimal 8 karakter.';return}
 if(pw!==f.pw2.value){er.textContent='Konfirmasi kata sandi tidak sama.';return}}
-if(!DB()){er.textContent='Tidak bisa terhubung ke server. Periksa koneksi internet.';return}
+if(!DB()){er.textContent='Pustaka Neon gagal dimuat'+(window.DBERR?' ('+window.DBERR+')':' (file neon.js tidak ditemukan di repo?)')+'.';return}
 const b=f.querySelector('button[type=submit]');b.disabled=true;er.textContent='';
 try{let r;
 if(m==='signup'){r=await DB().auth.signUp.email({email:em,password:pw,name:nm});if(r.error){er.textContent=r.error.message||'Gagal mendaftar.';return}}
 else{r=await DB().auth.signIn.email({email:em,password:pw});if(r.error){er.textContent='Email atau kata sandi salah.';return}}
 if(!(await enter(m))){r=await DB().auth.signIn.email({email:em,password:pw});if(r.error||!(await enter(m))){er.textContent='Gagal masuk. Coba lagi.';return}}
-draw()}catch(x){console.error(x);er.textContent='Tidak bisa terhubung ke server.'}finally{b.disabled=false}});
+draw()}catch(x){console.error(x);er.textContent='Tidak bisa terhubung ke server ('+(x&&x.message||x)+').'}finally{b.disabled=false}});
 draw();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
-<script type="module">
-try{const{createClient}=await import('https://esm.sh/@neondatabase/neon-js@0.7.0-beta');
-window.DB=createClient({auth:{url:'https://ep-sweet-violet-b3cm8n6p.neonauth.c-4.ap-southeast-1.aws.neon.tech/neondb/auth'},dataApi:{url:'https://ep-sweet-violet-b3cm8n6p.apirest.c-4.ap-southeast-1.aws.neon.tech/neondb/rest/v1'}})}catch(e){console.error(e);window.DB=null}
+<script src="neon.js"></script>
+<script>
+try{window.DB=NeonJS.createClient({auth:{url:'https://ep-sweet-violet-b3cm8n6p.neonauth.c-4.ap-southeast-1.aws.neon.tech/neondb/auth'},dataApi:{url:'https://ep-sweet-violet-b3cm8n6p.apirest.c-4.ap-southeast-1.aws.neon.tech/neondb/rest/v1'}})}catch(e){console.error(e);window.DBERR=String(e&&e.message||e);window.DB=null}
 window.boot()
 </script></body></html>
