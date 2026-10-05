@@ -374,13 +374,14 @@ if(!DB()){er.textContent='Pustaka Neon gagal dimuat'+(window.DBERR?' ('+window.D
 const b=f.querySelector('button[type=submit]');b.disabled=true;er.textContent='';
 try{const call=async f=>{try{return (await f())||{}}catch(x){return{error:{message:String(x&&x.message||x)}}}},
 net=m=>/failed to fetch|network|load failed|timeout/i.test(m||''),
-su=()=>call(()=>DB().auth.signUp.email({email:em,password:pw,name:nm})),
-si=()=>call(()=>DB().auth.signIn.email({email:em,password:pw}));
+fb=async f=>{let r=await f();if(r.error&&window.DBMODE==='proxy'&&window.mkDB&&!/invalid email|invalid password|incorrect|credential|already|exist|password|too short|too long|salah/i.test(r.error.message||'')){try{window.DB=window.mkDB(window.DIRECT);window.DBMODE='direct';try{localStorage.setItem('dm_auth','direct')}catch(e){}r=await f()}catch(e){}}return r},
+su=()=>fb(()=>call(()=>DB().auth.signUp.email({email:em,password:pw,name:nm}))),
+si=()=>fb(()=>call(()=>DB().auth.signIn.email({email:em,password:pw})));
 let r;
 if(m==='signup'){r=await su();
 if(r.error&&/already|exist|terdaftar/i.test(r.error.message||'')){r=await si();if(r.error){er.textContent=net(r.error.message)?'Tidak bisa terhubung ke server ('+r.error.message+').':'Email ini sudah terdaftar. Silakan Masuk dengan kata sandi yang benar.';return}}
 else if(r.error){er.textContent=net(r.error.message)?'Tidak bisa terhubung ke server ('+r.error.message+').':(r.error.message||'Gagal mendaftar.');return}}
-else{r=await si();if(r.error){er.textContent=net(r.error.message)?'Tidak bisa terhubung ke server ('+r.error.message+').':'Email atau kata sandi salah.';return}}
+else{r=await si();if(r.error){const g=r.error.message||'';er.textContent=net(g)?'Tidak bisa terhubung ke server ('+g+').':(!g||/invalid email or password|invalid password|incorrect|credential|salah/i.test(g))?'Email atau kata sandi salah.':'Login gagal: '+g;return}}
 const hint='signIn='+Object.keys((r&&r.data)||{}).join(',');if(!(await enter(m,hint))){r=await si();if(r.error||!(await enter(m,'ulang '+hint))){er.textContent='Login diterima, tetapi sesi/data belum bisa dibaca. Diagnosa: '+(window.DIAG||'-');return}}
 draw()}catch(x){console.error(x);er.textContent='Terjadi kesalahan: '+(x&&x.message||x)}finally{b.disabled=false}});
 draw();
@@ -388,6 +389,10 @@ if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(
 </script>
 <script src="neon.js"></script>
 <script>
-try{window.DB=NeonJS.createClient({auth:{url:location.origin+'/neonauth'},dataApi:{url:'https://ep-sweet-violet-b3cm8n6p.apirest.c-4.ap-southeast-1.aws.neon.tech/neondb/rest/v1'}})}catch(e){console.error(e);window.DBERR=String(e&&e.message||e);window.DB=null}
+try{window.DAPI='https://ep-sweet-violet-b3cm8n6p.apirest.c-4.ap-southeast-1.aws.neon.tech/neondb/rest/v1';window.DIRECT='https://ep-sweet-violet-b3cm8n6p.neonauth.c-4.ap-southeast-1.aws.neon.tech/neondb/auth';
+window.mkDB=u=>NeonJS.createClient({auth:{url:u},dataApi:{url:window.DAPI}});
+let md=null;try{md=localStorage.getItem('dm_auth')}catch(e){}
+window.DBMODE=md==='direct'?'direct':'proxy';
+window.DB=window.mkDB(window.DBMODE==='direct'?window.DIRECT:location.origin+'/neonauth')}catch(e){console.error(e);window.DBERR=String(e&&e.message||e);window.DB=null}
 window.boot()
 </script></body></html>
