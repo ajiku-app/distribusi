@@ -380,6 +380,6 @@ if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(
 </script>
 <script src="neon.js"></script>
 <script>
-try{window.DB=NeonJS.createClient({auth:{url:'https://ep-sweet-violet-b3cm8n6p.neonauth.c-4.ap-southeast-1.aws.neon.tech/neondb/auth'},dataApi:{url:'https://ep-sweet-violet-b3cm8n6p.apirest.c-4.ap-southeast-1.aws.neon.tech/neondb/rest/v1'}})}catch(e){console.error(e);window.DBERR=String(e&&e.message||e);window.DB=null}
+try{window.DB=NeonJS.createClient({auth:{url:location.origin+'/neonauth'},dataApi:{url:'https://ep-sweet-violet-b3cm8n6p.apirest.c-4.ap-southeast-1.aws.neon.tech/neondb/rest/v1'}})}catch(e){console.error(e);window.DBERR=String(e&&e.message||e);window.DB=null}
 window.boot()
 </script></body></html>
