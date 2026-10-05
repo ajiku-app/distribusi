@@ -62,6 +62,18 @@ h1{margin:2px 0 0;font-size:30px;line-height:1.12;font-weight:600;letter-spacing
 .hc .row{padding:5px 0}
 .pg{display:flex;justify-content:space-between;font-size:13px;margin-top:auto;padding-top:14px}
 .tr{height:8px;border-radius:4px;background:#ffffff26;margin-top:8px;overflow:hidden}
+.cb{position:relative;height:12px;border-radius:6px;background:#ffffff26;margin-top:10px;overflow:hidden}
+.cb i{position:absolute;top:0;bottom:0}
+.cb .b{right:50%;border-radius:6px 0 0 6px}
+.cb .a{left:50%;border-radius:0 6px 6px 0}
+.cb::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:#fff}
+.cb .a,.dot.a{background:#4ADE80}
+.cb .b,.dot.b{background:#FBBF24}
+.ax{display:flex;justify-content:space-between;margin-top:5px;font-size:11px;opacity:.75}
+.lg{display:flex;justify-content:space-between;gap:10px;margin-top:10px;font-size:12.5px}
+.lg>span{display:flex;align-items:center;gap:6px;min-width:0}
+.lg .num{font-weight:600}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex:none}
 .tr i{display:block;height:100%;border-radius:4px;background:#fff}
 .hc:not(.blue) .tr{background:var(--line)}
 .hc:not(.blue) .tr i{background:var(--ac)}
@@ -174,12 +186,12 @@ return `<div class="card"><div class="row" style="padding:0;align-items:center">
 
 function home(D){const key=i=>D.d+'-'+i,dn=D.sh.filter((_,i)=>S.done[key(i)]).length,pct=D.sh.length?Math.round(dn/D.sh.length*100):0;
 const ag={};D.sh.forEach(r=>ag[r[1]]=(ag[r[1]]||0)+r[2]);const top=Object.keys(ag).sort((a,b)=>ag[b]-ag[a]).slice(0,3);
-const tot=D.s+D.i,sp=tot>0?Math.max(0,Math.min(100,Math.round(sisa(D)/tot*100))):0;
+const okS=D.s>0,ip=okS?D.i/D.s*100:0,op=okS?D.o/D.s*100:0,net=ip-op,mx=Math.max(10,Math.ceil(Math.max(ip,op)/5)*5),p1=v=>v.toFixed(1).replace('.',',')+'%',nsg=net>0.05?'+':net<-0.05?'−':'',ncl=net>0.05?'#86EFAC':net<-0.05?'#FDE68A':'#fff',nar=net>0.05?'▲ ':net<-0.05?'▼ ':'';
 const tile=(ic,v,t)=>`<div class="tile"><span class="ic">${svg(IC[ic],18)}</span><div><div class="num" style="font-size:24px">${v}</div><div class="lbl">${t}</div></div></div>`;
 return '<div class="pks">'+dateSel()+'</div>'+`<div class="sec"><b>Hari ini</b></div>
 <div class="stack"><div class="hc blue"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div class="t">Sisa stok setelah Outbound Logistics</div><button class="shi" data-a="sharepdf" aria-label="Bagikan PDF" title="Bagikan PDF">${svg(IC.sh,20)}</button></div><div class="num big">${fmt(sisa(D))}</div>
 <div class="row"><span class="lbl">Beginning Inventory (07:00)</span><span class="num">${fmt(D.s)}</span></div><div class="row"><span class="lbl">+ Inbound Production</span><span class="num">${fmt(D.i)}</span></div><div class="row"><span class="lbl">− Outbound Logistics</span><span class="num">${fmt(D.o)}</span></div>
-<div class="pg"><span>Stok tersisa</span><span class="num">${sp}%</span></div><div class="tr"><i style="width:${sp}%"></i></div></div>
+<div class="pg"><span>Perubahan bersih vs stok pagi</span><b class="num" style="color:${ncl}">${okS?nar+nsg+p1(Math.abs(net)):'–'}</b></div><div class="cb" role="img" aria-label="Inbound +${p1(ip)}, Outbound −${p1(op)} terhadap stok pagi"><i class="b" style="width:${op/mx*50}%;min-width:${op>0?4:0}px"></i><i class="a" style="width:${ip/mx*50}%;min-width:${ip>0?4:0}px"></i></div><div class="ax"><span>−${mx}%</span><span>Stok pagi (100%)</span><span>+${mx}%</span></div><div class="lg"><span><i class="dot a"></i>Inbound <b class="num">${okS?'+'+p1(ip):'–'}</b></span><span><i class="dot b"></i>Outbound <b class="num">${okS?'−'+p1(op):'–'}</b></span></div></div>
 <div class="hc"><div class="t" style="color:var(--mut)">Pengiriman Aktif</div><div class="num big">${dn}<span class="lbl" style="font-size:18px"> / ${D.sh.length}</span></div><div class="lbl">rute sudah terkirim</div>
 <div class="pg"><span>Progres</span><span class="num">${pct}%</span></div><div class="tr"><i style="width:${pct}%"></i></div><button class="btn" style="margin-top:16px" data-a="tab" data-v="ship">Lihat Detail</button></div></div><div class="dots"><i class="on"></i><i></i></div>${capCard(D)}
 <div class="card"><div class="row" style="padding:0"><b>Status Carrier</b><span class="lbl">Total <span class="num" style="color:var(--tx)">${arm(D)}</span></span></div><div class="tiles">${tile('pab',D.p,'Private Carrier')}${tile('ship',D.e,'Common Carrier')}${tile('glb',D.x,'International Freight Carrier')}</div></div>
@@ -229,7 +241,7 @@ function draw(){const A=$('#app');
 if(!S.in){A.innerHTML=S.auth==='welcome'?welcome():authForm(S.auth);return}
 const y=($('.main')||{}).scrollTop||0,D=S.days[S.date],t=ttl[S.tab],sub=esc(S.tab==='ship'?dm(D.d)+'/'+D.d.slice(2,4)+' · '+D.sh.length+' rute':S.tab==='home'&&S.user?'Selamat datang, '+S.user:t[0]);
 const ini=inits(),body=S.tab==='home'?home(D):S.tab==='ship'?ship(D):S.tab==='hist'?hist():S.tab==='act'?actv():ana();
-A.innerHTML=`<div class="hd"><div class="top"><button class="av" data-a="acct" aria-label="Akun"><span class="avi">${ini?esc(ini):svg(IC.us,20)}</span></button><div class="rt"><button class="ib" data-a="acct" aria-label="Keluar">${svg(IC.out,18)}</button></div></div><div class="eb">${sub}</div><h1>${t[1]}</h1></div><div class="main">${body}</div>
+A.innerHTML=`<div class="hd"><div class="top"><button class="av" data-a="acct" aria-label="Akun"><span class="avi">${ini?esc(ini):svg(IC.us,20)}</span></button></div><div class="eb">${sub}</div><h1>${t[1]}</h1></div><div class="main">${body}</div>
 <div class="dock"><nav class="tabs">${[['home','Beranda'],['ship','Pengiriman'],['hist','Riwayat'],['ana','Analisa'],['act','Aktivitas']].map(([k,n])=>`<button class="tab ${S.tab==k?'on':''}" data-a="tab" data-v="${k}">${svg(IC[k],20)}${n}</button>`).join('')}</nav>${S.tab==='home'||S.tab==='ship'?'<button class="fab" data-a="form" aria-label="Tambah data harian"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>':''}</div>`;
 $('.main').scrollTop=S.top?0:y;S.top=0}
 
