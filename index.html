@@ -358,11 +358,17 @@ if(pw.length<8){er.textContent='Kata sandi minimal 8 karakter.';return}
 if(pw!==f.pw2.value){er.textContent='Konfirmasi kata sandi tidak sama.';return}}
 if(!DB()){er.textContent='Pustaka Neon gagal dimuat'+(window.DBERR?' ('+window.DBERR+')':' (file neon.js tidak ditemukan di repo?)')+'.';return}
 const b=f.querySelector('button[type=submit]');b.disabled=true;er.textContent='';
-try{let r;
-if(m==='signup'){r=await DB().auth.signUp.email({email:em,password:pw,name:nm});if(r.error){er.textContent=r.error.message||'Gagal mendaftar.';return}}
-else{r=await DB().auth.signIn.email({email:em,password:pw});if(r.error){er.textContent='Email atau kata sandi salah.';return}}
-if(!(await enter(m))){r=await DB().auth.signIn.email({email:em,password:pw});if(r.error||!(await enter(m))){er.textContent='Gagal masuk. Coba lagi.';return}}
-draw()}catch(x){console.error(x);er.textContent='Tidak bisa terhubung ke server ('+(x&&x.message||x)+').'}finally{b.disabled=false}});
+try{const call=async f=>{try{return (await f())||{}}catch(x){return{error:{message:String(x&&x.message||x)}}}},
+net=m=>/failed to fetch|network|load failed|timeout/i.test(m||''),
+su=()=>call(()=>DB().auth.signUp.email({email:em,password:pw,name:nm})),
+si=()=>call(()=>DB().auth.signIn.email({email:em,password:pw}));
+let r;
+if(m==='signup'){r=await su();
+if(r.error&&/already|exist|terdaftar/i.test(r.error.message||'')){r=await si();if(r.error){er.textContent=net(r.error.message)?'Tidak bisa terhubung ke server ('+r.error.message+').':'Email ini sudah terdaftar. Silakan Masuk dengan kata sandi yang benar.';return}}
+else if(r.error){er.textContent=net(r.error.message)?'Tidak bisa terhubung ke server ('+r.error.message+').':(r.error.message||'Gagal mendaftar.');return}}
+else{r=await si();if(r.error){er.textContent=net(r.error.message)?'Tidak bisa terhubung ke server ('+r.error.message+').':'Email atau kata sandi salah.';return}}
+if(!(await enter(m))){r=await si();if(r.error||!(await enter(m))){er.textContent='Berhasil masuk ke akun, tetapi data belum bisa dimuat. Coba tekan Masuk lagi.';return}}
+draw()}catch(x){console.error(x);er.textContent='Terjadi kesalahan: '+(x&&x.message||x)}finally{b.disabled=false}});
 draw();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
