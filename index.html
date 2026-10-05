@@ -266,7 +266,7 @@ cap:()=>S.role!=='admin'?alert('Hanya admin yang dapat mengubah kapasitas.'):she
 capsave:()=>{const n=Math.round(+$('#fc').value);if(!(n>0)){alert('Isi kapasitas dengan angka lebih dari 0.');return}const o=S.cap;S.cap=n;dbCap(n);if(n!==o)logA('data','Mengubah kapasitas Whs FG: '+fmt(o)+' → '+fmt(n)+' ctn');closeS()},
 pick:k=>{const p=OPT[k]();sheet(`<h2>${p.t}</h2>`+p.o.map(([v,t])=>`<button class="opt ${v==p.cur?'on':''}" data-a="set" data-k="${k}" data-v="${esc(v)}"><span>${esc(t)}</span>${v==p.cur?CK:''}</button>`).join(''));const e=document.querySelector('.opt.on');if(e)e.scrollIntoView({block:'center'})},
 set:(v,t)=>{const k=t.dataset.k;if(k==='date')S.date=+v;else if(k==='region')S.region=v;else S.metric=v;closeS()},
-acct:()=>sheet(`<h2>Akun</h2><div class="card" style="display:flex;align-items:center;gap:14px"><div class="av" style="cursor:default"><span class="avi">${inits()?esc(inits()):svg(IC.us,20)}</span></div><div style="min-width:0"><div style="font-weight:600">${esc(S.user)}</div><div class="lbl">${S.role==='admin'?'Admin':'Pengguna'} · ${esc(S.em)}</div></div></div>${S.role==='admin'?'<button class="btn" style="margin-top:14px" data-a="users">Kelola pengguna</button>':''}<button class="btn red" style="margin-top:14px" data-a="logout">Keluar</button><button class="btn" style="margin-top:8px;border-color:#262B3D;color:var(--mut)" data-a="close">Batal</button>`),
+acct:()=>sheet(`<h2>Akun</h2><div class="card" style="display:flex;align-items:center;gap:14px"><div class="av" style="cursor:default"><span class="avi">${inits()?esc(inits()):svg(IC.us,20)}</span></div><div style="min-width:0"><div style="font-weight:600">${esc(S.user)}</div><div class="lbl">${S.role==='admin'?'Admin':'Pengguna'} · ${esc(S.em)}</div><div class="lbl" style="margin-top:6px;font-size:11px">Jalur login: ${window.DBMODE==='direct'?'langsung':'proxy'} · ${BUILD}</div></div></div>${S.role==='admin'?'<button class="btn" style="margin-top:14px" data-a="users">Kelola pengguna</button>':''}<button class="btn red" style="margin-top:14px" data-a="logout">Keluar</button><button class="btn" style="margin-top:8px;border-color:#262B3D;color:var(--mut)" data-a="close">Batal</button>`),
 logout:async()=>{await logA('logout','Keluar dari aplikasi');closeS();try{await DB().auth.signOut()}catch(e){}Object.assign(S,{in:false,user:'',em:'',uid:'',role:'user',st:'',days:[],done:{},log:[],auth:'welcome',tab:'home'});draw()},
 recheck:async()=>{S.busy=true;draw();await enter();S.busy=false;draw()},
 users:async()=>{const r=await DB().from('profiles').select('*').order('created_at');if(dbe(r,'Gagal memuat pengguna'))return;S.users=r.data;uSheet()},
@@ -343,6 +343,8 @@ S.days=d.data.map(r=>({d:r.d,u:r.u||'',p:r.p,e:r.e,x:r.x,s:r.s,i:r.i,o:r.o,sh:r.
 if(t.data&&t.data[0])S.cap=+t.data[0].v||400000;
 S.date=first?S.days.length-1:Math.min(S.date,S.days.length-1);if(S.date<0)S.date=0}
 async function loadLog(){const r=await DB().from('activity_log').select('*').order('t',{ascending:false}).limit(1000);if(r.error)return;S.log=r.data.map(x=>({t:Date.parse(x.t),u:x.nama,m:x.email,a:x.a,d:x.d}));if(S.tab==='act')draw()}
+const BUILD='2026-10-06a';
+async function probe(){const o=[];for(const[n,u]of[['proxy',location.origin+'/neonauth'],['langsung',window.DIRECT]]){if(!u)continue;for(const p of['/ok','/get-session']){try{const r=await fetch(u+p,{credentials:'include'});o.push(n+p+'='+r.status+':'+(await r.text()).replace(/\s+/g,' ').slice(0,28))}catch(e){o.push(n+p+'=ERR '+(e&&e.message||e))}}}return o.join(' ; ')}
 const uOf=g=>g&&g.data&&(g.data.user||(g.data.session&&g.data.session.user));
 async function enter(ty,hint){const A=DB().auth;let g,u,why='';
 try{g=await A.getSession();u=uOf(g)}catch(x){why+=' getSession: '+(x&&x.message||x)}
@@ -382,7 +384,7 @@ if(m==='signup'){r=await su();
 if(r.error&&/already|exist|terdaftar/i.test(r.error.message||'')){r=await si();if(r.error){er.textContent=net(r.error.message)?'Tidak bisa terhubung ke server ('+r.error.message+').':'Email ini sudah terdaftar. Silakan Masuk dengan kata sandi yang benar.';return}}
 else if(r.error){er.textContent=net(r.error.message)?'Tidak bisa terhubung ke server ('+r.error.message+').':(r.error.message||'Gagal mendaftar.');return}}
 else{r=await si();if(r.error){const g=r.error.message||'';er.textContent=net(g)?'Tidak bisa terhubung ke server ('+g+').':(!g||/invalid email or password|invalid password|incorrect|credential|salah/i.test(g))?'Email atau kata sandi salah.':'Login gagal: '+g;return}}
-const hint='signIn='+Object.keys((r&&r.data)||{}).join(',');if(!(await enter(m,hint))){r=await si();if(r.error||!(await enter(m,'ulang '+hint))){er.textContent='Login diterima, tetapi sesi/data belum bisa dibaca. Diagnosa: '+(window.DIAG||'-');return}}
+const hint='signIn='+Object.keys((r&&r.data)||{}).join(',');if(!(await enter(m,hint))){r=await si();if(r.error||!(await enter(m,'ulang '+hint))){er.textContent='Memeriksa penyebab…';er.textContent='Login diterima, tetapi sesi/data belum bisa dibaca. Diagnosa: '+(window.DIAG||'-')+' | mode='+window.DBMODE+' | build='+BUILD+' | '+await probe();return}}
 draw()}catch(x){console.error(x);er.textContent='Terjadi kesalahan: '+(x&&x.message||x)}finally{b.disabled=false}});
 draw();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
