@@ -328,8 +328,9 @@ if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.s
 const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=nm;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
 const dbDone=async k=>{const r=await DB().from('done').upsert({k,v:!!S.done[k]},{onConflict:'k'});if(r.error){S.done[k]=!S.done[k];alert('Gagal menyimpan: '+r.error.message);draw()}};
 const dbCap=async n=>{const r=await DB().from('settings').upsert({k:'cap',v:String(n)},{onConflict:'k'});dbe(r)};
-async function loadAll(first){const c=DB(),[d,k,t]=await Promise.all([c.from('days').select('*').order('d'),c.from('done').select('k').eq('v',true),c.from('settings').select('*').eq('k','cap')]);
-const er=d.error||k.error;if(er){alert('Gagal memuat data: '+er.message);return}
+async function loadAll(first){S.loadMsg='';const c=DB();let d,k,t;try{[d,k,t]=await Promise.all([c.from('days').select('*').order('d'),c.from('done').select('k').eq('v',true),c.from('settings').select('*').eq('k','cap')])}catch(x){S.loadMsg='Gagal memuat: '+(x&&x.message||x);return}
+const er=d.error||k.error;if(er){S.loadMsg='Gagal memuat: '+(er.message||er.code||JSON.stringify(er));return}
+if(!d.data||!d.data.length)S.loadMsg='Server mengembalikan 0 baris data harian (kemungkinan izin akses/RLS belum cocok untuk akun ini).';
 S.days=d.data.map(r=>({d:r.d,u:r.u||'',p:r.p,e:r.e,x:r.x,s:r.s,i:r.i,o:r.o,sh:r.sh||[]}));S.done={};k.data.forEach(r=>S.done[r.k]=true);
 if(t.data&&t.data[0])S.cap=+t.data[0].v||400000;
 S.date=first?S.days.length-1:Math.min(S.date,S.days.length-1);if(S.date<0)S.date=0}
@@ -349,7 +350,7 @@ if(S.st==='approved'){await loadAll(true);if(ty)logA(ty,ty==='signup'?'Membuat a
 S.tab='home';return true}
 async function boot(){try{if(DB())await enter()}catch(e){console.error(e)}S.busy=false;draw()}
 window.boot=boot;
-const empty=()=>'<div class="card lbl" style="text-align:center">Belum ada data. Tekan tombol + untuk menambah data harian.</div>';
+const empty=()=>'<div class="card lbl" style="text-align:center">'+(S.loadMsg?esc(S.loadMsg)+'<br><br><button class="btn" data-a="recheck">Muat ulang</button>':'Belum ada data. Tekan tombol + untuk menambah data harian.')+'</div>';
 const pending=()=>`<div class="login"><div style="flex:1"></div><h1 style="font-size:30px">${S.st==='rejected'?'Akun dinonaktifkan':'Menunggu persetujuan'}</h1><p class="lbl" style="font-size:15px;margin:10px 0 24px">${S.st==='rejected'?'Hubungi admin untuk mengaktifkan kembali akun Anda.':'Akun Anda sudah terdaftar. Admin perlu menyetujui dulu sebelum Anda bisa melihat data.'}</p><button class="lb p" data-a="recheck">Periksa lagi</button><button class="lb" style="background:none;border:0;justify-content:center;color:var(--mut);min-height:44px" data-a="logout">Keluar</button></div>`;
 const uSheet=()=>sheet('<h2>Pengguna</h2>'+S.users.map(u=>{const me=u.user_id===S.uid,b=(l,f,v)=>`<button class="btn" style="margin-top:8px" data-a="usr" data-v="${esc(u.user_id)}|${f}|${v}">${l}</button>`;return `<div class="card" style="margin-bottom:10px"><b>${esc(u.nama)}</b><div class="lbl">${esc(u.email)} · ${u.role==='admin'?'Admin':'Pengguna'} · ${u.status==='approved'?'Aktif':u.status==='pending'?'Menunggu':'Nonaktif'}</div>${me?'':(u.status!=='approved'?b('Setujui','status','approved'):b('Nonaktifkan','status','rejected')+(u.role==='user'?b('Jadikan admin','role','admin'):b('Jadikan pengguna biasa','role','user')))}</div>`}).join('')+'<button class="btn" style="border-color:#262B3D;color:var(--mut)" data-a="close">Tutup</button>');
 document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='visible'&&S.in&&S.st==='approved'){await loadAll();draw()}});
