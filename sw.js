@@ -1,4 +1,4 @@
-const C='dm-v36',F=['./','index.html','neon.js','manifest.webmanifest','icon-192.png','icon-512.png'];
+const C='dm-v38',F=['./','index.html','neon.js','manifest.webmanifest','icon-192.png','icon-512.png'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(F)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim())));
 // Hanya file statis milik aplikasi yang di-cache. Login (/api/neonauth) dan data Neon (domain lain) tidak pernah disentuh.
