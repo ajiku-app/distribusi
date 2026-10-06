@@ -1,12 +1,12 @@
 {
+  "rewrites": [
+    { "source": "/api/neonauth/:path*", "destination": "/api/neonauth?p=:path*" }
+  ],
   "headers": [
     {
       "source": "/sw.js",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache"
-        }
+        { "key": "Cache-Control", "value": "no-cache" }
       ]
     }
   ]
