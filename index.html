@@ -183,7 +183,7 @@ function home(D){const key=i=>D.d+'-'+i,dn=D.sh.filter((_,i)=>S.done[key(i)]).le
 const ag={};D.sh.forEach(r=>ag[r[1]]=(ag[r[1]]||0)+r[2]);const top=Object.keys(ag).sort((a,b)=>ag[b]-ag[a]).slice(0,3);
 const okS=D.s>0,ip=okS?D.i/D.s*100:0,op=okS?D.o/D.s*100:0,net=ip-op,mx=Math.max(10,Math.ceil(Math.max(ip,op)/5)*5),p1=v=>v.toFixed(1).replace('.',',')+'%',nsg=net>0.05?'+':net<-0.05?'−':'',ncl=net>0.05?'#86EFAC':net<-0.05?'#FDE68A':'#fff',nar=net>0.05?'▲ ':net<-0.05?'▼ ':'';
 const tile=(ic,v,t)=>`<div class="tile"><span class="ic">${svg(IC[ic],18)}</span><div><div class="num" style="font-size:24px">${v}</div><div class="lbl">${t}</div></div></div>`;
-return '<div class="pks">'+dateSel()+'</div><button class="btn" style="min-height:42px;margin:10px 0 4px;font-size:14px" data-a="rev">Revisi Outbound Logistics</button>'+`<div class="sec"><b>Hari ini</b></div>
+return '<div class="pks">'+dateSel()+'</div><button type="button" data-a="rev" style="display:block;margin:2px 2px 0 auto;padding:6px 2px;min-height:0;width:auto;background:none;border:0;box-shadow:none;color:var(--mut);font-size:11px;font-weight:400;opacity:.55;text-decoration:underline dotted;text-underline-offset:3px;cursor:pointer">Revisi Outbound Logistics</button>'+`<div class="sec"><b>Hari ini</b></div>
 <div class="stack"><div class="hc blue"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div class="t">Sisa stok setelah Outbound Logistics</div><button class="shi" data-a="sharepdf" aria-label="Bagikan PDF" title="Bagikan PDF">${svg(IC.sh,20)}</button></div><div class="num big">${fmt(sisa(D))}</div>
 <div class="row"><span class="lbl">Beginning Inventory (07:00)</span><span class="num">${fmt(D.s)}</span></div><div class="row"><span class="lbl">+ Inbound Production</span><span class="num">${fmt(D.i)}</span></div><div class="row"><span class="lbl">− Outbound Logistics</span><span class="num">${fmt(D.o)}</span></div>
 <div class="pg"><span>Perubahan bersih vs stok pagi</span><b class="num" style="color:${ncl}">${okS?nar+nsg+p1(Math.abs(net)):'–'}</b></div><div class="cb" role="img" aria-label="Inbound +${p1(ip)}, Outbound −${p1(op)} terhadap stok pagi"><i class="b" style="width:${op/mx*50}%;min-width:${op>0?4:0}px"></i><i class="a" style="width:${ip/mx*50}%;min-width:${ip>0?4:0}px"></i></div><div class="ax"><span>−${mx}%</span><span>Stok pagi (100%)</span><span>+${mx}%</span></div><div class="lg"><span><i class="dot a"></i>Inbound <b class="num">${okS?'+'+p1(ip):'–'}</b></span><span><i class="dot b"></i>Outbound <b class="num">${okS?'−'+p1(op):'–'}</b></span></div></div>
@@ -344,8 +344,6 @@ if(t.data&&t.data[0])S.cap=+t.data[0].v||400000;
 S.date=first?S.days.length-1:Math.min(S.date,S.days.length-1);if(S.date<0)S.date=0}
 async function loadLog(){const r=await DB().from('activity_log').select('*').order('t',{ascending:false}).limit(1000);if(r.error)return;S.log=r.data.map(x=>({t:Date.parse(x.t),u:x.nama,m:x.email,a:x.a,d:x.d}));if(S.tab==='act')draw()}
 const BUILD='2026-10-06e';
-async function probe(){const o=[];for(const[n,u]of[['proxy',location.origin+'/api/neonauth'],['langsung',window.DIRECT]]){if(!u)continue;for(const p of['/ok','/get-session']){try{const r=await fetch(u+p,{credentials:'include'});o.push(n+p+'='+r.status+':'+(await r.text()).replace(/\s+/g,' ').slice(0,28))}catch(e){o.push(n+p+'=ERR '+(e&&e.message||e))}}}return o.join(' ; ')}
-async function dbgPost(em){const o=[];const body=JSON.stringify({email:em,password:'x-diag-x'});for(const[n,u]of[['proxy',location.origin+'/api/neonauth'],['langsung',window.DIRECT]]){try{const r=await fetch(u+'/sign-in/email',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body});const t=(await r.text()).replace(/\s+/g,' ').slice(0,70);o.push('POST '+n+'='+r.status+' tgt='+(r.headers.get('x-proxy-target')||'-')+' up='+(r.headers.get('x-proxy-upstream')||'-')+' :'+t)}catch(e){o.push('POST '+n+'=ERR '+(e&&e.message||e))}}return o.join(' ; ')}
 const uOf=g=>g&&g.data&&(g.data.user||(g.data.session&&g.data.session.user));
 async function enter(ty,hint){const A=DB().auth;let g,u,why='';
 try{g=await A.getSession();u=uOf(g)}catch(x){why+=' getSession: '+(x&&x.message||x)}
@@ -377,15 +375,15 @@ if(!DB()){er.textContent='Pustaka Neon gagal dimuat'+(window.DBERR?' ('+window.D
 const b=f.querySelector('button[type=submit]');b.disabled=true;er.textContent='';
 try{const call=async f=>{try{return (await f())||{}}catch(x){return{error:{message:String(x&&x.message||x)}}}},
 net=m=>/failed to fetch|network|load failed|timeout/i.test(m||''),
-fb=async f=>{let r=await f();if(r.error){try{window.PERR=(r.error.status||'')+' '+(r.error.code||'')+' '+(r.error.message||'')+' '+JSON.stringify(r.error).slice(0,160)}catch(e){window.PERR=String(r.error)}}return r},
+fb=f=>f(),
 su=()=>fb(()=>call(()=>DB().auth.signUp.email({email:em,password:pw,name:nm}))),
 si=()=>fb(()=>call(()=>DB().auth.signIn.email({email:em,password:pw})));
 let r;
 if(m==='signup'){r=await su();
 if(r.error&&/already|exist|terdaftar/i.test(r.error.message||'')){r=await si();if(r.error){er.textContent=net(r.error.message)?'Tidak bisa terhubung ke server ('+r.error.message+').':'Email ini sudah terdaftar. Silakan Masuk dengan kata sandi yang benar.';return}}
 else if(r.error){er.textContent=net(r.error.message)?'Tidak bisa terhubung ke server ('+r.error.message+').':(r.error.message||'Gagal mendaftar.');return}}
-else{r=await si();if(r.error){const g=r.error.message||'';if(/HTTP 404|404/.test(g)){er.textContent='Memeriksa… ';er.textContent='Login gagal: '+g+' | '+await dbgPost(em)+' | build='+BUILD;return}er.textContent=net(g)?'Tidak bisa terhubung ke server ('+g+').':(!g||/invalid email or password|invalid password|incorrect|credential|salah/i.test(g))?'Email atau kata sandi salah.':'Login gagal: '+g;return}}
-const hint='signIn='+Object.keys((r&&r.data)||{}).join(',');if(!(await enter(m,hint))){r=await si();if(r.error||!(await enter(m,'ulang '+hint))){er.textContent='Memeriksa penyebab…';er.textContent='Login diterima, tetapi sesi/data belum bisa dibaca. Diagnosa: '+(window.DIAG||'-')+' | mode='+window.DBMODE+' | proxyErr='+(window.PERR||'-')+' | build='+BUILD+' | '+await probe();return}}
+else{r=await si();if(r.error){const g=r.error.message||'';er.textContent=net(g)?'Tidak bisa terhubung ke server ('+g+').':(!g||/invalid email or password|invalid password|incorrect|credential|salah/i.test(g))?'Email atau kata sandi salah.':'Login gagal: '+g;return}}
+const hint='signIn='+Object.keys((r&&r.data)||{}).join(',');if(!(await enter(m,hint))){r=await si();if(r.error||!(await enter(m,'ulang '+hint))){er.textContent='Login diterima, tetapi sesi belum bisa dibaca. Muat ulang halaman lalu coba masuk lagi.';return}}
 draw()}catch(x){console.error(x);er.textContent='Terjadi kesalahan: '+(x&&x.message||x)}finally{b.disabled=false}});
 draw();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
