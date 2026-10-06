@@ -306,7 +306,7 @@ ${mc('Labor Cost per Unit/Produk yang Dikirim',fu,lpu(D),pv?lpu(pv):null)}${mc('
 <div class="card"><b>${K?'Labor cost per kendaraan':'Labor cost per unit'} · ketuk batang</b><div class="bars">${L7.map((x,i)=>{const v=vals[i];return `<button class="bar ${i+off==S.date?'on':''}" data-a="date" data-v="${i+off}"><span class="num" style="font-size:10px">${v==null?'—':K?kf(v):fmt(Math.round(v))}</span><i style="height:${v==null?2:Math.max(2,Math.round(v/mx*H))}px"></i><span class="lbl">${dm(x.d)}</span></button>`}).join('')}</div></div>
 ${sens}${ins.map(cardI).join('')}
 <div class="card"><div class="td h"><span>Tanggal</span><span>Cost labour</span><span>Per ctn</span><span>Per kend.</span></div>${L7.map((x,i)=>`<div class="td ${i+off==S.date?'on':''}"><span>${dm(x.d)}</span><span class="num">${lcv(x)?fmt(lcv(x)):'—'}</span><span class="num">${lpu(x)==null?'—':fmt(Math.round(lpu(x)))}</span><span class="num">${lpk(x)==null?'—':fmt(Math.round(lpk(x)))}</span></div>`).join('')}</div>
-<div class="card" style="font-size:13px;color:var(--mut)"><b style="color:var(--tx)">Rumus</b><div style="margin-top:8px">Labor Cost per Unit = Total Labor Cost per Hari ÷ Total Produk yang Dikirim per Hari (Outbound Logistics, ctn).</div><div style="margin-top:8px">Labor Cost per Kendaraan = Total Labor Cost per Hari ÷ Total Kendaraan Ekspedisi yang Muat per Hari (Private + Common + International Carrier).</div></div>`}
+`}
 const LG={login:['Masuk','i'],signup:['Daftar','i'],logout:['Keluar','i'],fail:['Gagal masuk','w'],data:['Data harian','g'],done:['Pengiriman','g'],pdf:['Bagikan PDF','g']};
 const PG=10,p2=n=>String(n).padStart(2,'0'),ft=t=>{const x=new Date(t);return p2(x.getDate())+'/'+p2(x.getMonth()+1)+'/'+String(x.getFullYear()).slice(2)+' '+p2(x.getHours())+':'+p2(x.getMinutes())};
 function actv(){const L=S.log,n=L.length,pages=Math.max(1,Math.ceil(n/PG));S.lp=Math.min(Math.max(S.lp,0),pages-1);
@@ -427,7 +427,7 @@ if(t.data&&t.data[0])S.cap=+t.data[0].v||400000;
 S.lc={};if(lcr&&lcr.data)lcr.data.forEach(r=>{const n=+r.v;if(n>0)S.lc[r.k.slice(3)]=n});
 S.date=first?S.days.length-1:Math.min(S.date,S.days.length-1);if(S.date<0)S.date=0}
 async function loadLog(){const r=await DB().from('activity_log').select('*').order('t',{ascending:false}).limit(1000);if(r.error)return;S.log=r.data.map(x=>({t:Date.parse(x.t),u:x.nama,m:x.email,a:x.a,d:x.d}));if(S.tab==='act')draw()}
-const BUILD='2026-10-06i';
+const BUILD='2026-10-06j';
 const uOf=g=>g&&g.data&&(g.data.user||(g.data.session&&g.data.session.user));
 async function enter(ty,hint){const A=DB().auth;let g,u,why='';
 try{g=await A.getSession();u=uOf(g)}catch(x){why+=' getSession: '+(x&&x.message||x)}
