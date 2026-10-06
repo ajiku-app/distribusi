@@ -45,6 +45,8 @@ module.exports = async (req, res) => {
     const sc = setCookies(r.headers).map(c => c.replace(/;\s*Domain=[^;]*/gi, ''));
     if (sc.length) res.setHeader('Set-Cookie', sc);
     res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('x-proxy-target', '/' + p);
+    res.setHeader('x-proxy-upstream', String(r.status));
     res.end(Buffer.from(await r.arrayBuffer()));
   } catch (e) {
     res.statusCode = 502;
