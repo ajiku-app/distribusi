@@ -343,7 +343,7 @@ S.days=d.data.map(r=>({d:r.d,u:r.u||'',p:r.p,e:r.e,x:r.x,s:r.s,i:r.i,o:r.o,sh:r.
 if(t.data&&t.data[0])S.cap=+t.data[0].v||400000;
 S.date=first?S.days.length-1:Math.min(S.date,S.days.length-1);if(S.date<0)S.date=0}
 async function loadLog(){const r=await DB().from('activity_log').select('*').order('t',{ascending:false}).limit(1000);if(r.error)return;S.log=r.data.map(x=>({t:Date.parse(x.t),u:x.nama,m:x.email,a:x.a,d:x.d}));if(S.tab==='act')draw()}
-const BUILD='2026-10-06b';
+const BUILD='2026-10-06c';
 async function probe(){const o=[];for(const[n,u]of[['proxy',location.origin+'/api/neonauth'],['langsung',window.DIRECT]]){if(!u)continue;for(const p of['/ok','/get-session']){try{const r=await fetch(u+p,{credentials:'include'});o.push(n+p+'='+r.status+':'+(await r.text()).replace(/\s+/g,' ').slice(0,28))}catch(e){o.push(n+p+'=ERR '+(e&&e.message||e))}}}return o.join(' ; ')}
 const uOf=g=>g&&g.data&&(g.data.user||(g.data.session&&g.data.session.user));
 async function enter(ty,hint){const A=DB().auth;let g,u,why='';
@@ -376,7 +376,7 @@ if(!DB()){er.textContent='Pustaka Neon gagal dimuat'+(window.DBERR?' ('+window.D
 const b=f.querySelector('button[type=submit]');b.disabled=true;er.textContent='';
 try{const call=async f=>{try{return (await f())||{}}catch(x){return{error:{message:String(x&&x.message||x)}}}},
 net=m=>/failed to fetch|network|load failed|timeout/i.test(m||''),
-fb=async f=>{let r=await f();if(r.error&&window.DBMODE==='proxy'&&window.mkDB&&!/invalid email|invalid password|incorrect|credential|already|exist|password|too short|too long|salah/i.test(r.error.message||'')){try{window.DB=window.mkDB(window.DIRECT);window.DBMODE='direct';try{localStorage.setItem('dm_auth2','direct')}catch(e){}r=await f()}catch(e){}}return r},
+fb=async f=>{let r=await f();if(r.error&&window.DBMODE==='proxy'&&window.mkDB&&!/invalid email|invalid password|incorrect|credential|already|exist|password|too short|too long|salah/i.test(r.error.message||'')){try{window.DB=window.mkDB(window.DIRECT);window.DBMODE='direct';r=await f()}catch(e){}}return r},
 su=()=>fb(()=>call(()=>DB().auth.signUp.email({email:em,password:pw,name:nm}))),
 si=()=>fb(()=>call(()=>DB().auth.signIn.email({email:em,password:pw})));
 let r;
@@ -393,8 +393,8 @@ if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(
 <script>
 try{window.DAPI='https://ep-sweet-violet-b3cm8n6p.apirest.c-4.ap-southeast-1.aws.neon.tech/neondb/rest/v1';window.DIRECT='https://ep-sweet-violet-b3cm8n6p.neonauth.c-4.ap-southeast-1.aws.neon.tech/neondb/auth';
 window.mkDB=u=>NeonJS.createClient({auth:{url:u},dataApi:{url:window.DAPI}});
-let md=null;try{md=localStorage.getItem('dm_auth2')}catch(e){}
-window.DBMODE=md==='direct'?'direct':'proxy';
+try{localStorage.removeItem('dm_auth2')}catch(e){}
+window.DBMODE=/[?&]direct=1/.test(location.search)?'direct':'proxy';
 window.DB=window.mkDB(window.DBMODE==='direct'?window.DIRECT:location.origin+'/api/neonauth')}catch(e){console.error(e);window.DBERR=String(e&&e.message||e);window.DB=null}
 window.boot()
 </script></body></html>
