@@ -12,7 +12,12 @@ function setCookies(h) {
 module.exports = async (req, res) => {
   try {
     const u = new URL(req.url, 'http://localhost');
-    const p = [].concat((req.query && req.query.path) || []).join('/');
+    // Ambil path dari URL asli (paling andal di Vercel); req.query.path hanya cadangan.
+    let p = '';
+    const m = u.pathname.match(/^\/api\/neonauth\/?(.*)$/);
+    if (m && m[1]) p = decodeURIComponent(m[1]);
+    if (!p) p = [].concat((req.query && req.query.path) || []).join('/');
+    p = p.replace(/^\/+/, '');
     u.searchParams.delete('path');
     const target = BASE + '/' + p + (u.search || '');
 
