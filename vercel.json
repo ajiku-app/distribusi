@@ -1,7 +1,4 @@
 {
-  "rewrites": [
-    { "source": "/api/neonauth/:path*", "destination": "/api/neonauth?p=:path*" }
-  ],
   "headers": [
     {
       "source": "/sw.js",
