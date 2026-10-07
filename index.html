@@ -118,6 +118,24 @@ h1{margin:2px 0 0;font-size:30px;line-height:1.12;font-weight:600;letter-spacing
 .dr{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:11px 0;border-top:1px solid var(--line)}
 .dr>span:last-child{text-align:right}.dr small{display:block;font-size:11px;color:var(--mut);margin-top:2px}
 .ut{position:relative}.ut s{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:#fff}
+@keyframes grow{from{transform:scaleY(.02);opacity:.4}to{transform:scaleY(1);opacity:1}}
+.bar i,.gc i{transform-origin:bottom;animation:grow .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes dash{to{stroke-dashoffset:0}}.dr1{stroke-dasharray:1;stroke-dashoffset:1;animation:dash 1.1s ease forwards}
+@keyframes pl{from{transform:scale(1);opacity:.55}to{transform:scale(2.6);opacity:0}}.pulse{transform-box:fill-box;transform-origin:center;animation:pl 1.6s ease-out infinite}
+@media(prefers-reduced-motion:reduce){.bar i,.gc i,.dr1,.pulse{animation:none!important;stroke-dashoffset:0}}
+.simr{width:100%;height:34px;margin:6px 0 0;accent-color:#4F6BFF;cursor:pointer}
+.chips{display:flex;gap:6px;margin-top:12px}.chip{flex:1;min-width:0;min-height:36px;border:1px solid var(--line);border-radius:12px;background:none;color:var(--mut);font-weight:600;font-size:12.5px;cursor:pointer}.chip.on{background:#3E5BFF26;color:var(--acs);border-color:#3E5BFF}
+.simn{margin-top:12px;font-size:13.5px;line-height:1.55;color:#D4D4D8}
+#dlg{position:fixed;inset:0;background:#000c;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}
+#dlg.o{display:flex;animation:dfi .18s ease}
+.dl{background:var(--bg);border:1px solid var(--line);border-radius:28px;width:100%;max-width:380px;padding:24px 22px 20px;box-shadow:0 24px 60px #000a;animation:dpop .3s cubic-bezier(.2,1.2,.4,1)}
+@keyframes dfi{from{opacity:0}}@keyframes dpop{from{transform:translateY(16px) scale(.94);opacity:0}}
+.dli{width:52px;height:52px;border-radius:18px;background:#3E5BFF26;color:var(--acs);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.dl h3{margin:0 0 6px;font-size:19px;font-weight:700}.dlm{color:#D4D4D8;font-size:14px;line-height:1.55}
+.dsum{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.dsum div{background:var(--tile);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}.dsum .lbl{font-size:11.5px}
+.dla{display:flex;flex-direction:column;gap:8px;margin-top:18px}.dla .btn:last-child{border-color:#262B3D;color:var(--mut)}
+.dla .btn:focus-visible{outline:2px solid var(--acs);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){#dlg.o,.dl{animation:none}}
 .td{display:flex;font-size:14px;padding:9px 0;border-top:1px solid var(--line)}
 .td span{flex:1;text-align:right}.td span:first-child{text-align:left}
 .td.h{border:0;color:var(--mut);font-size:12px}.td.on{background:#141B45;margin:0 -8px;padding:9px 8px;border-radius:10px}
@@ -164,7 +182,7 @@ h1{margin:2px 0 0;font-size:30px;line-height:1.12;font-weight:600;letter-spacing
 <script>
 const $=s=>document.querySelector(s),REG=['Jawa','Sumatera','Lainnya','Ekspor'];
 const J='Jawa',S_='Sumatera',L='Lainnya',E='Ekspor';
-const S={days:[],done:{},tab:'home',lp:0,top:0,cap:400000,date:0,region:'Semua',metric:'o',per:'d',pk:'',ed:'',fd:'',in:false,auth:'welcome',user:'',em:'',uid:'',role:'user',st:'',log:[],users:[],busy:true,lc:{},lv:'u'};
+const S={days:[],done:{},tab:'home',lp:0,top:0,cap:400000,date:0,region:'Semua',metric:'o',per:'d',pk:'',ed:'',fd:'',in:false,auth:'welcome',user:'',em:'',uid:'',role:'user',st:'',log:[],users:[],busy:true,lc:{},lv:'u',sim:25};
 const DB=()=>window.DB;
 const dbe=(r,m)=>{if(r&&r.error){alert((m||'Gagal menyimpan')+': '+(r.error.message||'kesalahan server'));return true}return false};
 const logA=async(a,d)=>{try{if(S.st==='approved')await DB().from('activity_log').insert({a,d:d||'',nama:S.user,email:S.em})}catch(e){}};
@@ -260,7 +278,7 @@ const cv=cur/Math.max(ao,1);
 C.push([cv<3?'w':'i','Stok cukup untuk sekitar '+nd(cv)+' hari kirim','Sisa stok '+fmt(cur)+' dibagi rata-rata outbound logistics '+fmt(Math.round(ao))+' per hari, tanpa memperhitungkan inbound production.']);
 const card=`<div class="card"><div class="row" style="padding:0"><b>Pemakaian kapasitas gudang</b><span class="lbl">Kapasitas <span class="num" style="color:var(--tx)">${fmt(cap)}</span></span></div>${L7.map((x,i)=>`<div class="hb"><div class="l"><span>${dm(x.d)}</span><span class="num" style="color:${u[i]>100?'var(--red)':'var(--tx)'}">${fm(u[i])} · ${fmt(sv[i])}</span></div><div class="tr ut"><i style="width:${Math.min(100,u[i]/sc*100)}%;background:${u[i]>100?'var(--red)':'var(--ac)'}"></i><s style="left:${100/sc*100}%"></s></div></div>`).join('')}<div class="lbl" style="margin-top:12px;font-size:12px">Garis putih = batas kapasitas (100%). Persentase dihitung dari sisa stok setelah outbound logistics.</div></div>`;
 return `<b>Stok & kapasitas gudang</b>`+card+C.map(cardI).join('')}
-const cardI=([c,t,x])=>`<div class="card" style="padding:14px 16px"><span class="tag ${c}">${c=='r'?'Kritis':c=='w'?'Perlu perhatian':'Informasi'}</span><div style="font-weight:600;margin:8px 0 4px">${esc(t)}</div><div style="font-size:14px;color:#D4D4D8">${esc(x)}</div></div>`;
+const cardI=([c,t,x])=>`<div class="card" style="padding:14px 16px"><span class="tag ${c}">${c=='r'?'Kritis':c=='w'?'Perlu perhatian':'Insight'}</span><div style="font-weight:600;margin:8px 0 6px">${esc(t)}</div><div style="font-size:14px;line-height:1.6;color:#D4D4D8;white-space:pre-line">${esc(x)}</div></div>`;
 function ana(){const L7=S.days.slice(-7),M=MET;
 const v=L7.map(x=>val(x,S.metric)),n=v.length,F=L7[0],La=L7[n-1];
 let h='<div class="pks">'+sel('Data',M.find(m=>m[0]==S.metric)[1],'metric')+'</div>';
@@ -278,27 +296,40 @@ return h+capSec(L7)+'<b>Insight pergerakan</b>'+I.map(cardI).join('')+`<div clas
 
 const rp=n=>'Rp '+fmt(Math.round(n)),lcv=x=>+S.lc[x.d]||0;
 const lpu=x=>lcv(x)>0&&x.o>0?lcv(x)/x.o:null,lpk=x=>lcv(x)>0&&arm(x)>0?lcv(x)/arm(x):null;
+const spf=n=>(n>0.05?'+':n<-0.05?'−':'')+Math.abs(n).toFixed(1).replace('.',',')+'%';
+function sensCtx(D,L7){const c=lcv(D);if(!(c>0&&D.o>0))return null;const pts=L7.filter(x=>x.d!==D.d&&lcv(x)>0&&x.o>0),vs=[D.o,...pts.map(x=>x.o)],v0=Math.min(...vs,D.o*.6)*.9,v1=Math.max(...vs,D.o*2)*1.05,ys=[c/v0,...pts.map(x=>lcv(x)/x.o)];
+return{c,o:D.o,d:D.d,pts,v0,v1,ym:Math.ceil(Math.max(...ys)/100)*100||100,W:340,H:232,l:48,r:14,t:22,b:34}}
+const sensXY=k=>({X:v=>k.l+(v-k.v0)/(k.v1-k.v0)*(k.W-k.l-k.r),Y:y=>k.t+(1-Math.min(y,k.ym)/k.ym)*(k.H-k.t-k.b)});
+function sensDyn(k){const{X,Y}=sensXY(k),v=k.o*(1+S.sim/100),y=k.c/v,x=X(v),py=Y(y),bw=124,bx=Math.max(k.l,Math.min(k.W-k.r-bw,x-bw/2)),by=py-52<2?py+16:py-52,bt=Y(0);
+return `<line x1="${x.toFixed(1)}" y1="${py.toFixed(1)}" x2="${x.toFixed(1)}" y2="${bt}" stroke="#8FA0FF" stroke-dasharray="4 4" opacity=".7"/><line x1="${k.l}" y1="${py.toFixed(1)}" x2="${x.toFixed(1)}" y2="${py.toFixed(1)}" stroke="#8FA0FF" stroke-dasharray="4 4" opacity=".7"/><circle class="pulse" cx="${x.toFixed(1)}" cy="${py.toFixed(1)}" r="7" fill="#4F6BFF"/><circle cx="${x.toFixed(1)}" cy="${py.toFixed(1)}" r="7" fill="#4F6BFF" stroke="#fff" stroke-width="2.5"/><g><rect x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${bw}" height="36" rx="9" fill="#1B2140" stroke="#3E5BFF"/><text x="${(bx+bw/2).toFixed(1)}" y="${(by+15).toFixed(1)}" text-anchor="middle" font-size="11" fill="#AEB9FF">${fmt(Math.round(v))} ctn</text><text x="${(bx+bw/2).toFixed(1)}" y="${(by+30).toFixed(1)}" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">Rp ${fmt(Math.round(y))} / ctn</text></g>`}
+function sensG(k,an){const{X,Y}=sensXY(k),path=Array.from({length:61},(_,i)=>{const v=k.v0+(k.v1-k.v0)*i/60;return(i?'L':'M')+X(v).toFixed(1)+' '+Y(k.c/v).toFixed(1)}).join(''),bt=Y(0),y0=k.c/k.o;
+const gy=[0,.25,.5,.75,1].map(f=>f*k.ym),gx=[0,1/3,2/3,1].map(f=>k.v0+(k.v1-k.v0)*f);
+const ot=k.pts.map(x=>`<circle cx="${X(x.o).toFixed(1)}" cy="${Y(lcv(x)/x.o).toFixed(1)}" r="3.5" fill="none" stroke="#8D93A6" stroke-width="1.5"><title>${dm(x.d)}: ${fmt(x.o)} ctn, Rp ${fmt(Math.round(lcv(x)/x.o))}/ctn</title></circle>`).join('');
+return `<svg viewBox="0 0 ${k.W} ${k.H}" width="100%" style="margin-top:10px;touch-action:pan-y;cursor:ew-resize;display:block" role="img" aria-label="Simulasi cost labour per unit terhadap volume kirim"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4F6BFF" stop-opacity=".30"/><stop offset="1" stop-color="#4F6BFF" stop-opacity="0"/></linearGradient></defs>${gy.map(g=>`<line x1="${k.l}" y1="${Y(g).toFixed(1)}" x2="${k.W-k.r}" y2="${Y(g).toFixed(1)}" stroke="#1C2030"/><text x="${k.l-6}" y="${(Y(g)+3.5).toFixed(1)}" text-anchor="end" font-size="10" fill="#8D93A6">${fmt(Math.round(g))}</text>`).join('')}${gx.map(g=>`<text x="${X(g).toFixed(1)}" y="${k.H-k.b+15}" text-anchor="middle" font-size="10" fill="#8D93A6">${kf(Math.round(g))}</text>`).join('')}<text x="${k.l}" y="11" font-size="10" fill="#8D93A6">Rp per ctn</text><text x="${((k.l+k.W-k.r)/2).toFixed(1)}" y="${k.H-4}" text-anchor="middle" font-size="10" fill="#8D93A6">Total ctn dikirim per hari</text><path d="${path} L${X(k.v1).toFixed(1)} ${bt} L${X(k.v0).toFixed(1)} ${bt}Z" fill="url(#sg)"/><path class="${an?'dr1':''}" pathLength="1" d="${path}" fill="none" stroke="#4F6BFF" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>${ot}<circle cx="${X(k.o).toFixed(1)}" cy="${Y(y0).toFixed(1)}" r="5" fill="#0F1118" stroke="#8FA0FF" stroke-width="2"><title>Aktual ${dm(k.d)}</title></circle><g id="simg">${sensDyn(k)}</g></svg>`}
+function sensR(k){const v=k.o*(1+S.sim/100),y=k.c/v,y0=k.c/k.o,dy=(y-y0)/y0*100,cl=dy<-.05?'#6EE7A0':dy>.05?'var(--red)':'var(--tx)';
+return `<div class="tiles"><div class="tile"><div class="lbl">Volume kirim</div><div class="num" style="font-size:20px">${fmt(Math.round(v))} ctn</div><div class="lbl" style="font-size:12px">${S.sim===0?'Sama dengan aktual':spf(S.sim)+' dari aktual ('+fmt(k.o)+')'}</div></div><div class="tile"><div class="lbl">Cost per unit</div><div class="num" style="font-size:20px;color:${cl}">${rp(y)}</div><div class="lbl" style="font-size:12px">${S.sim===0?'Sama dengan aktual':spf(dy)+' dari '+rp(y0)}</div></div></div>
+<div class="chips">${[[-25,'−25%'],[0,'Aktual'],[25,'+25%'],[50,'+50%'],[100,'+100%']].map(([q,l])=>`<button class="chip ${S.sim===q?'on':''}" data-a="sim" data-v="${q}">${l}</button>`).join('')}</div>
+<div class="simn">${S.sim===0?'Geser slider atau pilih skenario untuk melihat dampak perubahan volume kirim terhadap cost per unit.':`Jika volume ${S.sim>0?'naik':'turun'} ${Math.abs(S.sim)}% menjadi ${fmt(Math.round(v))} ctn, cost per unit ${dy<0?'turun':'naik'} menjadi ${rp(y)} (${spf(dy)}).`}</div>`}
 function lab(){const L7=S.days.slice(-7),off=S.days.length-L7.length,D=S.days[S.date],pv=S.days[S.date-1],c=lcv(D),K=S.lv==='k',m=K?lpk:lpu;
 const vals=L7.map(m),ok=vals.filter(v=>v!=null),mx=Math.max(1,...ok),H=105;
 const mc=(t,fn,v,pvv)=>`<div class="card"><div class="lbl">${t}</div><div class="num big" style="margin:6px 0 4px">${v==null?'—':rp(v)}</div><div class="lbl">${fn}</div>${v!=null&&pvv!=null?`<div class="num" style="font-size:12.5px;margin-top:10px">vs ${dm(pv.d)}: ${dl(Math.round(v),Math.round(pvv))}</div>`:''}</div>`;
 const fu=c&&D.o>0?rp(c)+' ÷ '+fmt(D.o)+' ctn (Outbound Logistics)':'Butuh cost labour dan Outbound Logistics',fk=c&&arm(D)>0?rp(c)+' ÷ '+arm(D)+' kendaraan ekspedisi':'Butuh cost labour dan jumlah carrier';
 const ins=[],pc1=x=>Math.abs(x).toFixed(1).replace('.',',')+'%',avgOf=f=>{const o=L7.map(f).filter(x=>x!=null);return o.length>=2?{av:o.reduce((a,b)=>a+b,0)/o.length,n:o.length,mn:Math.min(...o),mx:Math.max(...o)}:null};
-const vu=lpu(D),vk=lpk(D),au=avgOf(lpu),ak=avgOf(lpk);
-if(vu!=null){const v2=D.o*1.25,u2=c/v2,v3=D.o*.75,u3=c/v3,dn=(vu-u2)/vu*100;let tx='Jika total kirim naik 25% dari '+fmt(D.o)+' menjadi '+fmt(Math.round(v2))+' ctn dan cost labour tetap '+rp(c)+', Labor Cost per Unit turun dari '+rp(vu)+' menjadi '+rp(u2)+' (−'+pc1(dn)+'), artinya gudang lebih efisien. Sebaliknya, jika kirim turun 25% menjadi '+fmt(Math.round(v3))+' ctn, biaya naik menjadi '+rp(u3)+' per ctn.';
-if(au){const df=(vu-au.av)/au.av*100;tx+=' Saat ini '+(Math.abs(df)<=10?'mendekati':df>0?pc1(df)+' di atas':pc1(df)+' di bawah')+' rata-rata '+au.n+' hari ('+rp(au.av)+'); terendah '+rp(au.mn)+(au.mn<vu?', tercapai pada volume sekitar '+fmt(Math.round(c/au.mn))+' ctn dengan cost labour yang sama':'')+'.'}
-ins.push([au&&vu>au.av*1.1?'w':'i','Evaluasi efisiensi: volume +25% menurunkan cost per unit ke '+rp(u2),tx])}
-if(vk!=null){const n=arm(D);let tx='Labor Cost per Kendaraan '+rp(vk)+' untuk '+n+' kendaraan ekspedisi ('+D.p+' Private, '+D.e+' Common, '+D.x+' International).';
-const hi=ak&&vk>ak.av*1.1;if(ak){const df=(vk-ak.av)/ak.av*100;tx+=' Rata-rata '+ak.n+' hari '+rp(ak.av)+' (tertinggi '+rp(ak.mx)+', terendah '+rp(ak.mn)+'); hari ini '+(Math.abs(df)<=10?'mendekati rata-rata':df>0?pc1(df)+' di atas rata-rata':pc1(df)+' di bawah rata-rata')+'.'}
-tx+=hi?' Evaluasi apakah proses muat terlalu lama atau jumlah tenaga kerja terlalu banyak untuk menangani '+n+' kendaraan.':' Proses muat tergolong wajar dibanding hari-hari sebelumnya.';
-ins.push([hi?'w':'i','Kapasitas kerja: '+rp(vk)+' per kendaraan',tx])}
-const sens=(()=>{if(!(c>0&&D.o>0))return '<div class="card lbl">Isi cost labour hari ini untuk melihat grafik sensitivitas dan evaluasi.</div>';
-const pts=L7.filter(x=>x.d!==D.d&&lcv(x)>0&&x.o>0),vs=[D.o,...pts.map(x=>x.o)],v0=Math.min(...vs,D.o*.75)*.8,v1=Math.max(...vs,D.o*1.5)*1.08;
-const ys=[c/v0,...pts.map(x=>lcv(x)/x.o)],ym=Math.ceil(Math.max(...ys)/100)*100||100,W=340,Hh=214,l=48,r=14,t=18,b=34,X=v=>l+(v-v0)/(v1-v0)*(W-l-r),Y=y=>t+(1-Math.min(y,ym)/ym)*(Hh-t-b);
-const path=Array.from({length:61},(_,i)=>{const v=v0+(v1-v0)*i/60;return(i?'L':'M')+X(v).toFixed(1)+' '+Y(c/v).toFixed(1)}).join('');
-const gy=[0,.25,.5,.75,1].map(f=>f*ym),gx=[0,1/3,2/3,1].map(f=>v0+(v1-v0)*f);
-const sc=[.75,1,1.25,1.5].map((m,i)=>{const v=D.o*m,y=c/v,x=X(v),an=i<2?'start':'end',dx=i<2?7:-7;return `<circle cx="${x.toFixed(1)}" cy="${Y(y).toFixed(1)}" r="${m===1?6:4.5}" fill="#4F6BFF" stroke="#0F1118" stroke-width="2"/><text x="${(x+dx).toFixed(1)}" y="${(Y(y)-10).toFixed(1)}" text-anchor="${an}" font-size="10" fill="#F4F6FB">${kf(v)} ctn: Rp ${fmt(Math.round(y))}</text>`}).join('');
-const ot=pts.map(x=>`<circle cx="${X(x.o).toFixed(1)}" cy="${Y(lcv(x)/x.o).toFixed(1)}" r="3.5" fill="none" stroke="#8D93A6" stroke-width="1.5"/>`).join('');
-return `<div class="card"><b>Sensitivitas cost labour per unit</b><div class="lbl" style="margin-top:4px;font-size:12.5px">Semakin tinggi volume kirim harian, semakin rendah cost labour per unit. Cost labour ${dm(D.d)} dianggap tetap ${rp(c)}.</div><svg viewBox="0 0 ${W} ${Hh}" width="100%" style="margin-top:10px" role="img" aria-label="Kurva cost labour per unit terhadap volume kirim">${gy.map(g=>`<line x1="${l}" y1="${Y(g).toFixed(1)}" x2="${W-r}" y2="${Y(g).toFixed(1)}" stroke="#1C2030"/><text x="${l-6}" y="${(Y(g)+3.5).toFixed(1)}" text-anchor="end" font-size="10" fill="#8D93A6">${fmt(Math.round(g))}</text>`).join('')}${gx.map(g=>`<text x="${X(g).toFixed(1)}" y="${Hh-b+15}" text-anchor="middle" font-size="10" fill="#8D93A6">${kf(Math.round(g))}</text>`).join('')}<text x="${l}" y="10" font-size="10" fill="#8D93A6">Rp per ctn</text><text x="${(l+W-r)/2}" y="${Hh-4}" text-anchor="middle" font-size="10" fill="#8D93A6">Total ctn dikirim per hari</text><path d="${path}" fill="none" stroke="#4F6BFF" stroke-width="3" stroke-linejoin="round"/>${ot}${sc}</svg><div class="lgd" style="flex-wrap:wrap;gap:6px 16px"><span><i class="dot" style="background:#4F6BFF"></i>Skenario volume −25% / saat ini / +25% / +50%</span>${pts.length?'<span><i class="dot" style="background:none;border:1.5px solid #8D93A6"></i>Hari lain (cost labour masing-masing)</span>':''}</div></div>`})();
+const vu=lpu(D),vk=lpk(D),au=avgOf(lpu),ak=avgOf(lpk),dfo=(v,a)=>(v-a.av)/a.av*100,cmp=(v,a)=>{const df=dfo(v,a);return Math.abs(df)<=10?'setara dengan rata-rata '+a.n+' hari terakhir ('+rp(a.av)+')':pc1(df)+(df>0?' lebih tinggi':' lebih rendah')+' dari rata-rata '+a.n+' hari terakhir ('+rp(a.av)+')'};
+if(vu!=null){const v2=D.o*1.25,u2=c/v2,v3=D.o*.75,u3=c/v3,df=au?dfo(vu,au):0,L=[];
+L.push('Biaya tenaga kerja '+rp(c)+' untuk '+fmt(D.o)+' ctn terkirim = '+rp(vu)+' per ctn.');
+if(au)L.push('Posisi: '+cmp(vu,au)+'.');
+L.push('Peluang: jika volume naik 25% menjadi '+fmt(Math.round(v2))+' ctn dengan biaya tenaga kerja tetap, cost per unit turun menjadi '+rp(u2)+' ('+spf((u2-vu)/vu*100)+').');
+L.push('Risiko: jika volume turun 25% menjadi '+fmt(Math.round(v3))+' ctn, cost per unit naik menjadi '+rp(u3)+' ('+spf((u3-vu)/vu*100)+').');
+if(au&&au.mn<vu)L.push('Target: untuk menyamai cost per unit terendah ('+rp(au.mn)+'), dibutuhkan volume sekitar '+fmt(Math.round(c/au.mn))+' ctn per hari.');
+ins.push([df>10?'w':'i',df>10?'Cost per unit lebih tinggi dari rata-rata':df<-10?'Cost per unit lebih efisien dari rata-rata':'Cost per unit stabil',L.join('\n')])}
+if(vk!=null){const n=arm(D),df=ak?dfo(vk,ak):0,hi=df>10,L=[];
+L.push('Biaya tenaga kerja '+rp(c)+' untuk '+n+' kendaraan ('+D.p+' Private, '+D.e+' Common, '+D.x+' International) = '+rp(vk)+' per kendaraan.');
+if(ak)L.push('Posisi: '+cmp(vk,ak)+'. Rentang '+rp(ak.mn)+' sampai '+rp(ak.mx)+'.');
+L.push(hi?'Rekomendasi: tinjau durasi proses muat dan kesesuaian jumlah tenaga kerja dengan jumlah kendaraan yang dilayani.':'Rekomendasi: proses muat berjalan wajar, pertahankan pola kerja saat ini.');
+ins.push([hi?'w':'i',hi?'Cost per kendaraan tinggi, perlu ditinjau':df<-10?'Cost per kendaraan lebih efisien':'Cost per kendaraan stabil',L.join('\n')])}
+S.sk=sensCtx(D,L7);const an=!S.sdone;S.sdone=1;
+const sens=S.sk?`<div class="card"><b>Simulasi volume kirim</b><div class="lbl" style="margin-top:4px;font-size:12.5px">Geser slider atau sentuh grafik. Biaya tenaga kerja ${dm(D.d)} (${rp(c)}) dianggap tetap.</div><div id="sensg">${sensG(S.sk,an)}</div><input id="simr" class="simr" type="range" min="-40" max="100" step="1" value="${S.sim}" aria-label="Perubahan volume kirim (%)"><div id="sensr">${sensR(S.sk)}</div></div>`:'<div class="card lbl">Isi cost labour hari ini untuk membuka simulasi dan insight efisiensi.</div>';
 return `<div class="pks">${dateSel()}</div>
 <div class="card"><div class="row" style="padding:0;align-items:center"><b>Total cost labour</b><button class="up" style="border:0;cursor:pointer;min-height:36px;padding:0 14px" data-a="lcform">${c?'Ubah':'Isi'}</button></div><div class="num big" style="margin:8px 0 4px">${c?rp(c):'Belum diisi'}</div><div class="lbl">${fmt(D.o)} ctn dikirim · ${arm(D)} kendaraan ekspedisi</div></div>
 ${mc('Labor Cost per Unit/Produk yang Dikirim',fu,lpu(D),pv?lpu(pv):null)}${mc('Labor Cost per Kendaraan Ekspedisi (Loading Cost)',fk,lpk(D),pv?lpk(pv):null)}
@@ -334,15 +365,27 @@ const sheet=h=>{$('#sheet').innerHTML=`<div class="sh">${h}</div>`;$('#sheet').c
 const rowH=r=>`<div class="sr"><input class="x" placeholder="Ekspedisi" value="${esc(r[0]||'')}"><input placeholder="Kota" value="${esc(r[1]||'')}"><input type="number" min="1" placeholder="Qty" value="${r[2]||''}"><select>${REG.map(g=>`<option ${g==r[3]?'selected':''}>${g}</option>`).join('')}</select></div>`;
 const num=(id,l)=>`<label>${l}<input id="${id}" type="number" min="0" inputmode="numeric"></label>`;
 function form(){S.ed='';S.fd=new Date().toISOString().slice(0,10);sheet(`<h2>Tambah data harian</h2><div class="f"><label>Tanggal<input id="fd" type="date" value="${new Date().toISOString().slice(0,10)}"></label><label>Jam update<input id="fu" type="time"></label>${num('fp','Private Carrier')}${num('fe','Common Carrier')}${num('fx','International Freight Carrier')}${num('fl','Cost labour hari ini (Rp)')}${num('fs','Beginning Inventory (07:00)')}${num('fi','Inbound Production')}${num('fo','Outbound Logistics')}</div><div class="cp">Sisa stok dihitung otomatis: beginning inventory + inbound production − outbound logistics. Tanggal yang sudah ada tidak langsung ditimpa: pilih tanggalnya, lalu konfirmasi untuk edit.</div><b>Pengiriman</b><div id="rows">${rowH([])}</div><button class="btn" style="margin:12px 0" data-a="addrow">+ Tambah rute</button><button class="btn fill" data-a="save">Simpan data</button><button class="btn" style="margin-top:8px;border-color:#262B3D;color:var(--mut)" data-a="close">Batal</button>`)}
-function saveF(){const g=i=>+$('#'+i).value||0,d=$('#fd').value;if(!d){alert('Isi tanggal terlebih dahulu.');return}
-const ex=S.days.some(y=>y.d===d);if(ex&&S.ed!==d){if(confirm('Data tanggal '+dm(d)+'/'+d.slice(2,4)+' sudah ada.\n\nEdit data ini? (isian sekarang diganti data tersimpan)'))fillForm(d);return}
+async function saveF(){const g=i=>+$('#'+i).value||0,d=$('#fd').value;if(!d){alert('Isi tanggal terlebih dahulu.');return}
+const ex=S.days.some(y=>y.d===d);if(ex&&S.ed!==d){if(await askDup(d,1))fillForm(d);return}
 const sh=[...document.querySelectorAll('#rows .sr')].map(r=>{const i=r.querySelectorAll('input'),s=r.querySelector('select');return[i[0].value.trim(),i[1].value.trim(),+i[2].value||0,s.value]}).filter(r=>r[0]&&r[1]&&r[2]>0);
 const x={d,u:$('#fu').value,p:g('fp'),e:g('fe'),x:g('fx'),s:g('fs'),i:g('fi'),o:g('fo'),sh};
 const lcv_=g('fl');DB().from('days').upsert({d,u:x.u,p:x.p,e:x.e,x:x.x,s:x.s,i:x.i,o:x.o,sh:x.sh},{onConflict:'d'}).then(r=>{if(dbe(r))return;setLc(d,lcv_);S.days=S.days.filter(y=>y.d!==d).concat(x).sort((a,b)=>a.d<b.d?-1:1);logA('data',(ex?'Memperbarui':'Menambah')+' data harian '+dm(d)+'/'+d.slice(2,4)+' · Outbound Logistics '+fmt(x.o)+' · '+sh.length+' rute');S.ed='';S.date=S.days.findIndex(y=>y.d===d);S.tab='home';closeS();draw()})}
+const ask=o=>new Promise(res=>{let m=document.getElementById('dlg');if(!m){m=document.createElement('div');m.id='dlg';document.body.appendChild(m)}
+const prev=document.activeElement;
+m.innerHTML=`<div class="dl" role="alertdialog" aria-modal="true" aria-labelledby="dlt"><div class="dli">${o.icon||''}</div><h3 id="dlt">${o.title}</h3><div class="dlm">${o.html}</div><div class="dla"><button class="btn fill" data-r="1">${o.ok}</button><button class="btn" data-r="0">${o.no}</button></div></div>`;
+m.classList.add('o');
+const kd=e=>{if(e.key==='Escape'){e.preventDefault();done(false)}else if(e.key==='Tab'){const b=[...m.querySelectorAll('button')],i=b.indexOf(document.activeElement);e.preventDefault();b[(i+(e.shiftKey?-1:1)+b.length)%b.length].focus()}};
+const done=v=>{m.classList.remove('o');m.onclick=null;document.removeEventListener('keydown',kd,true);if(prev&&prev.focus)try{prev.focus()}catch(_){}res(v)};
+m.onclick=e=>{const b=e.target.closest('[data-r]');if(b)done(b.dataset.r==='1');else if(e.target===m)done(false)};
+document.addEventListener('keydown',kd,true);m.querySelector('[data-r="1"]').focus()});
+const askDup=(d,fromSave)=>{const x=S.days.find(y=>y.d===d),tg=dm(d)+'/'+d.slice(2,4);
+return ask({icon:svg('<path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>',26),title:'Data tanggal '+tg+' sudah ada',
+html:'Data ini sudah tersimpan. Ingin mengubahnya? Isian formulir saat ini akan diganti dengan data tersimpan.'+(x?`<div class="dsum"><div><span class="lbl">Inbound</span><span class="num">${fmt(x.i)}</span></div><div><span class="lbl">Outbound</span><span class="num">${fmt(x.o)}</span></div><div><span class="lbl">Sisa stok</span><span class="num">${fmt(sisa(x))}</span></div><div><span class="lbl">Carrier</span><span class="num">${arm(x)}</span></div></div>${x.u?`<div class="lbl" style="margin-top:10px;font-size:12px">Diperbarui terakhir pukul ${esc(x.u)}</div>`:''}`:''),
+ok:'Edit data ini',no:fromSave?'Batal':'Pilih tanggal lain'})};
 const fillForm=d=>{const x=S.days.find(y=>y.d===d);S.ed=x?d:'';const v=(i,k)=>{$('#'+i).value=x&&x[k]?x[k]:''};$('#fu').value=x?x.u||'':'';['p','e','x','s','i','o'].forEach(k=>v('f'+k,k));$('#fl').value=(x&&S.lc[x.d])||'';$('#rows').innerHTML=(x&&x.sh.length?x.sh:[[]]).map(rowH).join('');const h=document.querySelector('#sheet h2');if(h)h.textContent=x?'Ubah data harian':'Tambah data harian'};
-document.addEventListener('change',e=>{const el=e.target;if(el.id!=='fd')return;const d=el.value,ex=S.days.some(y=>y.d===d);
-if(ex){if(confirm('Data tanggal '+dm(d)+'/'+d.slice(2,4)+' sudah ada.\n\nEdit data ini?'))fillForm(d);else el.value=S.fd}else if(S.ed)fillForm(d);S.fd=el.value});
-const A={tab:v=>{S.tab=v;if(v==='act'){S.lp=0;S.top=1;loadLog()}},lp:v=>{S.lp+=+v;S.top=1},date:v=>S.date=+v,hbar:v=>{S.date=+v;S.sc=1},lv:v=>S.lv=v,lcform:()=>{const D=S.days[S.date];if(!D)return;sheet(`<h2>Cost labour ${dd(D.d)}</h2><div class="f" style="grid-template-columns:1fr"><label>Total cost labour hari ini (Rp)<input id="fl2" type="number" min="0" inputmode="numeric" value="${S.lc[D.d]||''}"></label></div><div class="cp">Isi total biaya tenaga kerja (loading/unloading, operator, dll) untuk tanggal ini. Kosongkan lalu simpan untuk menghapus.</div><button class="btn fill" data-a="lcsave">Simpan</button><button class="btn" style="margin-top:8px;border-color:#262B3D;color:var(--mut)" data-a="close">Batal</button>`)},lcsave:()=>{const D=S.days[S.date];setLc(D.d,$('#fl2').value);closeS()},region:v=>S.region=v,metric:v=>S.metric=v,per:v=>{S.per=v;S.pk=''},pk:v=>S.pk=v,auth:v=>S.auth=v,eye:(v,t)=>{const i=t.parentNode.querySelector('input');i.type=i.type==='password'?'text':'password';t.textContent=i.type==='password'?'Lihat':'Sembunyi'},close:closeS,form,save:saveF,
+document.addEventListener('change',async e=>{const el=e.target;if(el.id!=='fd')return;const d=el.value,ex=S.days.some(y=>y.d===d);
+if(ex){if(await askDup(d,0))fillForm(d);else el.value=S.fd}else if(S.ed)fillForm(d);S.fd=el.value});
+const A={tab:v=>{S.tab=v;if(v==='act'){S.lp=0;S.top=1;loadLog()}},lp:v=>{S.lp+=+v;S.top=1},date:v=>S.date=+v,hbar:v=>{S.date=+v;S.sc=1},lv:v=>S.lv=v,sim:v=>{S.sim=Math.max(-40,Math.min(100,+v||0))},lcform:()=>{const D=S.days[S.date];if(!D)return;sheet(`<h2>Cost labour ${dd(D.d)}</h2><div class="f" style="grid-template-columns:1fr"><label>Total cost labour hari ini (Rp)<input id="fl2" type="number" min="0" inputmode="numeric" value="${S.lc[D.d]||''}"></label></div><div class="cp">Isi total biaya tenaga kerja (loading/unloading, operator, dll) untuk tanggal ini. Kosongkan lalu simpan untuk menghapus.</div><button class="btn fill" data-a="lcsave">Simpan</button><button class="btn" style="margin-top:8px;border-color:#262B3D;color:var(--mut)" data-a="close">Batal</button>`)},lcsave:()=>{const D=S.days[S.date];setLc(D.d,$('#fl2').value);closeS()},region:v=>S.region=v,metric:v=>S.metric=v,per:v=>{S.per=v;S.pk=''},pk:v=>S.pk=v,auth:v=>S.auth=v,eye:(v,t)=>{const i=t.parentNode.querySelector('input');i.type=i.type==='password'?'text':'password';t.textContent=i.type==='password'?'Lihat':'Sembunyi'},close:closeS,form,save:saveF,
 addrow:()=>$('#rows').insertAdjacentHTML('beforeend',rowH([])),
 sharepdf:()=>{const D=S.days[S.date];if(D)logA('pdf','Bagikan PDF tanggal '+dm(D.d)+'/'+D.d.slice(2,4));sharePdf()},
 cap:()=>S.role!=='admin'?alert('Hanya admin yang dapat mengubah kapasitas.'):sheet(`<h2>Kapasitas Whs FG</h2><div class="f" style="grid-template-columns:1fr"><label>Kapasitas (ctn)<input id="fc" type="number" min="1" inputmode="numeric" value="${S.cap}"></label></div><div class="cp">Stok over/under dihitung dari sisa stok setelah Outbound Logistics dibanding kapasitas ini.</div><button class="btn fill" data-a="capsave">Simpan</button><button class="btn" style="margin-top:8px;border-color:#262B3D;color:var(--mut)" data-a="close">Batal</button>`),
@@ -357,6 +400,13 @@ usr:async v=>{const[id,f,val]=v.split('|');const r=await DB().from('profiles').u
 };
 document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a;if(!A[a])return;A[a](t.dataset.v,t);if(!['addrow','form','eye','sharepdf','pick','acct','cap','lcform'].includes(a))draw()});
 document.addEventListener('scroll',e=>{const t=e.target;if(t.classList&&t.classList.contains('stack')){const d=t.nextElementSibling;if(d&&d.classList.contains('dots')){const k=t.scrollLeft>(t.scrollWidth-t.clientWidth)/2?1:0;[...d.children].forEach((x,i)=>x.classList.toggle('on',i===k))}}},true);
+function simUpd(){const k=S.sk,g=$('#simg');if(!k||!g)return;g.innerHTML=sensDyn(k);$('#sensr').innerHTML=sensR(k);const r=$('#simr');if(r&&+r.value!==S.sim)r.value=S.sim}
+let simSv=null;
+const simPt=e=>{if(!simSv||!S.sk)return;const k=S.sk,b=simSv.getBoundingClientRect(),x=(e.clientX-b.left)/b.width*k.W,v=k.v0+(x-k.l)/(k.W-k.l-k.r)*(k.v1-k.v0);S.sim=Math.max(-40,Math.min(100,Math.round((v/k.o-1)*100)));simUpd()};
+document.addEventListener('pointerdown',e=>{const sv=e.target.closest&&e.target.closest('#sensg svg');if(!sv)return;simSv=sv;try{sv.setPointerCapture(e.pointerId)}catch(_){}simPt(e)});
+document.addEventListener('pointermove',e=>{if(simSv)simPt(e)});
+['pointerup','pointercancel'].forEach(n=>document.addEventListener(n,()=>{simSv=null}));
+document.addEventListener('input',e=>{if(e.target.id!=='simr')return;S.sim=+e.target.value||0;simUpd()});
 $('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet')closeS()});
 /* ---- PDF laporan harian (tanpa library, ASCII/Helvetica) ---- */
 const PW=842,PH=595,FW={' ':278,',':278,'.':278,'/':278,':':278,';':278,'+':584,'-':333,'(':333,')':333};
@@ -427,7 +477,7 @@ if(t.data&&t.data[0])S.cap=+t.data[0].v||400000;
 S.lc={};if(lcr&&lcr.data)lcr.data.forEach(r=>{const n=+r.v;if(n>0)S.lc[r.k.slice(3)]=n});
 S.date=first?S.days.length-1:Math.min(S.date,S.days.length-1);if(S.date<0)S.date=0}
 async function loadLog(){const r=await DB().from('activity_log').select('*').order('t',{ascending:false}).limit(1000);if(r.error)return;S.log=r.data.map(x=>({t:Date.parse(x.t),u:x.nama,m:x.email,a:x.a,d:x.d}));if(S.tab==='act')draw()}
-const BUILD='2026-10-06j';
+const BUILD='2026-10-06l';
 const uOf=g=>g&&g.data&&(g.data.user||(g.data.session&&g.data.session.user));
 async function enter(ty,hint){const A=DB().auth;let g,u,why='';
 try{g=await A.getSession();u=uOf(g)}catch(x){why+=' getSession: '+(x&&x.message||x)}
