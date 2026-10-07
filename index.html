@@ -2,13 +2,18 @@
 <html lang="id"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#06070B">
-<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
 <title>Monitoring Distribusi</title>
 <style>
 :root{--bg:#06070B;--card:#0F1118;--tile:#171A25;--line:#1C2030;--tx:#F4F6FB;--mut:#8D93A6;--ac:#3E5BFF;--acs:#8FA2FF;--red:#F87171}
 *{box-sizing:border-box}
 html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%}
-body{margin:0;background:#000;color:var(--tx);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{margin:0;background:#000;color:var(--tx);font:400 15px/1.45 var(--font);font-optical-sizing:auto;font-feature-settings:"kern","calt","cv11" 0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+:root{--font:"Inter","Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif}
+h1{font-weight:700;letter-spacing:-.025em}h2,h3{font-weight:650;letter-spacing:-.015em}b,strong{font-weight:650}
+.lbl{letter-spacing:.005em}.sel .k,.td.h,.dsum .lbl{text-transform:none;letter-spacing:.01em}
+.tag{letter-spacing:.01em}.btn,.chip,.seg button,.tab{font-weight:600;letter-spacing:-.005em}
+svg text{font-family:var(--font);font-variant-numeric:tabular-nums}
 button,input,select{font:inherit;color:inherit}
 #app{max-width:480px;height:100dvh;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
 .hd{padding:calc(env(safe-area-inset-top) + 16px) 20px 12px}
@@ -19,11 +24,11 @@ button,input,select{font:inherit;color:inherit}
 .shr svg{color:var(--acs)}
 .pill{font-size:12px;color:var(--mut);background:var(--card);border:1px solid var(--line);border-radius:20px;padding:8px 14px;white-space:nowrap}
 .eb{font-size:14px;font-weight:400;color:var(--mut)}
-h1{margin:2px 0 0;font-size:30px;line-height:1.12;font-weight:600;letter-spacing:-.02em}
+h1{margin:2px 0 0;font-size:30px;line-height:1.12;font-weight:700;letter-spacing:-.025em}
 .main{flex:1;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding:0 20px 16px;display:flex;flex-direction:column;gap:14px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px}
 .lbl{font-size:13px;color:var(--mut)}
-.num{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-weight:600}
+.num{font-family:var(--font);font-variant-numeric:tabular-nums lining-nums;font-feature-settings:"tnum","lnum";font-weight:600;letter-spacing:-.005em}
 .big{font-size:40px;margin:6px 0 10px;letter-spacing:-.03em}
 .row{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0}
 .sec{display:flex;justify-content:space-between;align-items:center;margin-top:4px}
@@ -513,7 +518,7 @@ if(t.data&&t.data[0])S.cap=+t.data[0].v||400000;
 S.lc={};if(lcr&&lcr.data)lcr.data.forEach(r=>{const n=+r.v;if(n>0)S.lc[r.k.slice(3)]=n});
 S.date=first?S.days.length-1:Math.min(S.date,S.days.length-1);if(S.date<0)S.date=0}
 async function loadLog(){const r=await DB().from('activity_log').select('*').order('t',{ascending:false}).limit(1000);if(r.error)return;S.log=r.data.map(x=>({t:Date.parse(x.t),u:x.nama,m:x.email,a:x.a,d:x.d}));if(S.tab==='act')draw()}
-const BUILD='2026-10-06n';
+const BUILD='2026-10-06o';
 const uOf=g=>g&&g.data&&(g.data.user||(g.data.session&&g.data.session.user));
 async function enter(ty,hint){const A=DB().auth;let g,u,why='';
 try{g=await A.getSession();u=uOf(g)}catch(x){why+=' getSession: '+(x&&x.message||x)}
