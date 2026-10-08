@@ -375,7 +375,7 @@ if(tc)I.push(['i','Tujuan terpusat di '+tc,tc+' menerima '+ag[tc]+' dari '+tq+' 
 return h+fcSec()+capSec(L7)+'<b>Insight pergerakan</b>'+I.map(cardI).join('')+`<div class="lbl" style="text-align:center">Dihitung dari ${n} hari data terakhir. Hasil ini perkiraan, bukan prediksi pasti.</div>`}
 
 const rp=n=>'Rp '+fmt(Math.round(n)),lcv=x=>+S.lc[x.d]||0;
-const lpu=x=>lcv(x)>0&&x.o>0?lcv(x)/x.o:null,lpk=x=>lcv(x)>0&&arm(x)>0?lcv(x)/arm(x):null;
+const lpu=x=>lcv(x)>0&&x.o>0?lcv(x)/x.o:null,lpk=x=>lcv(x)>0&&x.e>0?lcv(x)/x.e:null;
 const spf=n=>(n>0.05?'+':n<-0.05?'−':'')+Math.abs(n).toFixed(1).replace('.',',')+'%';
 function sensCtx(D,L7){const c=lcv(D);if(!(c>0&&D.o>0))return null;const pts=L7.filter(x=>x.d!==D.d&&lcv(x)>0&&x.o>0),vs=[D.o,...pts.map(x=>x.o)],v0=Math.min(...vs,D.o*.6)*.9,v1=Math.max(...vs,D.o*2)*1.05,ys=[c/v0,...pts.map(x=>lcv(x)/x.o)];
 return{c,o:D.o,d:D.d,pts,v0,v1,ym:Math.ceil(Math.max(...ys)/100)*100||100,W:340,H:232,l:48,r:14,t:22,b:34}}
@@ -393,7 +393,7 @@ return `<div class="tiles"><div class="tile"><div class="lbl">Volume kirim</div>
 function lab(){const L7=S.days.slice(-7),off=S.days.length-L7.length,D=S.days[S.date],pv=S.days[S.date-1],c=lcv(D),K=S.lv==='k',m=K?lpk:lpu;
 const vals=L7.map(m),ok=vals.filter(v=>v!=null),mx=Math.max(1,...ok),H=105;
 const mc=(t,fn,v,pvv)=>`<div class="card"><div class="lbl">${t}</div><div class="num big" style="margin:6px 0 4px">${v==null?'—':rp(v)}</div><div class="lbl">${fn}</div>${v!=null&&pvv!=null?`<div class="num" style="font-size:12.5px;margin-top:10px">vs ${dm(pv.d)}: ${dl(Math.round(v),Math.round(pvv))}</div>`:''}</div>`;
-const fu=c&&D.o>0?rp(c)+' ÷ '+fmt(D.o)+' ctn (Outbound Logistics)':'Butuh cost labour dan Outbound Logistics',fk=c&&arm(D)>0?rp(c)+' ÷ '+arm(D)+' kendaraan ekspedisi':'Butuh cost labour dan jumlah carrier';
+const fu=c&&D.o>0?rp(c)+' ÷ '+fmt(D.o)+' ctn (Outbound Logistics)':'Butuh cost labour dan Outbound Logistics',fk=c&&D.e>0?rp(c)+' ÷ '+D.e+' kendaraan ekspedisi (Common Carrier)':'Butuh cost labour dan jumlah Common Carrier';
 const ins=[],pc1=x=>Math.abs(x).toFixed(1).replace('.',',')+'%',avgOf=f=>{const o=L7.map(f).filter(x=>x!=null);return o.length>=2?{av:o.reduce((a,b)=>a+b,0)/o.length,n:o.length,mn:Math.min(...o),mx:Math.max(...o)}:null};
 const vu=lpu(D),vk=lpk(D),au=avgOf(lpu),ak=avgOf(lpk),dfo=(v,a)=>(v-a.av)/a.av*100,cmp=(v,a)=>{const df=dfo(v,a);return Math.abs(df)<=10?'setara dengan rata-rata '+a.n+' hari terakhir ('+rp(a.av)+')':pc1(df)+(df>0?' lebih tinggi':' lebih rendah')+' dari rata-rata '+a.n+' hari terakhir ('+rp(a.av)+')'};
 if(vu!=null){const v2=D.o*1.25,u2=c/v2,v3=D.o*.75,u3=c/v3,df=au?dfo(vu,au):0,L=[];
@@ -403,15 +403,15 @@ L.push('Peluang: jika volume naik 25% menjadi '+fmt(Math.round(v2))+' ctn dengan
 L.push('Risiko: jika volume turun 25% menjadi '+fmt(Math.round(v3))+' ctn, cost per unit naik menjadi '+rp(u3)+' ('+spf((u3-vu)/vu*100)+').');
 if(au&&au.mn<vu)L.push('Target: untuk menyamai cost per unit terendah ('+rp(au.mn)+'), dibutuhkan volume sekitar '+fmt(Math.round(c/au.mn))+' ctn per hari.');
 ins.push([df>10?'w':'i',df>10?'Cost per unit lebih tinggi dari rata-rata':df<-10?'Cost per unit lebih efisien dari rata-rata':'Cost per unit stabil',L.join('\n')])}
-if(vk!=null){const n=arm(D),df=ak?dfo(vk,ak):0,hi=df>10,L=[];
-L.push('Biaya tenaga kerja '+rp(c)+' untuk '+n+' kendaraan ('+D.p+' Private, '+D.e+' Common, '+D.x+' International) = '+rp(vk)+' per kendaraan.');
+if(vk!=null){const n=D.e,df=ak?dfo(vk,ak):0,hi=df>10,L=[];
+L.push('Biaya tenaga kerja '+rp(c)+' untuk '+n+' kendaraan ekspedisi (Common Carrier) = '+rp(vk)+' per kendaraan.');
 if(ak)L.push('Posisi: '+cmp(vk,ak)+'. Rentang '+rp(ak.mn)+' sampai '+rp(ak.mx)+'.');
 L.push(hi?'Rekomendasi: tinjau durasi proses muat dan kesesuaian jumlah tenaga kerja dengan jumlah kendaraan yang dilayani.':'Rekomendasi: proses muat berjalan wajar, pertahankan pola kerja saat ini.');
 ins.push([hi?'w':'i',hi?'Cost per kendaraan tinggi, perlu ditinjau':df<-10?'Cost per kendaraan lebih efisien':'Cost per kendaraan stabil',L.join('\n')])}
 S.sk=sensCtx(D,L7);const an=!S.sdone;S.sdone=1;
 const sens=S.sk?`<div class="card"><b>Simulasi volume kirim</b><div class="lbl" style="margin-top:4px;font-size:12.5px">Geser slider atau sentuh grafik. Biaya tenaga kerja ${dm(D.d)} (${rp(c)}) dianggap tetap.</div><div id="sensg">${sensG(S.sk,an)}</div><input id="simr" class="simr" type="range" min="-40" max="100" step="1" value="${S.sim}" aria-label="Perubahan volume kirim (%)"><div id="sensr">${sensR(S.sk)}</div></div>`:'<div class="card lbl">Isi cost labour hari ini untuk membuka simulasi dan insight efisiensi.</div>';
 return `<div class="pks">${dateSel()}</div>
-<div class="card"><div class="row" style="padding:0;align-items:center"><b>Total cost labour</b><button class="up" style="border:0;cursor:pointer;min-height:36px;padding:0 14px" data-a="lcform">${c?'Ubah':'Isi'}</button></div><div class="num big" style="margin:8px 0 4px">${c?rp(c):'Belum diisi'}</div><div class="lbl">${fmt(D.o)} ctn dikirim · ${arm(D)} kendaraan ekspedisi</div></div>
+<div class="card"><div class="row" style="padding:0;align-items:center"><b>Total cost labour</b><button class="up" style="border:0;cursor:pointer;min-height:36px;padding:0 14px" data-a="lcform">${c?'Ubah':'Isi'}</button></div><div class="num big" style="margin:8px 0 4px">${c?rp(c):'Belum diisi'}</div><div class="lbl">${fmt(D.o)} ctn dikirim · ${D.e} kendaraan ekspedisi (Common Carrier)</div></div>
 ${mc('Labor Cost per Unit/Produk yang Dikirim',fu,lpu(D),pv?lpu(pv):null)}${mc('Labor Cost per Kendaraan Ekspedisi (Loading Cost)',fk,lpk(D),pv?lpk(pv):null)}
 <div class="seg"><button class="${K?'':'on'}" data-a="lv" data-v="u">Per unit (ctn)</button><button class="${K?'on':''}" data-a="lv" data-v="k">Per kendaraan</button></div>
 <div class="card"><b>${K?'Labor cost per kendaraan':'Labor cost per unit'} · ketuk batang</b><div class="bars">${L7.map((x,i)=>{const v=vals[i];return `<button class="bar ${i+off==S.date?'on':''}" data-a="date" data-v="${i+off}"><span class="num" style="font-size:10px">${v==null?'—':K?kf(v):fmt(Math.round(v))}</span><i style="height:${v==null?2:Math.max(2,Math.round(v/mx*H))}px"></i><span class="lbl">${dm(x.d)}</span></button>`}).join('')}</div></div>
@@ -580,7 +580,7 @@ if(t.data&&t.data[0])S.cap=+t.data[0].v||400000;
 S.lc={};if(lcr&&lcr.data)lcr.data.forEach(r=>{const n=+r.v;if(n>0)S.lc[r.k.slice(3)]=n});
 S.date=first?S.days.length-1:Math.min(S.date,S.days.length-1);if(S.date<0)S.date=0}
 async function loadLog(){const r=await DB().from('activity_log').select('*').order('t',{ascending:false}).limit(1000);if(r.error)return;S.log=r.data.map(x=>({t:Date.parse(x.t),u:x.nama,m:x.email,a:x.a,d:x.d}));if(S.tab==='act')draw()}
-const BUILD='2026-10-06s';
+const BUILD='2026-10-06t';
 const uOf=g=>g&&g.data&&(g.data.user||(g.data.session&&g.data.session.user));
 async function enter(ty,hint){const A=DB().auth;let g,u,why='';
 try{g=await A.getSession();u=uOf(g)}catch(x){why+=' getSession: '+(x&&x.message||x)}
